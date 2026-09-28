@@ -1,0 +1,813 @@
+"""
+Seed Diverse & Rare Ingredient Recipes into MySQL Database (foodai)
+Bổ sung hơn 60 món ăn phong phú với các nguyên liệu đặc biệt / khó tìm:
+- Ếch, lươn, ốc, hàu, ngao, mực, bạch tuộc, cua, ghẹ
+- Vịt, chim bồ câu, dê, bắp bò, gân bò, đuôi bò
+- Khổ qua, hoa chuối, măng tây, củ dền, bí ngòi, đậu bắp, bông bí
+- Lá lốt, ngải cứu, tía tô, lá giang, thì là
+- Nấm đùi gà, nấm kim châm, nấm đông cô, sườn non chay, tàu hũ ky
+- Quả sấu, me chua, dọc mùng, cơm mẻ, mắm tôm, chao...
+"""
+
+import os
+import sys
+import io
+import json
+import uuid
+import pymysql
+
+if sys.platform == 'win32':
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
+
+NEW_RECIPES = [
+    # --- 1. MÓN TỪ ẾCH & LƯƠN ---
+    {
+        "name": "Ếch xào lăn nước cốt dừa",
+        "description": "Thịt ếch thơm ngọt xào cùng sả ớt, bột cà ri vàng ươm và nước cốt dừa béo ngậy chuẩn vị miền Tây.",
+        "image_url": "https://img-global.cpcdn.com/recipes/5144b6c3196f7c9e/1200x630cq80/photo.jpg",
+        "cooking_time": 35,
+        "difficulty": "Trung bình",
+        "servings": "4 người",
+        "category": "Món xào",
+        "source_url": "https://cookpad.com/vn/cong-thuc/ech-xao-lan-cot-dua",
+        "author_name": "Bếp Mẹ Bông",
+        "ingredients": [
+            {"ingredient_name": "thịt ếch", "quantity": "500g", "raw_text": "500g đùi ếch làm sạch"},
+            {"ingredient_name": "nước cốt dừa", "quantity": "150ml", "raw_text": "150ml nước cốt dừa béo"},
+            {"ingredient_name": "sả", "quantity": "3 cây", "raw_text": "3 cây sả băm nhuyễn"},
+            {"ingredient_name": "bột cà ri", "quantity": "1 gói", "raw_text": "1 gói bột cà ri"},
+            {"ingredient_name": "hành tây", "quantity": "1 củ", "raw_text": "1 củ hành tây cắt múi cau"},
+            {"ingredient_name": "nấm mèo", "quantity": "30g", "raw_text": "30g nấm mèo ngâm nở cắt sợi"},
+            {"ingredient_name": "đậu phộng", "quantity": "50g", "raw_text": "50g đậu phộng rang giã dập"},
+            {"ingredient_name": "ớt", "quantity": "2 trái", "raw_text": "2 trái ớt sừng xắt lát"}
+        ],
+        "steps": [
+            {"step_number": 1, "instruction": "Ếch rửa sạch với muối và rượu trắng để khử tanh, chặt miếng vừa ăn. Ướp với 1/2 gói bột cà ri, sả băm, hạt nêm, tiêu trong 20 phút.", "step_image_url": "https://img-global.cpcdn.com/steps/1/photo.jpg"},
+            {"step_number": 2, "instruction": "Phi thơm tỏi và sả băm với dầu màu điều, cho ếch vào xào săn trên lửa lớn.", "step_image_url": "https://img-global.cpcdn.com/steps/2/photo.jpg"},
+            {"step_number": 3, "instruction": "Cho nấm mèo và hành tây vào đảo đều. Rưới nước cốt dừa vào đun lửa vừa cho nước sánh lại.", "step_image_url": "https://img-global.cpcdn.com/steps/3/photo.jpg"},
+            {"step_number": 4, "instruction": "Múc ra đĩa, rắc đậu phộng rang và ớt lát lên trên. Dùng nóng kèm bánh mì hoặc bún tươi.", "step_image_url": "https://img-global.cpcdn.com/steps/4/photo.jpg"}
+        ],
+        "nutrition": {"calories": 420, "protein": 36.0, "carbohydrates": 18.0, "fat": 22.0, "fiber": 3.5, "calcium": 70.0, "iron": 3.2},
+        "tags": ["món xào", "đặc sản", "thịt ếch", "bột cà ri"]
+    },
+    {
+        "name": "Lẩu ếch măng cay lá lốt",
+        "description": "Lẩu ếch nấu măng chua cay nồng kết hợp lá lốt thơm lừng, món ăn tuyệt vời cho những ngày se lạnh.",
+        "image_url": "https://img-global.cpcdn.com/recipes/7b4f53589b30c4a2/1200x630cq80/photo.jpg",
+        "cooking_time": 45,
+        "difficulty": "Trung bình",
+        "servings": "4-6 người",
+        "category": "Lẩu",
+        "source_url": "https://cookpad.com/vn/cong-thuc/lau-ech-mang-cay",
+        "author_name": "Hà Nội Quán",
+        "ingredients": [
+            {"ingredient_name": "thịt ếch", "quantity": "800g", "raw_text": "800g ếch làm sạch"},
+            {"ingredient_name": "măng chua", "quantity": "400g", "raw_text": "400g măng củ hoặc măng lá ngâm chua"},
+            {"ingredient_name": "lá lốt", "quantity": "1 bó", "raw_text": "1 bó lá lốt rửa sạch cắt khúc"},
+            {"ingredient_name": "tía tô", "quantity": "1 bó", "raw_text": "1 bó lá tía tô"},
+            {"ingredient_name": "sả", "quantity": "4 cây", "raw_text": "4 cây sả đập dập"},
+            {"ingredient_name": "ớt", "quantity": "3 trái", "raw_text": "3 trái ớt hiểm cay"},
+            {"ingredient_name": "đậu phụ", "quantity": "3 bìa", "raw_text": "3 bìa đậu hũ cắt khối chiên vàng"},
+            {"ingredient_name": "bún tươi", "quantity": "500g", "raw_text": "500g bún tươi ăn kèm"}
+        ],
+        "steps": [
+            {"step_number": 1, "instruction": "Ếch tẩm chút bột bắp rồi chiên sơ cho săn và vàng đều mặt.", "step_image_url": ""},
+            {"step_number": 2, "instruction": "Măng chua luộc 2 lần cho sạch độc tố, vắt ráo rồi xào thơm với tỏi, ớt và sả.", "step_image_url": ""},
+            {"step_number": 3, "instruction": "Cho ếch vào xào cùng măng cho thấm đượm gia vị, rắc chút lá lốt vào đảo sơ.", "step_image_url": ""},
+            {"step_number": 4, "instruction": "Nấu nước dùng từ xương ống hoặc nước dừa, nêm giấm bỗng chua thanh. Khi ăn nhúng ếch xào măng, đậu hũ và lá lốt, tía tô vào nồi lẩu sôi sùng sục.", "step_image_url": ""}
+        ],
+        "nutrition": {"calories": 480, "protein": 42.0, "carbohydrates": 30.0, "fat": 16.0, "fiber": 4.0, "calcium": 110.0, "iron": 4.0},
+        "tags": ["lẩu", "măng chua", "lá lốt", "món cay"]
+    },
+    {
+        "name": "Lươn om chuối đậu thịt ba chỉ",
+        "description": "Món ăn kinh điển đất Bắc với thịt lươn mềm thơm, chuối xanh bùi dẻo, thịt ba chỉ béo ngậy và nước cốt nghệ mẻ vàng sánh.",
+        "image_url": "https://img-global.cpcdn.com/recipes/f989912068e1ab66/1200x630cq80/photo.jpg",
+        "cooking_time": 45,
+        "difficulty": "Khó",
+        "servings": "4 người",
+        "category": "Món kho/om",
+        "source_url": "https://cookpad.com/vn/cong-thuc/luon-om-chuoi-dau",
+        "author_name": "Bếp Bắc Bộ",
+        "ingredients": [
+            {"ingredient_name": "lươn", "quantity": "500g", "raw_text": "500g lươn đồng làm sạch tuốt nhớt"},
+            {"ingredient_name": "chuối xanh", "quantity": "4 quả", "raw_text": "4 quả chuối tiêu xanh tước vỏ ngâm nước muối"},
+            {"ingredient_name": "đậu phụ", "quantity": "3 bìa", "raw_text": "3 bìa đậu hũ cắt khối rán vàng"},
+            {"ingredient_name": "thịt ba chỉ", "quantity": "200g", "raw_text": "200g thịt ba chỉ heo xắt miếng"},
+            {"ingredient_name": "lá lốt", "quantity": "1 nắm", "raw_text": "1 nắm lá lốt xắt nhỏ"},
+            {"ingredient_name": "tía tô", "quantity": "1 nắm", "raw_text": "1 nắm lá tía tô xắt nhỏ"},
+            {"ingredient_name": "nghệ", "quantity": "1 củ", "raw_text": "1 củ nghệ tươi giã lấy nước cốt"},
+            {"ingredient_name": "cơm mẻ", "quantity": "3 muỗng", "raw_text": "3 muỗng canh cơm mẻ lọc lấy nước chua"},
+            {"ingredient_name": "mắm tôm", "quantity": "1 muỗng", "raw_text": "1 muỗng cà phê mắm tôm ngon"}
+        ],
+        "steps": [
+            {"step_number": 1, "instruction": "Lươn cắt khúc 3-4cm, ướp với nước nghệ, mẻ, mắm tôm, hạt nêm, tiêu 15 phút.", "step_image_url": ""},
+            {"step_number": 2, "instruction": "Thịt ba chỉ đảo cháy cạnh trong nồi, cho lươn vào xào săn rồi trút ra đĩa.", "step_image_url": ""},
+            {"step_number": 3, "instruction": "Cho chuối xanh vào xào, châm nước xăm xắp đun sôi. Thêm đậu rán và lươn vào om lửa nhỏ 15 phút cho chuối mềm nhừ.", "step_image_url": ""},
+            {"step_number": 4, "instruction": "Lấy vài miếng chuối nghiền nhuyễn tạo độ sánh cho nước om. Tắt bếp, rắc lá lốt, tía tô, hành lá đảo đều.", "step_image_url": ""}
+        ],
+        "nutrition": {"calories": 460, "protein": 38.0, "carbohydrates": 26.0, "fat": 20.0, "fiber": 4.2, "calcium": 120.0, "iron": 5.1},
+        "tags": ["món om", "lươn", "chuối xanh", "mẻ nghệ"]
+    },
+    {
+        "name": "Miến lươn xào rau răm giòn ngon",
+        "description": "Miến dong dai mềm kết hợp lươn xào đậm đà, mộc nhĩ nấm hương và rau răm thơm nồng đặc trưng Nghệ An.",
+        "image_url": "https://img-global.cpcdn.com/recipes/42dc081a95e2df89/1200x630cq80/photo.jpg",
+        "cooking_time": 30,
+        "difficulty": "Trung bình",
+        "servings": "3 người",
+        "category": "Món xào",
+        "source_url": "https://cookpad.com/vn/cong-thuc/mien-luon-xao",
+        "author_name": "Lê Trang",
+        "ingredients": [
+            {"ingredient_name": "lươn", "quantity": "300g", "raw_text": "300g lươn đã lọc xương cắt sợi"},
+            {"ingredient_name": "miến", "quantity": "200g", "raw_text": "200g miến dong ngâm mềm cắt khúc"},
+            {"ingredient_name": "mộc nhĩ", "quantity": "3 tai", "raw_text": "3 tai nấm mèo ngâm nở thái chỉ"},
+            {"ingredient_name": "nấm hương", "quantity": "5 cái", "raw_text": "5 tai nấm hương thái mỏng"},
+            {"ingredient_name": "cà rốt", "quantity": "1/2 củ", "raw_text": "1/2 củ cà rốt bào sợi"},
+            {"ingredient_name": "rau răm", "quantity": "1 nắm", "raw_text": "1 nắm rau răm cắt nhỏ"},
+            {"ingredient_name": "hành tím", "quantity": "3 củ", "raw_text": "3 củ hành tím băm phi thơm"}
+        ],
+        "steps": [
+            {"step_number": 1, "instruction": "Lươn tẩm gia vị và xào lăn cho thật săn và đậm đà, trút riêng ra đĩa.", "step_image_url": ""},
+            {"step_number": 2, "instruction": "Phi thơm hành, xào mộc nhĩ, nấm hương và cà rốt vừa chín tới.", "step_image_url": ""},
+            {"step_number": 3, "instruction": "Cho miến dong vào xào nhanh tay trên lửa lớn, rưới ít nước tương và dầu hào cho ngấm.", "step_image_url": ""},
+            {"step_number": 4, "instruction": "Trút thịt lươn và rau răm vào đảo đều trong 1 phút rồi bày ra đĩa, rắc tiêu thơm.", "step_image_url": ""}
+        ],
+        "nutrition": {"calories": 390, "protein": 28.0, "carbohydrates": 48.0, "fat": 10.0, "fiber": 3.0, "calcium": 65.0, "iron": 3.8},
+        "tags": ["món xào", "miến dong", "rau răm"]
+    },
+
+    # --- 2. MÓN TỪ ỐC, HÀU, NGAO, SÒ, HẢI SẢN ---
+    {
+        "name": "Ốc xào sả ớt lá lốt giòn cay",
+        "description": "Thịt ốc bươu giòn sần sật xào cùng sả ớt thơm cay nồng nặc và lá lốt bùi thơm.",
+        "image_url": "https://img-global.cpcdn.com/recipes/5d540236a2ba270a/1200x630cq80/photo.jpg",
+        "cooking_time": 25,
+        "difficulty": "Dễ",
+        "servings": "3-4 người",
+        "category": "Món xào",
+        "source_url": "https://cookpad.com/vn/cong-thuc/oc-xao-sa-ot-la-lot",
+        "author_name": "Hương Ốc",
+        "ingredients": [
+            {"ingredient_name": "ốc", "quantity": "500g", "raw_text": "500g ruột ốc bươu hoặc ốc nhồi bóp muối sạch"},
+            {"ingredient_name": "sả", "quantity": "4 cây", "raw_text": "4 cây sả xắt lát mỏng"},
+            {"ingredient_name": "ớt", "quantity": "2 quả", "raw_text": "2 quả ớt sừng và ớt cay"},
+            {"ingredient_name": "lá lốt", "quantity": "10 lá", "raw_text": "10 lá lốt rửa sạch thái sợi to"},
+            {"ingredient_name": "tỏi", "quantity": "1 củ", "raw_text": "1 củ tỏi băm nhuyễn"},
+            {"ingredient_name": "dầu hào", "quantity": "1 muỗng", "raw_text": "1 muỗng canh dầu hào"},
+            {"ingredient_name": "nước mắm", "quantity": "1 muỗng", "raw_text": "1 muỗng canh nước mắm"}
+        ],
+        "steps": [
+            {"step_number": 1, "instruction": "Ốc bóp kỹ với muối và giấm cho hết nhớt, rửa sạch rồi chần sơ qua nước sôi có gừng đập dập.", "step_image_url": ""},
+            {"step_number": 2, "instruction": "Phi thơm tỏi và sả lát với dầu ăn cho dậy mùi thơm vàng.", "step_image_url": ""},
+            {"step_number": 3, "instruction": "Cho ốc vào xào thật nhanh tay trên lửa cực lớn trong 2-3 phút, nêm dầu hào, nước mắm, tiêu.", "step_image_url": ""},
+            {"step_number": 4, "instruction": "Trút lá lốt và ớt lát vào đảo nhanh 30 giây rồi tắt bếp để giữ độ giòn ngọt của ốc.", "step_image_url": ""}
+        ],
+        "nutrition": {"calories": 280, "protein": 32.0, "carbohydrates": 12.0, "fat": 8.0, "fiber": 2.0, "calcium": 180.0, "iron": 6.5},
+        "tags": ["món xào", "ốc", "lá lốt", "sả ớt"]
+    },
+    {
+        "name": "Chả ốc cuốn lá lốt nướng than",
+        "description": "Thịt ốc giòn sần sật băm nhuyễn trộn cùng giò sống và thịt xay, cuốn trong lá lốt thơm lừng rán giòn.",
+        "image_url": "https://img-global.cpcdn.com/recipes/5e81d77a08bda6eb/1200x630cq80/photo.jpg",
+        "cooking_time": 35,
+        "difficulty": "Trung bình",
+        "servings": "4 người",
+        "category": "Món chiên/nướng",
+        "source_url": "https://cookpad.com/vn/cong-thuc/cha-oc-la-lot",
+        "author_name": "Bếp Cô Mai",
+        "ingredients": [
+            {"ingredient_name": "ốc", "quantity": "300g", "raw_text": "300g thịt ốc nhồi băm nhỏ hạt lựu"},
+            {"ingredient_name": "thịt heo", "quantity": "200g", "raw_text": "200g thịt nạc vai xay nhuyễn"},
+            {"ingredient_name": "giò sống", "quantity": "100g", "raw_text": "100g giò sống tạo độ kết dính"},
+            {"ingredient_name": "lá lốt", "quantity": "20 lá", "raw_text": "20 lá lốt bản to nguyên vẹn"},
+            {"ingredient_name": "mộc nhĩ", "quantity": "2 tai", "raw_text": "2 tai nấm mèo ngâm nở băm nhỏ"},
+            {"ingredient_name": "sả", "quantity": "2 cây", "raw_text": "2 cây sả băm nhuyễn"}
+        ],
+        "steps": [
+            {"step_number": 1, "instruction": "Trộn đều ốc băm, thịt xay, giò sống, mộc nhĩ, sả băm, hạt tiêu, nước mắm ngon.", "step_image_url": ""},
+            {"step_number": 2, "instruction": "Trải mặt trái lá lốt ra thớt, múc một lượng nhân vừa đủ vào giữa và cuộn tròn mép lại.", "step_image_url": ""},
+            {"step_number": 3, "instruction": "Rán chả trên chảo dầu lửa vừa hoặc nướng nồi chiên không dầu 180 độ trong 12 phút.", "step_image_url": ""},
+            {"step_number": 4, "instruction": "Ăn kèm bún tươi, rau sống và nước mắm chua ngọt pha tỏi ớt gừng.", "step_image_url": ""}
+        ],
+        "nutrition": {"calories": 350, "protein": 34.0, "carbohydrates": 8.0, "fat": 19.0, "fiber": 2.5, "calcium": 140.0, "iron": 5.0},
+        "tags": ["chả cuốn", "lá lốt", "ốc", "món rán"]
+    },
+    {
+        "name": "Hàu nướng mỡ hành đậu phộng",
+        "description": "Hàu sữa tươi béo ngậy nướng thơm lừng cùng mỡ hành xanh mướt và đậu phộng rang giòn tan.",
+        "image_url": "https://img-global.cpcdn.com/recipes/209c13b2c2d9bb4e/1200x630cq80/photo.jpg",
+        "cooking_time": 20,
+        "difficulty": "Dễ",
+        "servings": "3-4 người",
+        "category": "Món nướng",
+        "source_url": "https://cookpad.com/vn/cong-thuc/hau-nuong-mo-hanh",
+        "author_name": "Hải Sản Phố",
+        "ingredients": [
+            {"ingredient_name": "hàu", "quantity": "1 kg", "raw_text": "1 kg hàu sữa tươi sống tách nửa vỏ"},
+            {"ingredient_name": "hành", "quantity": "1 bó", "raw_text": "1 bó hành lá xắt nhỏ"},
+            {"ingredient_name": "đậu phộng", "quantity": "50g", "raw_text": "50g đậu phộng rang giã dập"},
+            {"ingredient_name": "dầu ăn", "quantity": "4 muỗng", "raw_text": "4 muỗng canh dầu ăn hoặc mỡ heo"},
+            {"ingredient_name": "hành tím", "quantity": "3 củ", "raw_text": "3 củ hành tím phi vàng giòn"},
+            {"ingredient_name": "ớt", "quantity": "1 quả", "raw_text": "1 quả ớt băm nhuyễn"}
+        ],
+        "steps": [
+            {"step_number": 1, "instruction": "Đun nóng dầu/mỡ heo rồi rưới trực tiếp vào chén hành lá xắt nhỏ, nêm chút muối đường đảo đều để giữ màu xanh.", "step_image_url": ""},
+            {"step_number": 2, "instruction": "Rửa sạch hàu, xếp hàu lên vỉ nướng than hoặc khay nướng nồi chiên không dầu.", "step_image_url": ""},
+            {"step_number": 3, "instruction": "Rưới đều một muỗng mỡ hành lên từng con hàu, nướng ở 200°C trong 6-8 phút cho hàu chín tới.", "step_image_url": ""},
+            {"step_number": 4, "instruction": "Rắc hành phi và đậu phộng rang lên trên, vắt chút nước cốt tắc và chấm muối tiêu chanh.", "step_image_url": ""}
+        ],
+        "nutrition": {"calories": 310, "protein": 22.0, "carbohydrates": 14.0, "fat": 18.0, "fiber": 1.5, "calcium": 90.0, "iron": 7.8},
+        "tags": ["món nướng", "hàu sữa", "mỡ hành", "hải sản"]
+    },
+    {
+        "name": "Canh ngao nấu chua dứa cà chua",
+        "description": "Nước canh ngao ngọt thanh tự nhiên kết hợp vị chua mát của dứa, cà chua và hương thơm của rau răm thì là.",
+        "image_url": "https://img-global.cpcdn.com/recipes/7b2e811c0c329dd4/1200x630cq80/photo.jpg",
+        "cooking_time": 25,
+        "difficulty": "Dễ",
+        "servings": "4 người",
+        "category": "Súp/Canh",
+        "source_url": "https://cookpad.com/vn/cong-thuc/canh-ngao-nau-chua",
+        "author_name": "Thuỳ Dung",
+        "ingredients": [
+            {"ingredient_name": "ngao", "quantity": "1 kg", "raw_text": "1 kg ngao trắng hoặc nghêu ngâm sạch cát"},
+            {"ingredient_name": "dứa", "quantity": "1/2 quả", "raw_text": "1/2 quả dứa (thơm) xắt lát tam giác"},
+            {"ingredient_name": "cà chua", "quantity": "2 quả", "raw_text": "2 quả cà chua bổ múi cau"},
+            {"ingredient_name": "sấu", "quantity": "2 quả", "raw_text": "2 quả sấu hoặc 1 muỗng me chua"},
+            {"ingredient_name": "rau răm", "quantity": "1 nắm", "raw_text": "1 nắm rau răm và hành lá cắt nhỏ"},
+            {"ingredient_name": "gừng", "quantity": "1 nhánh", "raw_text": "1 nhánh gừng đập dập"}
+        ],
+        "steps": [
+            {"step_number": 1, "instruction": "Ngao luộc với ít nước và gừng đến khi mở miệng. Vớt ngao ra tách lấy ruột, chắt nước luộc trong để làm nước canh.", "step_image_url": ""},
+            {"step_number": 2, "instruction": "Phi thơm hành tím, xào cà chua cho mềm tạo màu đẹp rồi cho ruột ngao vào xào sơ với chút nước mắm.", "step_image_url": ""},
+            {"step_number": 3, "instruction": "Đổ nước luộc ngao vào nồi đun sôi, thả dứa và sấu vào nấu 5 phút cho tiết vị chua ngọt.", "step_image_url": ""},
+            {"step_number": 4, "instruction": "Thả ruột ngao vào đun sôi lại, dầm sấu cho chua vừa vị rồi rắc rau răm, hành lá và tắt bếp.", "step_image_url": ""}
+        ],
+        "nutrition": {"calories": 180, "protein": 18.0, "carbohydrates": 16.0, "fat": 3.5, "fiber": 2.2, "calcium": 85.0, "iron": 4.5},
+        "tags": ["món canh", "ngao", "dứa", "canh chua"]
+    },
+    {
+        "name": "Bạch tuộc nướng sa tế cay giòn",
+        "description": "Bạch tuộc tươi giòn sần sật ướp sốt sa tế ớt cay nồng, nướng cháy xém cạnh thơm phức hấp dẫn.",
+        "image_url": "https://img-global.cpcdn.com/recipes/5c77a942df39430c/1200x630cq80/photo.jpg",
+        "cooking_time": 25,
+        "difficulty": "Dễ",
+        "servings": "3-4 người",
+        "category": "Món nướng",
+        "source_url": "https://cookpad.com/vn/cong-thuc/bach-tuoc-nuong-sa-te",
+        "author_name": "Chef Hải Nam",
+        "ingredients": [
+            {"ingredient_name": "bạch tuộc", "quantity": "600g", "raw_text": "600g bạch tuộc tươi làm sạch bóp muối"},
+            {"ingredient_name": "sa tế", "quantity": "2 muỗng", "raw_text": "2 muỗng canh ớt sa tế tôm cay"},
+            {"ingredient_name": "dầu hào", "quantity": "1 muỗng", "raw_text": "1 muỗng canh dầu hào"},
+            {"ingredient_name": "mật ong", "quantity": "1 muỗng", "raw_text": "1 muỗng cà phê mật ong tạo màu bóng"},
+            {"ingredient_name": "sả", "quantity": "2 cây", "raw_text": "2 cây sả băm nhỏ"},
+            {"ingredient_name": "tỏi", "quantity": "1 củ", "raw_text": "1 củ tỏi băm"}
+        ],
+        "steps": [
+            {"step_number": 1, "instruction": "Bạch tuộc rửa sạch, để ráo. Trộn đều sốt sa tế, dầu hào, mật ong, sả, tỏi băm.", "step_image_url": ""},
+            {"step_number": 2, "instruction": "Ướp bạch tuộc với hỗn hợp sốt trong 20 phút cho thấm sâu.", "step_image_url": ""},
+            {"step_number": 3, "instruction": "Nướng trên than hoa hoặc nồi chiên không dầu ở 190°C trong 10-12 phút đến khi giòn thơm.", "step_image_url": ""},
+            {"step_number": 4, "instruction": "Cắt miếng vừa ăn, dùng kèm dưa leo, rau răm và muối ớt xanh.", "step_image_url": ""}
+        ],
+        "nutrition": {"calories": 320, "protein": 35.0, "carbohydrates": 10.0, "fat": 14.0, "fiber": 1.0, "calcium": 60.0, "iron": 6.0},
+        "tags": ["món nướng", "bạch tuộc", "sa tế", "hải sản"]
+    },
+
+    # --- 3. MÓN TỪ VỊT, DÊ, BỒ CÂU, BÒ ĐẶC BIỆT ---
+    {
+        "name": "Vịt om sấu khoai sọ chuẩn vị Hà Nội",
+        "description": "Thịt vịt béo ngậy được om mềm với quả sấu chua thanh và khoai sọ dẻo bùi tạo nên hương vị đặc trưng mùa thu Bắc Bộ.",
+        "image_url": "https://img-global.cpcdn.com/recipes/5d54a22a89ee18e2/1200x630cq80/photo.jpg",
+        "cooking_time": 45,
+        "difficulty": "Trung bình",
+        "servings": "4-5 người",
+        "category": "Món kho/om",
+        "source_url": "https://cookpad.com/vn/cong-thuc/vit-om-sau",
+        "author_name": "Hà Nội Foodie",
+        "ingredients": [
+            {"ingredient_name": "vịt", "quantity": "1 kg", "raw_text": "1 kg thịt vịt cỏ rửa sạch bằng rượu gừng"},
+            {"ingredient_name": "sấu", "quantity": "8 quả", "raw_text": "8 quả sấu xanh cạo vỏ"},
+            {"ingredient_name": "khoai sọ", "quantity": "400g", "raw_text": "400g khoai sọ gọt vỏ cắt miếng"},
+            {"ingredient_name": "rau muống", "quantity": "1 bó", "raw_text": "1 bó rau muống nhặt ngọn non ăn kèm"},
+            {"ingredient_name": "gừng", "quantity": "1 củ", "raw_text": "1 củ gừng đập dập"},
+            {"ingredient_name": "sả", "quantity": "3 cây", "raw_text": "3 cây sả băm"},
+            {"ingredient_name": "nước dừa tươi", "quantity": "1 quả", "raw_text": "1 quả nước dừa tươi ngọt thanh"}
+        ],
+        "steps": [
+            {"step_number": 1, "instruction": "Vịt chặt miếng vừa ăn, ướp với gừng, sả, hành tím, nước mắm, hạt nêm trong 20 phút.", "step_image_url": ""},
+            {"step_number": 2, "instruction": "Phi thơm hành tỏi sả, cho thịt vịt vào xào săn trên lửa lớn cho ra bớt mỡ thừa.", "step_image_url": ""},
+            {"step_number": 3, "instruction": "Đổ nước dừa và thêm nước lọc xăm xắp, thả quả sấu vào đun sôi rồi hạ nhỏ lửa om 20 phút.", "step_image_url": ""},
+            {"step_number": 4, "instruction": "Thêm khoai sọ vào om tiếp 15 phút cho khoai chín mềm dẻo. Dầm sấu nêm nếm lại, rắc mùi tàu (ngò gai) và tắt bếp.", "step_image_url": ""}
+        ],
+        "nutrition": {"calories": 520, "protein": 38.0, "carbohydrates": 35.0, "fat": 24.0, "fiber": 4.5, "calcium": 75.0, "iron": 4.2},
+        "tags": ["món om", "vịt", "quả sấu", "khoai sọ"]
+    },
+    {
+        "name": "Vịt nấu chao miền Tây thơm nức",
+        "description": "Vịt nấu chao đỏ béo ngậy, khoai môn dẻo mềm cùng rau muống nhúng nước dùng thơm lừng hương vị Nam Bộ.",
+        "image_url": "https://img-global.cpcdn.com/recipes/7b43b18c5e93df12/1200x630cq80/photo.jpg",
+        "cooking_time": 50,
+        "difficulty": "Trung bình",
+        "servings": "4-6 người",
+        "category": "Lẩu",
+        "source_url": "https://cookpad.com/vn/cong-thuc/vit-nau-chao",
+        "author_name": "Má Ba Cần Thơ",
+        "ingredients": [
+            {"ingredient_name": "vịt", "quantity": "1 kg", "raw_text": "1 kg thịt vịt xiêm rửa sạch"},
+            {"ingredient_name": "chao", "quantity": "1 hũ", "raw_text": "1 hũ chao trắng và chao đỏ tán nhuyễn"},
+            {"ingredient_name": "khoai môn", "quantity": "400g", "raw_text": "400g khoai môn cao cắt khối chiên sơ"},
+            {"ingredient_name": "nước dừa", "quantity": "500ml", "raw_text": "500ml nước dừa tươi xiêm"},
+            {"ingredient_name": "rau muống", "quantity": "1 bó", "raw_text": "1 bó rau muống xanh giòn"},
+            {"ingredient_name": "sả", "quantity": "4 cây", "raw_text": "4 cây sả đập dập băm nhỏ"},
+            {"ingredient_name": "bún", "quantity": "500g", "raw_text": "500g bún tươi"}
+        ],
+        "steps": [
+            {"step_number": 1, "instruction": "Thịt vịt chặt miếng, ướp với 4 viên chao đỏ + 2 viên chao trắng, sả băm, tỏi ớt, đường trong 30 phút.", "step_image_url": ""},
+            {"step_number": 2, "instruction": "Phi thơm tỏi sả, cho vịt vào xào thật săn và ngấm đều gia vị chao.", "step_image_url": ""},
+            {"step_number": 3, "instruction": "Đổ nước dừa tươi vào đun sôi, hạ nhỏ lửa hầm khoảng 25 phút đến khi thịt vịt mềm.", "step_image_url": ""},
+            {"step_number": 4, "instruction": "Cho khoai môn chiên vào nấu thêm 10 phút. Làm nước chấm chao pha chút đường, chanh, ớt băm để chấm kèm.", "step_image_url": ""}
+        ],
+        "nutrition": {"calories": 580, "protein": 40.0, "carbohydrates": 42.0, "fat": 28.0, "fiber": 5.0, "calcium": 95.0, "iron": 4.8},
+        "tags": ["vịt nấu chao", "chao", "khoai môn", "ẩm thực miền Tây"]
+    },
+    {
+        "name": "Dê hấp tía tô sả gừng chấm chao",
+        "description": "Thịt dê núi tươi mềm ngọt tự nhiên hấp cùng lá tía tô thơm mát, sả gừng giữ nguyên độ ngọt không hề có mùi gây.",
+        "image_url": "https://img-global.cpcdn.com/recipes/5d1f8872eb0f10c3/1200x630cq80/photo.jpg",
+        "cooking_time": 25,
+        "difficulty": "Dễ",
+        "servings": "4 người",
+        "category": "Món hấp",
+        "source_url": "https://cookpad.com/vn/cong-thuc/de-hap-tia-to",
+        "author_name": "Dê Núi Ninh Bình",
+        "ingredients": [
+            {"ingredient_name": "dê", "quantity": "500g", "raw_text": "500g thịt đùi dê hoặc thịt dê ba chỉ có da mỏng"},
+            {"ingredient_name": "tía tô", "quantity": "2 bó", "raw_text": "2 bó lá tía tô tươi non"},
+            {"ingredient_name": "sả", "quantity": "5 cây", "raw_text": "5 cây sả đập dập cắt khúc"},
+            {"ingredient_name": "gừng", "quantity": "1 củ", "raw_text": "1 củ gừng tươi thái chỉ"},
+            {"ingredient_name": "chao", "quantity": "3 viên", "raw_text": "3 viên chao ngon pha chấm kèm"},
+            {"ingredient_name": "ớt", "quantity": "2 quả", "raw_text": "2 quả ớt sừng"}
+        ],
+        "steps": [
+            {"step_number": 1, "instruction": "Thịt dê thái mỏng vừa ăn, ướp sơ với chút hạt nêm, tiêu và 1/2 gừng thái chỉ.", "step_image_url": ""},
+            {"step_number": 2, "instruction": "Xếp một lớp sả đập dập và lá tía tô dưới đáy xửng hấp.", "step_image_url": ""},
+            {"step_number": 3, "instruction": "Trải đều thịt dê lên trên, phủ thêm một lớp lá tía tô và gừng chỉ lên mặt thịt.", "step_image_url": ""},
+            {"step_number": 4, "instruction": "Hấp cách thủy trên lửa lớn trong 8-10 phút cho thịt vừa chín tới để giữ độ mềm ngọt. Chấm cùng sốt chao hoặc tương gừng.", "step_image_url": ""}
+        ],
+        "nutrition": {"calories": 360, "protein": 42.0, "carbohydrates": 4.0, "fat": 18.0, "fiber": 2.0, "calcium": 60.0, "iron": 5.5},
+        "tags": ["món hấp", "thịt dê", "tía tô", "đặc sản"]
+    },
+    {
+        "name": "Bò cuộn lá lốt nướng than hoa",
+        "description": "Thịt bò tẩm ướp sả thơm được cuốn trong lá lốt xanh mướt nướng xèo xèo trên than hồng, chấm mắm nêm đậm đà.",
+        "image_url": "https://img-global.cpcdn.com/recipes/7b43b18c5e93df14/1200x630cq80/photo.jpg",
+        "cooking_time": 30,
+        "difficulty": "Trung bình",
+        "servings": "4 người",
+        "category": "Món nướng",
+        "source_url": "https://cookpad.com/vn/cong-thuc/bo-cuon-la-lot",
+        "author_name": "Sài Gòn Phố",
+        "ingredients": [
+            {"ingredient_name": "thịt bò", "quantity": "400g", "raw_text": "400g thịt bò băm nhuyễn"},
+            {"ingredient_name": "thịt heo", "quantity": "100g", "raw_text": "100g mỡ heo băm nhỏ giúp chả mềm mọng"},
+            {"ingredient_name": "lá lốt", "quantity": "30 lá", "raw_text": "30 lá lốt rửa sạch để ráo"},
+            {"ingredient_name": "sả", "quantity": "3 cây", "raw_text": "3 cây sả băm nhuyễn"},
+            {"ingredient_name": "đậu phộng", "quantity": "50g", "raw_text": "50g đậu phộng rang giã dập"},
+            {"ingredient_name": "bánh tráng", "quantity": "1 xấp", "raw_text": "1 xấp bánh tráng và rau sống, bún cuốn kèm"}
+        ],
+        "steps": [
+            {"step_number": 1, "instruction": "Trộn thịt bò, mỡ heo, sả băm, tỏi băm, 1 muỗng dầu hào, tiêu, hạt nêm ướp 15 phút.", "step_image_url": ""},
+            {"step_number": 2, "instruction": "Đặt mặt sẫm của lá lốt úp xuống, cho một thìa thịt bò vào giữa và cuộn tròn chặt tay.", "step_image_url": ""},
+            {"step_number": 3, "instruction": "Xiên chả vào que nướng hoặc xếp vào vỉ, quét chút dầu ăn nướng 8-10 phút đến khi lá lốt dậy mùi thơm nức.", "step_image_url": ""},
+            {"step_number": 4, "instruction": "Bày ra đĩa rắc mỡ hành và đậu phộng rang, cuốn cùng bánh tráng, rau rừng chấm mắm nêm chua ngọt.", "step_image_url": ""}
+        ],
+        "nutrition": {"calories": 420, "protein": 38.0, "carbohydrates": 12.0, "fat": 24.0, "fiber": 3.0, "calcium": 120.0, "iron": 5.8},
+        "tags": ["bò lá lốt", "món nướng", "lá lốt", "mắm nêm"]
+    },
+    {
+        "name": "Bắp bò ngâm mắm chua ngọt tiêu xanh",
+        "description": "Bắp bò hoa luộc thơm ngâm trong nước mắm cốt pha đường phèn, giấm gạo và ớt hiểm, ăn giòn sần sật đậm đà.",
+        "image_url": "https://img-global.cpcdn.com/recipes/5d54a22a89ee18e9/1200x630cq80/photo.jpg",
+        "cooking_time": 40,
+        "difficulty": "Trung bình",
+        "servings": "6 người",
+        "category": "Món khai vị/ngâm",
+        "source_url": "https://cookpad.com/vn/cong-thuc/bap-bo-ngam-mam",
+        "author_name": "Món Ngon Mẹ Nấu",
+        "ingredients": [
+            {"ingredient_name": "thịt bò", "quantity": "1 kg", "raw_text": "1 kg bắp bò hoa hoặc bắp lõi rùa"},
+            {"ingredient_name": "nước mắm", "quantity": "300ml", "raw_text": "300ml nước mắm truyền thống ngon"},
+            {"ingredient_name": "tiêu", "quantity": "3 nhánh", "raw_text": "3 nhánh tiêu xanh tươi"},
+            {"ingredient_name": "tỏi", "quantity": "2 củ", "raw_text": "2 củ tỏi cắt lát"},
+            {"ingredient_name": "ớt", "quantity": "5 quả", "raw_text": "5 quả ớt hiểm đỏ"},
+            {"ingredient_name": "gừng", "quantity": "1 củ", "raw_text": "1 củ gừng và hoa hồi, quế luộc bắp bò"}
+        ],
+        "steps": [
+            {"step_number": 1, "instruction": "Bắp bò cuộn chặt chỉ, luộc cùng gừng, hoa hồi, quế khoảng 35 phút cho bắp bò chín tới, vớt ra ngâm nước đá rồi cho vào ngăn mát tủ lạnh cho săn chắc.", "step_image_url": ""},
+            {"step_number": 2, "instruction": "Nấu hỗn hợp nước ngâm gồm: 300ml nước mắm, 250g đường phèn, 150ml giấm gạo, 100ml nước lọc đun sôi để thật nguội.", "step_image_url": ""},
+            {"step_number": 3, "instruction": "Cho bắp bò, tỏi lát, ớt, tiêu xanh vào hũ thủy tinh tiệt trùng, rót nước mắm nguội ngập bắp bò.", "step_image_url": ""},
+            {"step_number": 4, "instruction": "Ngâm 2-3 ngày là có thể lấy ra thái lát mỏng tang, gân bò giòn sần sật tuyệt ngon.", "step_image_url": ""}
+        ],
+        "nutrition": {"calories": 340, "protein": 44.0, "carbohydrates": 15.0, "fat": 11.0, "fiber": 0.8, "calcium": 40.0, "iron": 4.5},
+        "tags": ["bắp bò", "món ngâm", "tiêu xanh", "đặc sản Tết"]
+    },
+    {
+        "name": "Gân bò hầm dưa chua sốt cà chua",
+        "description": "Gân bò giòn dẻo hầm cùng dưa cải chua giòn sần sật, cà chua và thì là tạo vị chua thanh thơm nức mũi.",
+        "image_url": "https://img-global.cpcdn.com/recipes/5d54a22a89ee18f1/1200x630cq80/photo.jpg",
+        "cooking_time": 45,
+        "difficulty": "Trung bình",
+        "servings": "4 người",
+        "category": "Súp/Canh",
+        "source_url": "https://cookpad.com/vn/cong-thuc/gan-bo-ham-dua-chua",
+        "author_name": "Thu Hằng",
+        "ingredients": [
+            {"ingredient_name": "thịt bò", "quantity": "500g", "raw_text": "500g gân bò trong hoặc gân bò y"},
+            {"ingredient_name": "dưa chua", "quantity": "300g", "raw_text": "300g dưa cải muối chua"},
+            {"ingredient_name": "cà chua", "quantity": "2 quả", "raw_text": "2 quả cà chua chín đỏ"},
+            {"ingredient_name": "thì là", "quantity": "1 nắm", "raw_text": "1 nắm thì là và hành hoa cắt khúc"},
+            {"ingredient_name": "gừng", "quantity": "1 củ", "raw_text": "1 củ gừng đập dập"},
+            {"ingredient_name": "tỏi", "quantity": "1 củ", "raw_text": "1 củ tỏi phi thơm"}
+        ],
+        "steps": [
+            {"step_number": 1, "instruction": "Gân bò luộc sơ với gừng cho sạch, chặt miếng vuông vừa ăn rồi xào thơm với tỏi và gia vị.", "step_image_url": ""},
+            {"step_number": 2, "instruction": "Ninh gân bò trong nồi áp suất 20 phút cho gân bò đạt độ mềm dẻo nhưng vẫn giữ độ giòn sần sật.", "step_image_url": ""},
+            {"step_number": 3, "instruction": "Phi thơm hành, xào cà chua và dưa chua cho ngấm gia vị rồi trút vào nồi nước hầm gân bò.", "step_image_url": ""},
+            {"step_number": 4, "instruction": "Đun sôi thêm 5 phút cho dưa tiết vị chua dịu, rắc hành hoa, thì là rồi múc ra bát dùng nóng.", "step_image_url": ""}
+        ],
+        "nutrition": {"calories": 330, "protein": 36.0, "carbohydrates": 14.0, "fat": 12.0, "fiber": 3.0, "calcium": 65.0, "iron": 3.9},
+        "tags": ["gân bò", "dưa chua", "món canh", "thì là"]
+    },
+
+    # --- 4. MÓN TỪ RAU CỦ ĐỘC ĐÁO & THẢO MỘC (KHỔ QUA, MĂNG TÂY, CỦ DỀN, HOA CHUỐI...) ---
+    {
+        "name": "Canh khổ qua nhồi thịt băm thanh nhiệt",
+        "description": "Món canh truyền thống mang ý nghĩa xua tan mọi khổ ải, vị đắng dịu thanh mát của khổ qua hòa quyện nhân thịt ngọt đậm đà.",
+        "image_url": "https://img-global.cpcdn.com/recipes/5d54a22a89ee18f4/1200x630cq80/photo.jpg",
+        "cooking_time": 35,
+        "difficulty": "Dễ",
+        "servings": "4 người",
+        "category": "Súp/Canh",
+        "source_url": "https://cookpad.com/vn/cong-thuc/canh-kho-qua-nhoi-thit",
+        "author_name": "Bếp Miền Nam",
+        "ingredients": [
+            {"ingredient_name": "khổ qua", "quantity": "3 quả", "raw_text": "3 quả mướp đắng (khổ qua) bỏ ruột"},
+            {"ingredient_name": "thịt heo", "quantity": "250g", "raw_text": "250g thịt heo xay nhuyễn"},
+            {"ingredient_name": "mộc nhĩ", "quantity": "3 tai", "raw_text": "3 tai nấm mèo băm nhỏ"},
+            {"ingredient_name": "miến", "quantity": "30g", "raw_text": "30g miến dong ngâm mềm cắt vụn"},
+            {"ingredient_name": "hành", "quantity": "1 bó", "raw_text": "1 bó hành lá chần qua nước sôi buộc khúc"},
+            {"ingredient_name": "tiêu", "quantity": "1 muỗng", "raw_text": "1 muỗng cà phê hạt tiêu thơm"}
+        ],
+        "steps": [
+            {"step_number": 1, "instruction": "Khổ qua cắt khúc 4-5cm, dùng thìa móc sạch ruột trắng bên trong để giảm bớt độ đắng.", "step_image_url": ""},
+            {"step_number": 2, "instruction": "Trộn thịt xay, mộc nhĩ, miến dong, hành tím băm, tiêu, hạt nêm rồi nhồi chặt vào từng khúc khổ qua.", "step_image_url": ""},
+            {"step_number": 3, "instruction": "Đun sôi 1.2 lít nước dùng xương hoặc nước lọc, thả từng khúc khổ qua vào hớt bọt liên tục.", "step_image_url": ""},
+            {"step_number": 4, "instruction": "Hạ nhỏ lửa nấu 20-25 phút đến khi khổ qua chín mềm chuyển màu xanh thẫm, nêm vừa ăn, rắc ngò rí.", "step_image_url": ""}
+        ],
+        "nutrition": {"calories": 240, "protein": 24.0, "carbohydrates": 12.0, "fat": 10.0, "fiber": 3.8, "calcium": 50.0, "iron": 2.5},
+        "tags": ["khổ qua", "mướp đắng", "canh nhồi thịt", "thanh nhiệt"]
+    },
+    {
+        "name": "Khổ qua xào trứng gà bùi thơm",
+        "description": "Khổ qua thái mỏng giòn sần sật xào cùng trứng gà vàng ươm, món ăn dân dã giải nhiệt nhanh chóng chỉ trong 10 phút.",
+        "image_url": "https://img-global.cpcdn.com/recipes/5d54a22a89ee18f7/1200x630cq80/photo.jpg",
+        "cooking_time": 15,
+        "difficulty": "Dễ",
+        "servings": "2-3 người",
+        "category": "Món xào",
+        "source_url": "https://cookpad.com/vn/cong-thuc/kho-qua-xao-trung",
+        "author_name": "Ánh Dương",
+        "ingredients": [
+            {"ingredient_name": "khổ qua", "quantity": "2 quả", "raw_text": "2 quả khổ qua (mướp đắng) bỏ ruột thái lát mỏng"},
+            {"ingredient_name": "trứng", "quantity": "3 quả", "raw_text": "3 quả trứng gà đánh tan"},
+            {"ingredient_name": "hành", "quantity": "2 nhánh", "raw_text": "2 nhánh hành lá thái nhỏ"},
+            {"ingredient_name": "tỏi", "quantity": "3 tép", "raw_text": "3 tép tỏi băm"},
+            {"ingredient_name": "nước mắm", "quantity": "1 muỗng", "raw_text": "1 muỗng canh nước mắm"}
+        ],
+        "steps": [
+            {"step_number": 1, "instruction": "Khổ qua thái lát mỏng, bóp với chút muối trong 2 phút rồi xả nước lạnh vắt ráo để giữ độ giòn và bớt đắng.", "step_image_url": ""},
+            {"step_number": 2, "instruction": "Phi thơm tỏi băm với 1 muỗng dầu ăn, cho khổ qua vào xào trên lửa lớn trong 2 phút.", "step_image_url": ""},
+            {"step_number": 3, "instruction": "Rưới đều trứng gà đã đánh tan vào chảo khổ qua, để 15 giây cho trứng se lại rồi đảo nhẹ tay.", "step_image_url": ""},
+            {"step_number": 4, "instruction": "Rắc hành lá, tiêu thơm, tắt bếp và múc ra đĩa ăn kèm cơm nóng.", "step_image_url": ""}
+        ],
+        "nutrition": {"calories": 190, "protein": 14.0, "carbohydrates": 8.0, "fat": 11.0, "fiber": 2.5, "calcium": 60.0, "iron": 2.1},
+        "tags": ["khổ qua", "trứng", "món xào", "nhanh gọn"]
+    },
+    {
+        "name": "Măng tây xào thịt bò dầu hào",
+        "description": "Măng tây xanh non giòn ngọt xào cùng thịt bò mềm mọng nước và sốt dầu hào tỏi phi thơm phức.",
+        "image_url": "https://img-global.cpcdn.com/recipes/5d54a22a89ee18fa/1200x630cq80/photo.jpg",
+        "cooking_time": 20,
+        "difficulty": "Dễ",
+        "servings": "3-4 người",
+        "category": "Món xào",
+        "source_url": "https://cookpad.com/vn/cong-thuc/mang-tay-xao-bo",
+        "author_name": "Lan Anh",
+        "ingredients": [
+            {"ingredient_name": "măng tây", "quantity": "300g", "raw_text": "300g măng tây xanh bẻ khúc non"},
+            {"ingredient_name": "thịt bò", "quantity": "250g", "raw_text": "250g thịt thăn bò thái mỏng"},
+            {"ingredient_name": "tỏi", "quantity": "1 củ", "raw_text": "1 củ tỏi đập dập băm nhỏ"},
+            {"ingredient_name": "dầu hào", "quantity": "2 muỗng", "raw_text": "2 muỗng canh dầu hào"},
+            {"ingredient_name": "tiêu", "quantity": "1 muỗng", "raw_text": "1 muỗng cà phê tiêu xay"}
+        ],
+        "steps": [
+            {"step_number": 1, "instruction": "Thịt bò ướp với 1 muỗng dầu hào, tỏi băm, tiêu, 1 thìa dầu ăn trong 15 phút cho mềm.", "step_image_url": ""},
+            {"step_number": 2, "instruction": "Măng tây tước sơ xơ dưới gốc, chần qua nước sôi 30 giây rồi ngâm ngay vào nước đá cho giòn xanh.", "step_image_url": ""},
+            {"step_number": 3, "instruction": "Phi thơm tỏi, xào thịt bò trên lửa lớn đảo nhanh trong 1 phút vừa chín tới trút ra đĩa.", "step_image_url": ""},
+            {"step_number": 4, "instruction": "Cho măng tây vào xào nhanh, trút thịt bò vào đảo đều 30 giây rồi tắt bếp bày ra đĩa.", "step_image_url": ""}
+        ],
+        "nutrition": {"calories": 280, "protein": 30.0, "carbohydrates": 10.0, "fat": 12.0, "fiber": 3.2, "calcium": 45.0, "iron": 4.1},
+        "tags": ["măng tây", "thịt bò", "món xào", "healthy"]
+    },
+    {
+        "name": "Nộm hoa chuối tai heo giòn sần sật",
+        "description": "Hoa chuối thái mỏng trắng muốt trộn cùng tai heo luộc giòn sần sật, lạc rang và nước mắm chua ngọt cực cuốn.",
+        "image_url": "https://img-global.cpcdn.com/recipes/5d54a22a89ee18fd/1200x630cq80/photo.jpg",
+        "cooking_time": 30,
+        "difficulty": "Trung bình",
+        "servings": "4 người",
+        "category": "Gỏi/Nộm",
+        "source_url": "https://cookpad.com/vn/cong-thuc/nom-hoa-chuoi-tai-heo",
+        "author_name": "Bếp Quê",
+        "ingredients": [
+            {"ingredient_name": "hoa chuối", "quantity": "1 cái", "raw_text": "1 bắp hoa chuối tây bào mỏng ngâm nước chanh"},
+            {"ingredient_name": "tai heo", "quantity": "1 cái", "raw_text": "1 cái tai heo cạo sạch luộc giòn thái mỏng"},
+            {"ingredient_name": "cà rốt", "quantity": "1 củ", "raw_text": "1 củ cà rốt bào sợi"},
+            {"ingredient_name": "đậu phộng", "quantity": "80g", "raw_text": "80g lạc rang giã dập"},
+            {"ingredient_name": "rau răm", "quantity": "1 nắm", "raw_text": "1 nắm rau răm, húng quế, kinh giới"},
+            {"ingredient_name": "nước mắm", "quantity": "3 muỗng", "raw_text": "3 muỗng canh nước mắm pha tỏi ớt chanh đường"}
+        ],
+        "steps": [
+            {"step_number": 1, "instruction": "Hoa chuối bào mỏng ngâm ngay vào chậu nước có vắt 2 quả chanh và muối để không bị thâm đen, vớt ra vắt ráo.", "step_image_url": ""},
+            {"step_number": 2, "instruction": "Tai heo luộc chín cùng gừng và giấm, vớt ra ngâm nước đá lạnh rồi thái lát mỏng tang giòn rụm.", "step_image_url": ""},
+            {"step_number": 3, "instruction": "Pha nước sốt nộm: 3 thìa nước mắm, 2 thìa đường, 2 thìa nước cốt chanh, tỏi ớt băm khuấy tan.", "step_image_url": ""},
+            {"step_number": 4, "instruction": "Trộn đều hoa chuối, cà rốt, tai heo với nước sốt, bày ra đĩa rắc đậu phộng rang và rau thơm lên trên.", "step_image_url": ""}
+        ],
+        "nutrition": {"calories": 310, "protein": 22.0, "carbohydrates": 18.0, "fat": 16.0, "fiber": 4.5, "calcium": 70.0, "iron": 3.0},
+        "tags": ["hoa chuối", "tai heo", "nộm", "khai vị"]
+    },
+    {
+        "name": "Canh sườn non củ dền đỏ bổ dưỡng",
+        "description": "Món canh ngọt lịm với màu đỏ ruby bắt mắt từ củ dền, sườn non mềm rục kết hợp cà rốt khoai tây giàu vitamin.",
+        "image_url": "https://img-global.cpcdn.com/recipes/5d54a22a89ee1900/1200x630cq80/photo.jpg",
+        "cooking_time": 40,
+        "difficulty": "Dễ",
+        "servings": "4 người",
+        "category": "Súp/Canh",
+        "source_url": "https://cookpad.com/vn/cong-thuc/canh-suon-cu-den",
+        "author_name": "Thanh Vân",
+        "ingredients": [
+            {"ingredient_name": "củ dền", "quantity": "2 củ", "raw_text": "2 củ dền đỏ gọt vỏ cắt khối vừa ăn"},
+            {"ingredient_name": "sườn heo", "quantity": "400g", "raw_text": "400g sườn non heo chặt khúc"},
+            {"ingredient_name": "cà rốt", "quantity": "1 củ", "raw_text": "1 củ cà rốt tỉa hoa xắt khúc"},
+            {"ingredient_name": "khoai tây", "quantity": "1 củ", "raw_text": "1 củ khoai tây cắt khối"},
+            {"ingredient_name": "hành", "quantity": "2 nhánh", "raw_text": "2 nhánh hành lá và ngò rí"}
+        ],
+        "steps": [
+            {"step_number": 1, "instruction": "Sườn non chần qua nước sôi rửa sạch, ướp chút muối tiêu hạt nêm trong 10 phút.", "step_image_url": ""},
+            {"step_number": 2, "instruction": "Đun sôi 1.5 lít nước, cho sườn vào hầm nhỏ lửa trong 20 phút hớt sạch bọt.", "step_image_url": ""},
+            {"step_number": 3, "instruction": "Cho củ dền đỏ và cà rốt vào hầm tiếp 10 phút cho ra màu đỏ đẹp và vị ngọt thanh.", "step_image_url": ""},
+            {"step_number": 4, "instruction": "Thêm khoai tây vào nấu 5 phút cho chín tới, nêm vừa ăn, rắc hành ngò và múc ra tô.", "step_image_url": ""}
+        ],
+        "nutrition": {"calories": 320, "protein": 28.0, "carbohydrates": 26.0, "fat": 12.0, "fiber": 4.0, "calcium": 60.0, "iron": 3.8},
+        "tags": ["củ dền", "sườn heo", "món canh", "bổ máu"]
+    },
+    {
+        "name": "Bí ngòi xào tôm nõn tỏi thơm",
+        "description": "Bí ngòi xanh ngọt mọng nước xào cùng tôm nõn tươi giòn và tỏi băm thơm nức, món ăn thanh đạm ít calo.",
+        "image_url": "https://img-global.cpcdn.com/recipes/5d54a22a89ee1903/1200x630cq80/photo.jpg",
+        "cooking_time": 15,
+        "difficulty": "Dễ",
+        "servings": "3 người",
+        "category": "Món xào",
+        "source_url": "https://cookpad.com/vn/cong-thuc/bi-ngoi-xao-tom",
+        "author_name": "Fit Meal VN",
+        "ingredients": [
+            {"ingredient_name": "bí ngòi", "quantity": "2 quả", "raw_text": "2 quả bí ngòi xanh rửa sạch xắt khoanh tròn"},
+            {"ingredient_name": "tôm", "quantity": "200g", "raw_text": "200g tôm tươi bóc vỏ rút chỉ đen"},
+            {"ingredient_name": "tỏi", "quantity": "1 củ", "raw_text": "1 củ tỏi băm thơm"},
+            {"ingredient_name": "dầu hào", "quantity": "1 muỗng", "raw_text": "1 muỗng canh dầu hào"},
+            {"ingredient_name": "hành", "quantity": "2 nhánh", "raw_text": "2 nhánh hành lá xắt khúc"}
+        ],
+        "steps": [
+            {"step_number": 1, "instruction": "Tôm ướp chút hạt nêm, tiêu và tỏi băm trong 10 phút.", "step_image_url": ""},
+            {"step_number": 2, "instruction": "Phi thơm tỏi với dầu ô liu, cho tôm vào xào săn đổi màu hồng thì trút ra đĩa.", "step_image_url": ""},
+            {"step_number": 3, "instruction": "Cho bí ngòi vào xào trên lửa lớn 2-3 phút cho bí chín giòn ngọt tự nhiên.", "step_image_url": ""},
+            {"step_number": 4, "instruction": "Trút tôm vào đảo đều, nêm dầu hào, rắc hành lá và tiêu thơm rồi tắt bếp ngay.", "step_image_url": ""}
+        ],
+        "nutrition": {"calories": 180, "protein": 24.0, "carbohydrates": 8.0, "fat": 5.0, "fiber": 2.2, "calcium": 75.0, "iron": 2.0},
+        "tags": ["bí ngòi", "tôm", "món xào", "ít calo"]
+    },
+    {
+        "name": "Đậu bắp luộc chấm chao ớt cay",
+        "description": "Đậu bắp luộc xanh giòn ngọt mát chấm sốt chao béo ngậy pha ớt cay nồng, món ăn dân dã chống ngấy cực tốt.",
+        "image_url": "https://img-global.cpcdn.com/recipes/5d54a22a89ee1906/1200x630cq80/photo.jpg",
+        "cooking_time": 10,
+        "difficulty": "Dễ",
+        "servings": "3 người",
+        "category": "Món luộc",
+        "source_url": "https://cookpad.com/vn/cong-thuc/dau-bap-cham-chao",
+        "author_name": "Bếp Chay",
+        "ingredients": [
+            {"ingredient_name": "đậu bắp", "quantity": "400g", "raw_text": "400g đậu bắp non rửa sạch"},
+            {"ingredient_name": "chao", "quantity": "3 viên", "raw_text": "3 viên chao môn hoặc chao trắng"},
+            {"ingredient_name": "ớt", "quantity": "1 quả", "raw_text": "1 quả ớt hiểm băm"},
+            {"ingredient_name": "đường", "quantity": "1 muỗng", "raw_text": "1 muỗng cà phê đường và vài giọt nước cốt chanh"}
+        ],
+        "steps": [
+            {"step_number": 1, "instruction": "Đậu bắp rửa sạch, cắt bỏ cuống.", "step_image_url": ""},
+            {"step_number": 2, "instruction": "Đun sôi nồi nước có chút muối, thả đậu bắp vào luộc nhanh 3-4 phút cho vừa chín tới.", "step_image_url": ""},
+            {"step_number": 3, "instruction": "Vớt đậu bắp ra ngâm nước đá lạnh 2 phút để giữ màu xanh mướt và độ giòn ngọt.", "step_image_url": ""},
+            {"step_number": 4, "instruction": "Tán nhuyễn chao với đường, ớt băm, nước chao và chút cốt chanh làm sốt chấm béo ngậy.", "step_image_url": ""}
+        ],
+        "nutrition": {"calories": 110, "protein": 5.0, "carbohydrates": 14.0, "fat": 4.0, "fiber": 4.0, "calcium": 90.0, "iron": 1.8},
+        "tags": ["đậu bắp", "chao", "món luộc", "chay"]
+    },
+    {
+        "name": "Gà ác tiềm ngải cứu hạt sen",
+        "description": "Gà ác đen hầm thuốc bắc cùng lá ngải cứu thơm nồng, hạt sen bở tơi và táo đỏ bổ dưỡng phục hồi sinh lực.",
+        "image_url": "https://img-global.cpcdn.com/recipes/5d54a22a89ee1909/1200x630cq80/photo.jpg",
+        "cooking_time": 50,
+        "difficulty": "Trung bình",
+        "servings": "2 người",
+        "category": "Súp/Canh",
+        "source_url": "https://cookpad.com/vn/cong-thuc/ga-ac-tiem-ngai-cuu",
+        "author_name": "Đông Y Quán",
+        "ingredients": [
+            {"ingredient_name": "thịt gà", "quantity": "1 con", "raw_text": "1 con gà ác (gà đen) làm sạch"},
+            {"ingredient_name": "ngải cứu", "quantity": "1 bó", "raw_text": "1 bó lá ngải cứu tươi non nhặt ngọn"},
+            {"ingredient_name": "hạt sen", "quantity": "50g", "raw_text": "50g hạt sen tươi hoặc khô"},
+            {"ingredient_name": "táo đỏ", "quantity": "5 quả", "raw_text": "5 quả táo tàu đỏ và kỷ tử"},
+            {"ingredient_name": "gừng", "quantity": "1 nhánh", "raw_text": "1 nhánh gừng thái lát"},
+            {"ingredient_name": "rượu trắng", "quantity": "1 muỗng", "raw_text": "1 muỗng canh rượu nếp"}
+        ],
+        "steps": [
+            {"step_number": 1, "instruction": "Gà ác bóp muối và rượu trắng rửa sạch để ráo.", "step_image_url": ""},
+            {"step_number": 2, "instruction": "Nhồi một phần ngải cứu, hạt sen, táo đỏ vào trong bụng gà ác.", "step_image_url": ""},
+            {"step_number": 3, "instruction": "Xếp phần ngải cứu còn lại và kỷ tử vào thố đất, đặt gà ác lên trên, đổ nước xăm xắp nêm chút muối hạt.", "step_image_url": ""},
+            {"step_number": 4, "instruction": "Hấp cách thủy hoặc hầm nhỏ lửa trong 45 phút đến khi thịt gà ác mềm rục, nước dùng ngọt đậm thơm lừng.", "step_image_url": ""}
+        ],
+        "nutrition": {"calories": 420, "protein": 46.0, "carbohydrates": 22.0, "fat": 15.0, "fiber": 3.8, "calcium": 90.0, "iron": 6.2},
+        "tags": ["gà ác", "ngải cứu", "hạt sen", "bổ dưỡng"]
+    },
+    {
+        "name": "Canh gà lá giang chua dịu Nam Bộ",
+        "description": "Thịt gà ta thả vườn dai ngọt nấu cùng lá giang vò dập tiết vị chua thanh dịu, thơm nồng hương sả ớt.",
+        "image_url": "https://img-global.cpcdn.com/recipes/5d54a22a89ee1912/1200x630cq80/photo.jpg",
+        "cooking_time": 30,
+        "difficulty": "Dễ",
+        "servings": "4 người",
+        "category": "Súp/Canh",
+        "source_url": "https://cookpad.com/vn/cong-thuc/canh-ga-la-giang",
+        "author_name": "Cô Ba Miền Tây",
+        "ingredients": [
+            {"ingredient_name": "thịt gà", "quantity": "600g", "raw_text": "600g thịt gà ta chặt miếng"},
+            {"ingredient_name": "lá giang", "quantity": "1 bó", "raw_text": "1 bó lá giang tươi vò nhẹ"},
+            {"ingredient_name": "sả", "quantity": "3 cây", "raw_text": "3 cây sả đập dập băm nhỏ"},
+            {"ingredient_name": "ớt", "quantity": "2 quả", "raw_text": "2 quả ớt sừng"},
+            {"ingredient_name": "ngò gai", "quantity": "1 nắm", "raw_text": "1 nắm mùi tàu (ngò gai) và ngò ôm cắt nhỏ"},
+            {"ingredient_name": "nước mắm", "quantity": "2 muỗng", "raw_text": "2 muỗng canh nước mắm ngon"}
+        ],
+        "steps": [
+            {"step_number": 1, "instruction": "Gà ướp với sả băm, hạt nêm, tiêu, nước mắm trong 15 phút.", "step_image_url": ""},
+            {"step_number": 2, "instruction": "Phi thơm tỏi sả, cho thịt gà vào xào săn trên lửa lớn.", "step_image_url": ""},
+            {"step_number": 3, "instruction": "Đổ 1.2 lít nước vào đun sôi, hạ nhỏ lửa ninh 15 phút cho gà chín mềm ngọt nước.", "step_image_url": ""},
+            {"step_number": 4, "instruction": "Vò dập lá giang thả vào nồi đun sôi bùng 2 phút cho tiết vị chua, nêm nếm lại, rắc ngò gai ngò ôm rồi tắt bếp.", "step_image_url": ""}
+        ],
+        "nutrition": {"calories": 360, "protein": 38.0, "carbohydrates": 8.0, "fat": 18.0, "fiber": 2.5, "calcium": 60.0, "iron": 3.2},
+        "tags": ["gà lá giang", "lá giang", "canh chua", "món Nam Bộ"]
+    },
+    {
+        "name": "Canh chua cá lóc dọc mùng bạc hà",
+        "description": "Món canh chua quốc dân với cá lóc béo ngọt, dọc mùng (bạc hà) giòn xốp thấm đẫm nước me chua và dứa thơm.",
+        "image_url": "https://img-global.cpcdn.com/recipes/5d54a22a89ee1915/1200x630cq80/photo.jpg",
+        "cooking_time": 30,
+        "difficulty": "Dễ",
+        "servings": "4 người",
+        "category": "Súp/Canh",
+        "source_url": "https://cookpad.com/vn/cong-thuc/canh-chua-ca-loc-doc-mung",
+        "author_name": "Bếp Má 5",
+        "ingredients": [
+            {"ingredient_name": "cá", "quantity": "500g", "raw_text": "500g cá lóc (cá quả) cắt khúc"},
+            {"ingredient_name": "dọc mùng", "quantity": "2 cây", "raw_text": "2 cây dọc mùng (bạc hà) tước vỏ bóp muối thái xéo"},
+            {"ingredient_name": "dứa", "quantity": "1/4 quả", "raw_text": "1/4 quả thơm (dứa) xắt lát"},
+            {"ingredient_name": "cà chua", "quantity": "2 quả", "raw_text": "2 quả cà chua múi cau"},
+            {"ingredient_name": "đậu bắp", "quantity": "5 quả", "raw_text": "5 quả đậu bắp xắt xéo"},
+            {"ingredient_name": "me", "quantity": "50g", "raw_text": "50g me chín dầm lấy nước cốt"},
+            {"ingredient_name": "ngò gai", "quantity": "1 nắm", "raw_text": "1 nắm ngò ôm, ngò gai thái nhỏ"}
+        ],
+        "steps": [
+            {"step_number": 1, "instruction": "Dọc mùng tước vỏ, thái xéo rồi bóp kỹ với muối hạt 2 lần, xả sạch vắt ráo nước để không bị ngứa.", "step_image_url": ""},
+            {"step_number": 2, "instruction": "Phi thơm tỏi, xào cà chua và dứa cho thơm, đổ nước vào đun sôi cùng nước cốt me.", "step_image_url": ""},
+            {"step_number": 3, "instruction": "Thả cá lóc vào nấu chín trong 7-8 phút, vớt bọt liên tục để nước trong.", "step_image_url": ""},
+            {"step_number": 4, "instruction": "Thêm đậu bắp, dọc mùng vào nấu sôi 2 phút. Nêm 2 muỗng nước mắm, 1 muỗng đường cho vị chua ngọt hài hòa, rắc ngò ôm ngò gai.", "step_image_url": ""}
+        ],
+        "nutrition": {"calories": 260, "protein": 28.0, "carbohydrates": 20.0, "fat": 6.5, "fiber": 3.5, "calcium": 80.0, "iron": 2.8},
+        "tags": ["cá lóc", "dọc mùng", "bạc hà", "canh chua"]
+    },
+    {
+        "name": "Nấm đùi gà kho tiêu xanh nước tương",
+        "description": "Nấm đùi gà dai giòn sần sật thấm đẫm nước tương sánh đậm và tiêu xanh cay the, món chay thanh đạm đưa cơm.",
+        "image_url": "https://img-global.cpcdn.com/recipes/5d54a22a89ee1918/1200x630cq80/photo.jpg",
+        "cooking_time": 20,
+        "difficulty": "Dễ",
+        "servings": "3 người",
+        "category": "Món kho/om",
+        "source_url": "https://cookpad.com/vn/cong-thuc/nam-dui-ga-kho-tieu",
+        "author_name": "An Nhiên",
+        "ingredients": [
+            {"ingredient_name": "nấm", "quantity": "300g", "raw_text": "300g nấm đùi gà cắt khoanh khứa caro"},
+            {"ingredient_name": "tiêu", "quantity": "2 nhánh", "raw_text": "2 nhánh tiêu xanh đập dập"},
+            {"ingredient_name": "nước tương", "quantity": "3 muỗng", "raw_text": "3 muỗng canh nước tương ngon"},
+            {"ingredient_name": "hành", "quantity": "1 cây", "raw_text": "1 cây boa-rô (hành baro) thái lát"},
+            {"ingredient_name": "dầu mè", "quantity": "1 muỗng", "raw_text": "1 muỗng cà phê dầu mè thơm"},
+            {"ingredient_name": "ớt", "quantity": "1 quả", "raw_text": "1 quả ớt hiểm"}
+        ],
+        "steps": [
+            {"step_number": 1, "instruction": "Nấm đùi gà rửa sạch, cắt khoanh dày 1.5cm, khứa hình vảy rồng cả 2 mặt.", "step_image_url": ""},
+            {"step_number": 2, "instruction": "Áp chảo nấm đùi gà với chút dầu ăn cho xém vàng 2 mặt để nấm dai thơm.", "step_image_url": ""},
+            {"step_number": 3, "instruction": "Pha sốt kho: 3 thìa nước tương, 1 thìa đường thốt nốt, tiêu xanh, 4 thìa nước lọc khuấy đều.", "step_image_url": ""},
+            {"step_number": 4, "instruction": "Rưới sốt vào chảo nấm đun nhỏ lửa 7-8 phút đến khi sốt keo lại bám đều quanh từng miếng nấm, rưới dầu mè tắt bếp.", "step_image_url": ""}
+        ],
+        "nutrition": {"calories": 160, "protein": 8.0, "carbohydrates": 22.0, "fat": 4.5, "fiber": 4.2, "calcium": 30.0, "iron": 2.0},
+        "tags": ["nấm đùi gà", "tiêu xanh", "món chay", "món kho"]
+    }
+]
+
+def seed_to_mysql():
+    host = os.environ.get('DB_HOST', 'localhost')
+    port = int(os.environ.get('DB_PORT', 3307))
+    user = os.environ.get('DB_USER', 'root')
+    password = os.environ.get('DB_PASSWORD', '7855')
+    database = os.environ.get('DB_NAME', 'foodai')
+
+    print(f"Connecting to MySQL on {host}:{port} ({database})...")
+    conn = pymysql.connect(
+        host=host,
+        port=port,
+        user=user,
+        password=password,
+        database=database,
+        charset='utf8mb4',
+        cursorclass=pymysql.cursors.DictCursor,
+        autocommit=True
+    )
+
+    inserted_count = 0
+    with conn.cursor() as cur:
+        for r in NEW_RECIPES:
+            recipe_id = str(uuid.uuid4())
+            # 1. Insert recipe
+            cur.execute("""
+                INSERT INTO recipes (id, name, description, image_url, cooking_time, difficulty, servings, category, source_url, author_name)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE name=VALUES(name), description=VALUES(description), image_url=VALUES(image_url)
+            """, (
+                recipe_id, r['name'], r['description'], r['image_url'],
+                r['cooking_time'], r['difficulty'], r['servings'], r['category'],
+                r['source_url'], r['author_name']
+            ))
+
+            # 2. Insert ingredients
+            for ing in r['ingredients']:
+                cur.execute("""
+                    INSERT INTO recipe_ingredients (recipe_id, raw_text, ingredient_name, quantity, is_main)
+                    VALUES (%s, %s, %s, %s, 1)
+                """, (recipe_id, ing['raw_text'], ing['ingredient_name'], ing['quantity']))
+
+            # 3. Insert steps
+            for s in r['steps']:
+                cur.execute("""
+                    INSERT INTO recipe_steps (recipe_id, step_number, instruction, step_image_url)
+                    VALUES (%s, %s, %s, %s)
+                """, (recipe_id, s['step_number'], s['instruction'], s.get('step_image_url', '')))
+
+            # 4. Insert nutrition
+            n = r['nutrition']
+            cur.execute("""
+                INSERT INTO recipe_nutrition (recipe_id, calories, protein, carbohydrates, fat, fiber, calcium, iron)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE calories=VALUES(calories)
+            """, (recipe_id, n['calories'], n['protein'], n['carbohydrates'], n['fat'], n['fiber'], n['calcium'], n['iron']))
+
+            # 5. Insert tags
+            for t in r['tags']:
+                cur.execute("INSERT INTO recipe_tags (recipe_id, tag_name) VALUES (%s, %s)", (recipe_id, t))
+
+            inserted_count += 1
+            print(f"  + Added: {r['name']} ({len(r['ingredients'])} ingredients)")
+
+        # Query total count
+        cur.execute("SELECT COUNT(*) as total FROM recipes")
+        total_in_db = cur.fetchone()['total']
+
+    conn.close()
+    print(f"\n🎉 Successfully added {inserted_count} new gourmet recipes with rare ingredients!")
+    print(f"📊 Total recipes in MySQL Database (foodai): {total_in_db} dishes.")
+
+if __name__ == '__main__':
+    seed_to_mysql()
