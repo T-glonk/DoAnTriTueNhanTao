@@ -329,11 +329,17 @@ export function extractPrimaryIngredients(text: string): Set<string> {
   if (/\b(dau\s+phu|dau\s+hu|dau\s+khuon|tau\s+hu|dau\s+non|tofu)\b/.test(sanitized)) {
     detected.add('dau');
   }
-  if (/\b(ech)\b/.test(sanitized)) {
+  if (/\b(ech|other_meat_ech)\b/.test(sanitized)) {
     detected.add('ech');
   }
-  if (/\b(luon)\b/.test(sanitized)) {
+  if (/\b(luon|other_meat_luon)\b/.test(sanitized)) {
     detected.add('luon');
+  }
+  if (/\b(vit|ngan|other_meat_vit|other_meat_ngan)\b/.test(sanitized)) {
+    detected.add('vit');
+  }
+  if (/\b(de|cuu|other_meat_de|other_meat_cuu)\b/.test(sanitized)) {
+    detected.add('de');
   }
   if (/\b(cua|ghe|rieu)\b/.test(sanitized)) {
     detected.add('cua');

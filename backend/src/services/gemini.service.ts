@@ -54,6 +54,7 @@ function areDishesSimilar(name1: string, name2: string): boolean {
 }
 
 export interface RecipeCandidate {
+  id?: string;
   name: string;
   image_url: string;
   category?: string;
@@ -79,13 +80,16 @@ export async function suggestWithGemini(
   const ingredientsList = ingredients.join(', ');
 
   const hasCandidates = candidateRecipes && candidateRecipes.length > 0;
-  const candidateText = hasCandidates
-    ? `\nDANH SÁCH MÓN ĂN THỰC TẾ TRÍCH XUẤT TỪ KHO ẨM THỰC VIỆT NAM (ĐÃ CÓ HÌNH ẢNH CHUẨN XÁC 100%):
-${candidateRecipes.slice(0, 12).map((c, idx) => `${idx + 1}. Tên món: "${c.name}" | Ảnh: "${c.image_url}"`).join('\n')}
+  const selectedDishes = hasCandidates ? candidateRecipes.slice(0, count) : [];
 
-QUY TẮC CỐT LÕI VỀ TÊN MÓN VÀ HÌNH ẢNH (BẮT BUỘC ĐỂ TRÙNG KHỚP 100%):
-- Hãy ưu tiên tối đa việc lựa chọn các món ăn từ danh sách thực tế trên. Khi chọn món từ danh sách, BẮT BUỘC giữ nguyên chính xác 100% "name" và "image_url" tương ứng (TUYỆT ĐỐI KHÔNG tự ý đổi tên món hay thêm từ ngữ hoa mỹ).
-- Nếu danh sách trên chưa đủ ${count} món, bạn có thể sáng tạo thêm các món ăn Việt Nam truyền thống quen thuộc, nhưng TÊN MÓN ĂN BẮT BUỘC PHẢI LÀ TÊN CHUẨN MỰC TỪ 2 ĐẾN 4 TỪ (Ví dụ: 'Ếch xào sả ớt', 'Sườn xào chua ngọt', 'Cháo ếch Singapore', 'Canh cải thịt băm'). TUYỆT ĐỐI KHÔNG đặt tên hoa mỹ kéo dài lê thê.\n`
+  const candidateText = hasCandidates
+    ? `\nDANH SÁCH MÓN ĂN THỰC TẾ ĐÃ TRUY VẤN VÀ CHỌN LỌC TỪ CƠ SỞ DỮ LIỆU MYSQL:
+${selectedDishes.map((c, idx) => `${idx + 1}. Tên món: "${c.name}" | Danh mục: "${c.category || 'Món chính'}" | Ảnh: "${c.image_url}"`).join('\n')}
+
+QUY TẮC CỐT LÕI VỀ TÊN MÓN VÀ HÌNH ẢNH (BẮT BUỘC ĐỂ TRÙNG KHỚP 100% VỚI CƠ SỞ DỮ LIỆU):
+- Hệ thống CSDL đã chọn sẵn các món ăn phù hợp với nguyên liệu ở trên. Bạn BẮT BUỘC PHẢI tạo công thức và phân tích dinh dưỡng cho ĐÚNG các món ăn này.
+- BẮT BUỘC giữ nguyên chính xác 100% "name" và "image_url" tương ứng (TUYỆT ĐỐI KHÔNG tự ý đổi tên món hay thêm từ ngữ hoa mỹ).
+${candidateRecipes.length < count ? `- Nếu danh sách trên có ít hơn ${count} món, bạn có thể bổ sung thêm món ăn Việt Nam truyền thống quen thuộc (đúng nguyên liệu [${ingredientsList}]), tên ngắn gọn từ 2 đến 4 từ.\n` : '\n'}`
     : `\nQUY TẮC TÊN MÓN ĂN:
 - Tên món ăn BẮT BUỘC PHẢI LÀ TÊN CHUẨN MỰC TỪ 2 ĐẾN 4 TỪ phổ biến trong ẩm thực Việt Nam (Ví dụ: 'Ếch xào sả ớt', 'Sườn xào chua ngọt', 'Cháo sườn', 'Canh gà lá giang'). TUYỆT ĐỐI KHÔNG đặt tên hoa mỹ dài dòng.\n`;
 
@@ -93,41 +97,36 @@ QUY TẮC CỐT LÕI VỀ TÊN MÓN VÀ HÌNH ẢNH (BẮT BUỘC ĐỂ TRÙNG K
 Người dùng có các nguyên liệu có sẵn sau: [${ingredientsList}].
 ${candidateText}
 Nhiệm vụ của bạn:
-Phân tích kỹ danh sách nguyên liệu và sáng tạo ra đúng ${count} món ăn Việt Nam hấp dẫn, ngon miệng, chuẩn vị và ĐA DẠNG TUYỆT ĐỐI.
+Phân tích kỹ lưỡng từng món ăn được chọn từ cơ sở dữ liệu và hoàn thiện công thức nấu ăn chuyên nghiệp, định lượng nguyên liệu, các bước nấu và phân tích dinh dưỡng chi tiết.
 
 QUY TẮC CỐT LÕI (BẮT BUỘC TUÂN THỦ 100%):
-1. NGUYÊN TẮC NGUYÊN LIỆU CHÍNH XÁC:
+1. NGUYÊN TẮC NGUYÊN LIỆU VÀ CÔNG THỨC:
    - CHỈ ĐƯỢC DÙNG các nguyên liệu chính/phụ mà người dùng đã cung cấp: [${ingredientsList}].
    - Gia vị nhà bếp cơ bản được phép dùng: nước mắm, muối, đường, tiêu, hạt nêm, dầu ăn, tỏi, hành khô, hành lá, ớt, nước lọc, cơm trắng.
    - TUYỆT ĐỐI KHÔNG TỰ BỊA RA các loại thịt/hải sản khác mà người dùng KHÔNG NHẬP (Ví dụ: nếu người dùng KHÔNG nhập thịt bò/heo/gà/cá thì TUYỆT ĐỐI KHÔNG gợi ý món có thịt bò/heo/gà/cá!).
-   - Nếu toàn bộ nguyên liệu là đồ chay/rau củ/đậu/nấm/trứng -> 100% món gợi ý phải là món chay/thanh đạm/trứng, không được thêm bất kỳ loại thịt cá nào.
+   - Định lượng rõ ràng cho từng nguyên liệu (gram, thìa, quả...).
+   - Hướng dẫn cách nấu chi tiết tối thiểu 4 bước: Sơ chế -> Tẩm ướp -> Nấu/Chế biến -> Hoàn thiện & trình bày.
 
-2. NGUYÊN TẮC ĐA DẠNG HÓA 100% (KHÔNG TRÙNG LẶP):
-   Mỗi món trong ${count} món gợi ý BẮT BUỘC phải sử dụng một phương pháp chế biến và phong cách ẩm thực HOÀN TOÀN KHÁC BIỆT:
-   - Món 1: Món Xào / Áp chảo (Stir-fry)
-   - Món 2: Món Canh / Súp thanh mát (Soup / Broth)
-   - Món 3: Món Chiên / Rán giòn / Hấp / Nướng (Fried / Steamed / Grilled)
-   - Món 4: Món Kho / Rim / Sốt đậm đà (Braised / Simmered)
-   - Món 5: Món Gỏi / Nộm / Salad / Cuộn tươi (Salad / Fresh roll)
-   - Món 6: Món Điểm tâm / Cháo / Bún / Mì / Món sáng tạo đặc sắc (Breakfast / Porridge / Creative specialty)
-   TUYỆT ĐỐI KHÔNG gợi ý 2 món có cùng công thức biến tấu nhỏ.
+2. PHÂN TÍCH DINH DƯỠNG & LỜI KHUYÊN ĐẦU BẾP (AI REASONING):
+   - Tính toán đầy đủ thành phần dinh dưỡng: calories, protein, carbohydrates, fat, fiber, calcium, iron, vitamin_c.
+   - Đưa ra lời khuyên từ Bếp trưởng (ai_reasoning): bí quyết chế biến, mẹo xử lý nguyên liệu để giữ độ tươi ngon và dưỡng chất.
 
 3. FORMAT JSON ĐẦU RA (CHỈ TRẢ VỀ JSON THUẦN, KHÔNG KÈM TEXT HAY MARKDOWN):
 {
   "recipes": [
     {
-      "name": "Tên món ăn tiếng Việt ngắn gọn, chuẩn vị (2-4 từ)",
+      "name": "Tên món ăn (BẮT BUỘC giữ nguyên 100% tên món từ danh sách CSDL)",
       "description": "Mô tả ngắn gọn 1-2 câu về hương vị món ăn",
-      "ai_reasoning": "Lời khuyên & phân tích từ AI Chef: Giải thích tại sao gợi ý món này, cách kết hợp tối đa các nguyên liệu đã có, và mẹo nấu ngon bí quyết đầu bếp",
+      "ai_reasoning": "Lời khuyên & phân tích từ AI Chef: Giải thích tại sao món này tối ưu với nguyên liệu có sẵn, bí quyết đầu bếp để nấu chuẩn vị",
       "matched_ingredients": ["nguyên liệu 1 có sẵn", "nguyên liệu 2 có sẵn"],
       "missing_ingredients": ["nguyên liệu phụ cần thêm nếu có (ví dụ: dầu ăn, tỏi)"],
       "match_percentage": 95,
       "ingredients": ["150g tôm tươi", "1 quả bí ngòi", "2 tép tỏi băm", "Gia vị: mắm, muối, tiêu, dầu ăn"],
       "instructions": [
-        "Bước 1: Sơ chế tôm bóc vỏ bỏ chỉ đen, ướp chút tiêu và hạt nêm trong 10 phút.",
-        "Bước 2: Rửa sạch bí ngòi, cắt lát mỏng vừa ăn.",
-        "Bước 3: Phi thơm tỏi băm với 1 thìa dầu ăn trên chảo nóng.",
-        "Bước 4: Cho tôm vào đảo săn trong 2 phút rồi trút bí ngòi vào xào nhanh lửa lớn 3 phút, nêm nước mắm vừa ăn rồi tắt bếp."
+        "Bước 1: Sơ chế...",
+        "Bước 2: Tẩm ướp...",
+        "Bước 3: Chế biến...",
+        "Bước 4: Hoàn thiện..."
       ],
       "nutrition": {
         "calories": 240,
@@ -143,9 +142,9 @@ QUY TẮC CỐT LÕI (BẮT BUỘC TUÂN THỦ 100%):
       "difficulty": "Dễ",
       "servings": "2-3 người",
       "category": "Món xào",
-      "tags": ["dinh dưỡng", "món xào", "chuẩn vị Việt"],
-      "image_url": "URL ảnh nếu chọn từ danh sách thực tế (hoặc để trống)",
-      "image_query": "Stir fried shrimp with zucchini"
+      "tags": ["dinh dưỡng", "món ngon", "chuẩn vị Việt"],
+      "image_url": "URL ảnh từ CSDL",
+      "image_query": "Tên tiếng Anh của món"
     }
   ]
 }
@@ -249,36 +248,36 @@ Quy định giá trị trường:
     }
   }
 
-  console.log(`[Gemini] Đã parse & khử trùng lặp thành công ${uniqueRecipes.length} món ăn. Đang tra cứu hình ảnh chất lượng cao...`);
+  console.log(`[Gemini] Đã parse & khử trùng lặp thành công ${uniqueRecipes.length} món ăn. Đang đối chiếu chính xác với CSDL và hình ảnh...`);
   const usedImages = new Set<string>();
 
-  const candidateMap = new Map<string, string>();
-  if (candidateRecipes) {
-    for (const c of candidateRecipes) {
-      if (c.image_url) {
-        candidateMap.set(removeVietnameseAccents(c.name), c.image_url);
-      }
-    }
-  }
-
-  // 2. Gán ảnh minh họa thực tế độc nhất từ kho Cookpad MySQL / Live Scraper / HD Category
+  // 2. Gán thông tin chính xác từ CSDL (nếu có ứng viên CSDL) hoặc tra cứu hình ảnh chất lượng cao
   const recipesWithImages: Recipe[] = [];
-  for (const recipe of uniqueRecipes) {
-    let imageUrl = '';
-    const normName = removeVietnameseAccents(recipe.name);
+  for (let i = 0; i < uniqueRecipes.length; i++) {
+    const recipe = uniqueRecipes[i];
+    let matchedCandidate: RecipeCandidate | undefined;
 
-    // Ưu tiên 1: Chỉ lấy từ ứng viên khi tên món trùng khớp 100% VÀ không có bất kỳ xung đột nào
-    if (!imageUrl && candidateMap.has(normName) && !usedImages.has(candidateMap.get(normName)!)) {
-      const candImg = candidateMap.get(normName)!;
-      if (!isImageUrlConflicting(candImg, recipe.name)) {
-        imageUrl = candImg;
+    if (candidateRecipes && candidateRecipes.length > 0) {
+      // Tìm candidate tương ứng theo tên chuẩn hóa hoặc độ tương đồng
+      matchedCandidate = candidateRecipes.find(c => 
+        removeVietnameseAccents(c.name) === removeVietnameseAccents(recipe.name) ||
+        areDishesSimilar(c.name, recipe.name)
+      );
+
+      // Nếu AI trả về tên hơi khác, nhưng số lượng món tương ứng vị trí trong danh sách đã chọn từ DB
+      if (!matchedCandidate && i < candidateRecipes.length) {
+        matchedCandidate = candidateRecipes[i];
       }
     }
 
-    // Ưu tiên 2: Tra cứu thông minh qua getFoodImage (CSDL Cookpad -> Live Scraper đúng tên món -> Category Registry -> Pexels fallback)
-    // TUYỆT ĐỐI KHÔNG mượn ảnh của món khác trong candidateMap để bảo đảm độ chính xác 100%
+    // Nếu món ăn được chọn từ CSDL: BẮT BUỘC giữ nguyên ID, Tên món và Ảnh từ CSDL MySQL 100%
+    const finalName = matchedCandidate ? matchedCandidate.name : recipe.name;
+    const finalId = matchedCandidate?.id || uuidv4();
+    let imageUrl = matchedCandidate ? matchedCandidate.image_url : '';
+
+    // Nếu là món mới (không có trong CSDL) hoặc ảnh rỗng, tra cứu ảnh chất lượng cao
     if (!imageUrl) {
-      imageUrl = await getFoodImage(recipe.name, recipe.image_query, usedImages);
+      imageUrl = await getFoodImage(finalName, recipe.image_query, usedImages);
     }
     if (imageUrl) usedImages.add(imageUrl);
 
@@ -303,10 +302,10 @@ Quy định giá trị trường:
     }));
 
     recipesWithImages.push({
-      id: uuidv4(),
+      id: finalId,
       user_id: userId,
-      name: recipe.name,
-      description: recipe.description,
+      name: finalName,
+      description: recipe.description || matchedCandidate?.description || `Món ${finalName} chuẩn vị ẩm thực Việt Nam.`,
       ai_reasoning: recipe.ai_reasoning || 'Món ăn được AI Chef tối ưu dựa trên nguyên liệu có sẵn của bạn.',
       ingredients: recipe.ingredients,
       instructions: recipe.instructions,
@@ -325,7 +324,7 @@ Quy định giá trị trường:
       cooking_time: Number(recipe.cooking_time) || 25,
       difficulty: (['Dễ', 'Trung bình', 'Khó'].includes(recipe.difficulty) ? recipe.difficulty : 'Trung bình') as 'Dễ' | 'Trung bình' | 'Khó',
       servings: recipe.servings || '2-4 người',
-      category: recipe.category || 'Món chính',
+      category: matchedCandidate?.category || recipe.category || 'Món chính',
       tags: recipe.tags || ['AI Chef', 'Chuẩn vị Việt'],
       created_at: new Date().toISOString(),
       match_percentage: Number(recipe.match_percentage) || 90,
