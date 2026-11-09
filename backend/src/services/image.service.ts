@@ -285,26 +285,65 @@ export function extractPrimaryIngredients(text: string): Set<string> {
 
   const detected = new Set<string>();
 
-  // Phân biệt chi tiết từng loài cá cốt lõi để ngăn ngừa xung đột (Cá hồi != Cá thu != Cá cơm...)
-  if (/\bca\s+ngu\b/.test(sanitized)) {
+  // Phân biệt chi tiết từng loài cá cốt lõi để ngăn ngừa xung đột (Cá hồi != Cá thu != Cá ngừ != Cá nục != Cá linh...)
+  let foundAnyFish = false;
+  if (/\bca\s+ngu\b/.test(sanitized) || /\btuna\b/.test(sanitized)) {
     detected.add('ca_ngu');
-    detected.add('ca');
-  } else if (/\bca\s+hoi\b/.test(sanitized) || /\b(salmon|truite)\b/.test(sanitized)) {
+    foundAnyFish = true;
+  }
+  if (/\bca\s+hoi\b/.test(sanitized) || /\b(salmon|truite)\b/.test(sanitized)) {
     detected.add('ca_hoi');
-    detected.add('ca');
-  } else if (/\bca\s+thu\b/.test(sanitized) || /\bmackerel\b/.test(sanitized)) {
+    foundAnyFish = true;
+  }
+  if (/\bca\s+thu\b/.test(sanitized) || /\bmackerel\b/.test(sanitized)) {
     detected.add('ca_thu');
-    detected.add('ca');
-  } else if (/\bca\s+com\b/.test(sanitized)) {
+    foundAnyFish = true;
+  }
+  if (/\bca\s+com\b/.test(sanitized) || /\banchovy\b/.test(sanitized)) {
     detected.add('ca_com');
-    detected.add('ca');
-  } else if (/\bca\s+nuc\b/.test(sanitized)) {
+    foundAnyFish = true;
+  }
+  if (/\bca\s+nuc\b/.test(sanitized) || /\bscad\b/.test(sanitized)) {
     detected.add('ca_nuc');
-    detected.add('ca');
-  } else if (/\b(ca\s+loc|ca\s+qua)\b/.test(sanitized)) {
+    foundAnyFish = true;
+  }
+  if (/\b(ca\s+loc|ca\s+qua|ca\s+chuoi|snakehead)\b/.test(sanitized)) {
     detected.add('ca_loc');
-    detected.add('ca');
-  } else if (/\b(ca|ca\s+ro|ca\s+dieu\s+hong|ca\s+bop|ca\s+tre|ca\s+chep|ca\s+basa)\b/.test(sanitized)) {
+    foundAnyFish = true;
+  }
+  if (/\b(ca\s+dieu\s+hong|ca\s+dieu\s*hong|dieu\s+hong|red\s+tilapia)\b/.test(sanitized)) {
+    detected.add('ca_dieu_hong');
+    foundAnyFish = true;
+  }
+  if (/\bca\s+linh\b/.test(sanitized)) {
+    detected.add('ca_linh');
+    foundAnyFish = true;
+  }
+  if (/\bca\s+bop\b/.test(sanitized)) {
+    detected.add('ca_bop');
+    foundAnyFish = true;
+  }
+  if (/\b(ca\s+basa|ca\s+ba\s+sa|basa)\b/.test(sanitized)) {
+    detected.add('ca_basa');
+    foundAnyFish = true;
+  }
+  if (/\bca\s+chep\b/.test(sanitized)) {
+    detected.add('ca_chep');
+    foundAnyFish = true;
+  }
+  if (/\bca\s+tre\b/.test(sanitized)) {
+    detected.add('ca_tre');
+    foundAnyFish = true;
+  }
+  if (/\b(ca\s+ro|ca\s+ro\s+phi|ro\s+phi)\b/.test(sanitized)) {
+    detected.add('ca_ro');
+    foundAnyFish = true;
+  }
+  if (/\bca\s+trich\b/.test(sanitized)) {
+    detected.add('ca_trich');
+    foundAnyFish = true;
+  }
+  if (foundAnyFish || /\bca\b/.test(sanitized)) {
     detected.add('ca');
   }
 
@@ -377,12 +416,6 @@ export function isImageUrlConflicting(imageUrl: string, targetDish: string): boo
 
     const isGenericPhotoSlug = /^(photo|recipe\s*main\s*photo|default|image|\s*)$/i.test(slug);
 
-    // BẢO VỆ TUYỆT ĐỐI: Bất kỳ URL Cookpad nào không có slug tên món rõ ràng (chỉ là /photo.jpg)
-    // đều KHÔNG THỂ XÁC MINH ĐƯỢC NGỮ CẢNH và là nguồn gốc của lỗi sai ảnh -> LOẠI BỎ NGAY!
-    if (decoded.includes('cpcdn.com') && isGenericPhotoSlug) {
-      return true;
-    }
-
     // 0. LOẠI TRỪ NGAY CÁC SLUG LÀ MÂM CƠM / COMBO / NHIỀU MÓN HỖN HỢP
     if (slug.includes('+') || normSlug.includes('mam com') || normSlug.includes('bua com') || normSlug.includes('combo') || normSlug.includes('thuc don')) {
       return true;
@@ -402,6 +435,15 @@ export function isImageUrlConflicting(imageUrl: string, targetDish: string): boo
     const targetMeats = [...targetPrimaries].filter(p => meatKeys.includes(p));
     const slugMeats = [...slugPrimaries].filter(p => meatKeys.includes(p));
 
+    const isExternalOrGenericUrl = 
+      decoded.includes('encrypted-tbn0') || 
+      decoded.includes('unsplash.com') || 
+      decoded.includes('pexels.com') || 
+      decoded.includes('gstatic.com') ||
+      decoded.includes('googleusercontent') ||
+      isGenericPhotoSlug ||
+      /^[a-f0-9\-_]{16,}$/i.test(slug.replace(/\s/g, ''));
+
     // A. Nếu slug có loại thịt/hải sản mà món mục tiêu KHÔNG HỀ CÓ -> XUNG ĐỘT TUYỆT ĐỐI!
     for (const sm of slugMeats) {
       if (!targetMeats.includes(sm)) {
@@ -409,17 +451,18 @@ export function isImageUrlConflicting(imageUrl: string, targetDish: string): boo
       }
     }
 
-    // B. Nếu món mục tiêu có loại thịt/hải sản mà slug cụ thể KHÔNG CÓ -> XUNG ĐỘT!
-    if (!isGenericPhotoSlug) {
+    // B. Nếu slug là một tên món tiếng Việt cụ thể (không phải ID hash/ảnh ngoài):
+    // Nếu món mục tiêu có loại thịt/hải sản mà slug cụ thể của Cookpad KHÔNG CÓ -> XUNG ĐỘT!
+    if (!isExternalOrGenericUrl && targetMeats.length > 0 && slugMeats.length > 0) {
       for (const tm of targetMeats) {
         if (!slugMeats.includes(tm)) {
-          return true; // Món tôm mà slug không có tôm -> XUNG ĐỘT!
+          return true; // Món tôm mà slug cụ thể là gà/bò -> XUNG ĐỘT!
         }
       }
     }
 
     // C. Món đậu phụ (tofu): slug cụ thể phải chứa đậu phụ, không được là mực hấp hay thịt chiên không có đậu
-    if (targetPrimaries.has('dau') && !isGenericPhotoSlug) {
+    if (targetPrimaries.has('dau') && !isExternalOrGenericUrl) {
       if (!slugPrimaries.has('dau') && (slugMeats.length > 0 || normSlug.includes('muc') || normSlug.includes('ca'))) {
         return true;
       }
@@ -430,8 +473,11 @@ export function isImageUrlConflicting(imageUrl: string, targetDish: string): boo
       return true;
     }
 
-    // 2. XUNG ĐỘT TỪNG LOÀI CÁ CỤ THỂ (Cá hồi != Cá thu != Cá cơm != Cá ngừ != Cá nục)
-    const specificFishList = ['ca_hoi', 'ca_thu', 'ca_ngu', 'ca_com', 'ca_nuc', 'ca_loc'];
+    // 2. XUNG ĐỘT TỪNG LOÀI CÁ CỤ THỂ (Cá hồi != Cá thu != Cá cơm != Cá ngừ != Cá nục != Cá linh != Cá điêu hồng...)
+    const specificFishList = [
+      'ca_hoi', 'ca_thu', 'ca_ngu', 'ca_com', 'ca_nuc', 'ca_loc',
+      'ca_dieu_hong', 'ca_linh', 'ca_bop', 'ca_basa', 'ca_chep', 'ca_tre', 'ca_ro', 'ca_trich'
+    ];
     for (const f of specificFishList) {
       if (targetPrimaries.has(f)) {
         // Nếu món mục tiêu là loài cá cụ thể (ví dụ cá hồi), slug KHÔNG ĐƯỢC là loài cá khác
@@ -444,30 +490,8 @@ export function isImageUrlConflicting(imageUrl: string, targetDish: string): boo
       }
     }
 
-    // Nếu món yêu cầu loại thịt/hải sản cụ thể và slug là một tên món cụ thể (không phải generic photo.jpg):
-    // Slug BẮT BUỘC phải chứa ít nhất 1 loại thịt của món mục tiêu!
-    if (!isGenericPhotoSlug && targetMeats.length > 0) {
-      const hasTargetMeatInSlug = targetMeats.some(tm => {
-        if (tm === 'ech') return normSlug.includes('ech');
-        if (tm === 'ga') return normSlug.includes('ga') && !normSlug.includes('ca chua') && !normSlug.includes('dau ga');
-        if (tm === 'bo') return normSlug.includes('bo') && !normSlug.includes('bo toi') && !normSlug.includes('qua bo') && !normSlug.includes('bo thuc vat');
-        if (tm === 'heo') return normSlug.includes('heo') || normSlug.includes('lon') || normSlug.includes('suon') || normSlug.includes('ba chi') || normSlug.includes('thit') || normSlug.includes('cha lua');
-        if (tm === 'tom') return (normSlug.includes('tom') || normSlug.includes('tep')) && !normSlug.includes('mi tom');
-        if (tm === 'ca') return normSlug.includes('ca') && !normSlug.includes('ca chua') && !normSlug.includes('ca phao') && !normSlug.includes('ca rot') && !normSlug.includes('ca tim') && !normSlug.includes('ca ri');
-        if (tm === 'muc') return normSlug.includes('muc') || normSlug.includes('bach tuoc');
-        if (tm === 'luon') return normSlug.includes('luon');
-        if (tm === 'cua') return normSlug.includes('cua') || normSlug.includes('ghe');
-        if (tm === 'ngao_oc') return normSlug.includes('ngao') || normSlug.includes('so') || normSlug.includes('hen') || normSlug.includes('ngheu') || normSlug.includes('oc');
-        return false;
-      });
-
-      if (!hasTargetMeatInSlug) {
-        return true; // Slug là tên món ăn cụ thể hoàn toàn khác thịt mục tiêu!
-      }
-    }
-
     // Nếu món có thịt/hải sản nhưng slug ảnh lại là món chay/rau hoàn toàn hoặc mì gói
-    if (targetMeats.length > 0 && slugMeats.length === 0) {
+    if (targetMeats.length > 0 && slugMeats.length === 0 && !isExternalOrGenericUrl) {
       if (slug.includes('tien vua') || slug.includes('canh dua') || slug.includes('chay') || slug.includes('salad') || slug.includes('rau muong') || slug.includes('mi goi')) {
         return true;
       }

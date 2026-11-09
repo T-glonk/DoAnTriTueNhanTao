@@ -350,8 +350,13 @@ export async function suggestRecipesFromDatabase(
   // Phân tích protein người dùng có
   const userFullText = userIngredients.join(' ');
   const userPrimaries = extractPrimaryIngredients(userFullText);
-  const meatKeys = ['ga', 'bo', 'heo', 'tom', 'ca', 'muc', 'ech', 'luon', 'ngao_oc', 'cua', 'vit', 'de'];
+  const specificFishKeys = [
+    'ca_ngu', 'ca_nuc', 'ca_thu', 'ca_hoi', 'ca_loc',
+    'ca_dieu_hong', 'ca_linh', 'ca_bop', 'ca_basa', 'ca_chep', 'ca_tre', 'ca_ro', 'ca_trich', 'ca_com'
+  ];
+  const meatKeys = ['ga', 'bo', 'heo', 'tom', 'ca', 'muc', 'ech', 'luon', 'ngao_oc', 'cua', 'vit', 'de', ...specificFishKeys];
   const userMeats = [...userPrimaries].filter(p => meatKeys.includes(p));
+  const userSpecificFishes = userMeats.filter(m => specificFishKeys.includes(m));
 
   const scoredRecipes: MatchedRecipe[] = [];
 
@@ -366,8 +371,33 @@ export async function suggestRecipesFromDatabase(
 
     const recipePrimaries = extractPrimaryIngredients(rTitle);
     const recipeMeats = [...recipePrimaries].filter(p => meatKeys.includes(p));
+    const recipeSpecificFishes = recipeMeats.filter(m => specificFishKeys.includes(m));
 
-    // BẮT BUỘC: Mọi loại thịt/hải sản chính trong công thức người dùng PHẢI CÓ
+    // A. BẮT BUỘC: Nếu người dùng đã cung cấp thịt/cá chính (userMeats.length > 0):
+    // Món ăn đề xuất BẮT BUỘC PHẢI CHỨA ít nhất 1 loại thịt/cá mà người dùng có!
+    // TUYỆT ĐỐI KHÔNG để món không có thịt (như nui xào cà chua trứng, salad cà chua) lọt vào khi người dùng đang có cá/thịt!
+    if (userMeats.length > 0) {
+      if (recipeMeats.length === 0) {
+        continue; // Loại bỏ các món chay/trứng/rau củ khi người dùng đang tìm món thịt/cá
+      }
+      const hasAnyUserMeat = recipeMeats.some(rm => userMeats.includes(rm));
+      if (!hasAnyUserMeat) {
+        continue;
+      }
+    }
+
+    // B. KIỂM TRA LOÀI CÁ CỤ THỂ (Cá ngừ != Cá nục != Cá thu != Cá linh != Cá điêu hồng...)
+    if (userSpecificFishes.length > 0) {
+      // Người dùng đã chỉ định loài cá cụ thể (ví dụ cá ngừ, cá nục):
+      // Món ăn BẮT BUỘC phải là đúng loài cá người dùng nhập!
+      // TUYỆT ĐỐI LOẠI BỎ nếu món là loài cá khác (cá thu, cá linh, cá điêu hồng...) hoặc cá chung chung không rõ loài
+      const matchesUserFish = recipeSpecificFishes.some(rf => userSpecificFishes.includes(rf));
+      if (!matchesUserFish) {
+        continue;
+      }
+    }
+
+    // C. BẮT BUỘC: Mọi loại thịt/hải sản chính trong công thức người dùng PHẢI CÓ
     // Nếu món yêu cầu thịt heo/bò/gà mà người dùng KHÔNG CÓ -> Loại bỏ hoàn toàn!
     const hasUnsuppliedMeat = recipeMeats.some(rm => !userMeats.includes(rm));
     if (hasUnsuppliedMeat) {

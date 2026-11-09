@@ -89,7 +89,10 @@ ${selectedDishes.map((c, idx) => `${idx + 1}. Tên món: "${c.name}" | Danh mụ
 QUY TẮC CỐT LÕI VỀ TÊN MÓN VÀ HÌNH ẢNH (BẮT BUỘC ĐỂ TRÙNG KHỚP 100% VỚI CƠ SỞ DỮ LIỆU):
 - Hệ thống CSDL đã chọn sẵn các món ăn phù hợp với nguyên liệu ở trên. Bạn BẮT BUỘC PHẢI tạo công thức và phân tích dinh dưỡng cho ĐÚNG các món ăn này.
 - BẮT BUỘC giữ nguyên chính xác 100% "name" và "image_url" tương ứng (TUYỆT ĐỐI KHÔNG tự ý đổi tên món hay thêm từ ngữ hoa mỹ).
-${candidateRecipes.length < count ? `- Nếu danh sách trên có ít hơn ${count} món, bạn có thể bổ sung thêm món ăn Việt Nam truyền thống quen thuộc (đúng nguyên liệu [${ingredientsList}]), tên ngắn gọn từ 2 đến 4 từ.\n` : '\n'}`
+${candidateRecipes.length < count ? `- Nếu danh sách trên có ít hơn ${count} món (hiện tại có ${candidateRecipes.length} món), bạn BẮT BUỘC sáng tạo thêm ${count - candidateRecipes.length} món ăn thuần Việt quen thuộc ĐÚNG THEO NGUYÊN LIỆU NGƯỜI DÙNG ĐÃ NHẬP [${ingredientsList}].
+  + BẮT BUỘC CHỈ DÙNG các loại thịt/cá có trong [${ingredientsList}]. (Ví dụ: người dùng nhập cá ngừ, cá nục, cà chua thì các món bổ sung BẮT BUỘC phải là món chế biến từ Cá ngừ hoặc Cá nục như: 'Cá ngừ kho cà chua', 'Cá ngừ sốt cà', 'Cá nục chiên sốt cà chua', 'Cá ngừ áp chảo').
+  + TUYỆT ĐỐI KHÔNG dùng bất kỳ loài cá nào khác (cá linh, cá thu, cá diêu hồng, cá chép...) hay thịt khác (bò, heo, gà...)!
+  + Tên món ngắn gọn từ 2 đến 4 từ, "image_url" để trống "".\n` : '\n'}`
     : `\nQUY TẮC TÊN MÓN ĂN:
 - Tên món ăn BẮT BUỘC PHẢI LÀ TÊN CHUẨN MỰC TỪ 2 ĐẾN 4 TỪ phổ biến trong ẩm thực Việt Nam (Ví dụ: 'Ếch xào sả ớt', 'Sườn xào chua ngọt', 'Cháo sườn', 'Canh gà lá giang'). TUYỆT ĐỐI KHÔNG đặt tên hoa mỹ dài dòng.\n`;
 
@@ -263,11 +266,6 @@ Quy định giá trị trường:
         removeVietnameseAccents(c.name) === removeVietnameseAccents(recipe.name) ||
         areDishesSimilar(c.name, recipe.name)
       );
-
-      // Nếu AI trả về tên hơi khác, nhưng số lượng món tương ứng vị trí trong danh sách đã chọn từ DB
-      if (!matchedCandidate && i < candidateRecipes.length) {
-        matchedCandidate = candidateRecipes[i];
-      }
     }
 
     // Nếu món ăn được chọn từ CSDL: BẮT BUỘC giữ nguyên ID, Tên món và Ảnh từ CSDL MySQL 100%
