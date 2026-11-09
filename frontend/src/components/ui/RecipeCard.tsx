@@ -16,39 +16,37 @@ const difficultyColor = {
   'Khó': 'badge-red',
 };
 
-const getFallbackImage = (name: string) => {
-  const fallbacks = [
-    'https://images.unsplash.com/photo-1588168333986-5078d3ae3976?w=800&auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1547592180-85f173990554?w=800&auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=800&auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1562967914-608f82629710?w=800&auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=800&auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800&auto=format&fit=crop&q=80',
-  ];
-  let h = 0;
-  for (let i = 0; i < name.length; i++) h = (h << 5) - h + name.charCodeAt(i);
-  return fallbacks[Math.abs(h) % fallbacks.length];
-};
-
 export function RecipeCard({ recipe, onFavorite, isFavorite = false, onViewDetail }: RecipeCardProps) {
   const [expanded, setExpanded] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
-  const matchPct = recipe.match_percentage;
   const isAiSource = recipe.source === 'ai' || Boolean(recipe.ai_reasoning);
 
   return (
     <div className="food-card bg-white rounded-3xl overflow-hidden shadow-xs border border-gray-100 flex flex-col hover:shadow-lg hover:border-orange-100 transition-all duration-300">
-      {/* Image Container */}
-      <div className="relative h-52 overflow-hidden bg-gray-100 group">
-        <img
-          src={recipe.image_url || getFallbackImage(recipe.name)}
-          alt={recipe.name}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          onError={(e: any) => {
-            e.target.src = getFallbackImage(recipe.name);
-          }}
-          loading="lazy"
-        />
+      {/* Image Container with Elegant Fallback Background */}
+      <div className="relative h-52 overflow-hidden bg-gradient-to-br from-orange-100/60 via-amber-50 to-orange-50 group flex items-center justify-center">
+        {/* Placeholder Watermark if image is loading or unavailable */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-orange-200 pointer-events-none select-none">
+          <ChefHat size={48} className="opacity-40 animate-pulse" />
+          <span className="text-xs font-semibold text-orange-300/80 mt-1">FoodAI Dish</span>
+        </div>
+
+        {!imgError && recipe.image_url ? (
+          <img
+            src={recipe.image_url}
+            alt={recipe.name}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 relative z-0"
+            onError={() => setImgError(true)}
+            referrerPolicy="no-referrer"
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-orange-100 to-amber-100 flex flex-col items-center justify-center text-orange-400 relative z-0">
+            <span className="text-5xl mb-1">🍽️</span>
+            <span className="text-xs font-semibold text-orange-500/80">{recipe.name}</span>
+          </div>
+        )}
 
         
         {/* Overlay Badges */}
@@ -63,17 +61,6 @@ export function RecipeCard({ recipe, onFavorite, isFavorite = false, onViewDetai
             </span>
           )}
 
-          {matchPct !== undefined && (
-            <span className={`px-2.5 py-1 text-xs font-bold rounded-full shadow-sm flex items-center gap-1 ${
-              matchPct >= 80 
-                ? 'bg-emerald-600 text-white' 
-                : matchPct >= 50 
-                ? 'bg-amber-500 text-white' 
-                : 'bg-blue-600 text-white'
-            }`}>
-              🎯 {matchPct}% Khớp
-            </span>
-          )}
           <span className={`badge ${difficultyColor[recipe.difficulty]} shadow-sm text-[11px]`}>
             {recipe.difficulty}
           </span>
@@ -96,13 +83,19 @@ export function RecipeCard({ recipe, onFavorite, isFavorite = false, onViewDetai
         )}
 
         {/* Source Badge */}
-        {recipe.source_url && (
+        {recipe.image_url?.includes('pexels.com') ? (
+          <div className="absolute bottom-2 right-2">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-black/60 backdrop-blur-sm text-white">
+              📸 Pexels HD
+            </span>
+          </div>
+        ) : recipe.source_url ? (
           <div className="absolute bottom-2 right-2">
             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-black/60 backdrop-blur-sm text-white">
               Cookpad VN
             </span>
           </div>
-        )}
+        ) : null}
       </div>
 
       {/* Content */}

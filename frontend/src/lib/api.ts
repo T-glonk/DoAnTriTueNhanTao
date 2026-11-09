@@ -21,10 +21,13 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Token expired or invalid -> clear & redirect to login
+      // Token expired or invalid -> clear
+      const hadToken = localStorage.getItem('token');
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
+      const currentPath = window.location.pathname;
+      const isPublicPath = currentPath === '/' || currentPath === '/dashboard' || currentPath === '/login' || currentPath === '/register';
+      if (hadToken && !isPublicPath) {
         window.location.href = '/login';
       }
     }

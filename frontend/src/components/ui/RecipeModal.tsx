@@ -20,7 +20,6 @@ export function RecipeModal({ recipe, onClose, onFavorite, isFavorite = false }:
   const [imgError, setImgError] = useState(false);
   const [activeTab, setActiveTab] = useState<'ingredients' | 'instructions' | 'nutrition'>('instructions');
 
-  const matchPct = recipe.match_percentage;
   const isAiSource = recipe.source === 'ai' || Boolean(recipe.ai_reasoning);
 
   return (
@@ -37,6 +36,7 @@ export function RecipeModal({ recipe, onClose, onFavorite, isFavorite = false }:
               alt={recipe.name}
               className="w-full h-full object-cover rounded-t-3xl"
               onError={() => setImgError(true)}
+              referrerPolicy="no-referrer"
             />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-orange-100 to-amber-100 flex items-center justify-center rounded-t-3xl">
@@ -77,12 +77,6 @@ export function RecipeModal({ recipe, onClose, onFavorite, isFavorite = false }:
               ) : (
                 <span className="px-3 py-1 text-xs font-bold rounded-full bg-slate-800 text-white flex items-center gap-1 shadow-sm">
                   <Database size={13} /> Dữ liệu Cookpad (MySQL)
-                </span>
-              )}
-
-              {matchPct !== undefined && (
-                <span className="px-3 py-1 text-xs font-bold rounded-full bg-emerald-600 shadow-sm">
-                  🎯 {matchPct}% Khớp nguyên liệu
                 </span>
               )}
 

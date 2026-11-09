@@ -31,6 +31,24 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
   }
 };
 
+export const optionalAuth = (req: Request, res: Response, next: NextFunction): void => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    return next();
+  }
+
+  try {
+    const secret = process.env.JWT_SECRET || JWT_SECRET;
+    const decoded = jwt.verify(token, secret) as JwtPayload;
+    req.user = decoded;
+  } catch {
+    // Token không hợp lệ hoặc hết hạn -> tiếp tục với vai trò khách
+  }
+  next();
+};
+
 export const requireAdmin = (req: Request, res: Response, next: NextFunction): void => {
   if (!req.user) {
     res.status(401).json({ success: false, error: 'Authentication required' });

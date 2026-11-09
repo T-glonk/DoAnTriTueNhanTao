@@ -33,7 +33,7 @@ export async function initializeDatabase(): Promise<void> {
       id           VARCHAR(36)   NOT NULL PRIMARY KEY,
       name         VARCHAR(255)  NOT NULL,
       description  TEXT          NULL,
-      image_url    VARCHAR(1000) NULL,
+      image_url    MEDIUMTEXT    NULL,
       cooking_time INT           NULL DEFAULT 30,
       difficulty   VARCHAR(20)   NOT NULL DEFAULT 'Trung bình',
       servings     VARCHAR(50)   NULL DEFAULT '2-4 người',
@@ -52,7 +52,7 @@ export async function initializeDatabase(): Promise<void> {
     CREATE TABLE IF NOT EXISTS cookpad_dish_images (
       id           INT AUTO_INCREMENT PRIMARY KEY,
       query_key    VARCHAR(255)  NOT NULL,
-      image_url    VARCHAR(1000) NOT NULL,
+      image_url    MEDIUMTEXT    NOT NULL,
       recipe_title VARCHAR(255)  NULL,
       source       VARCHAR(50)   DEFAULT 'cookpad',
       created_at   DATETIME      DEFAULT CURRENT_TIMESTAMP,
@@ -81,7 +81,7 @@ export async function initializeDatabase(): Promise<void> {
       recipe_id      VARCHAR(36)   NOT NULL,
       step_number    INT           NOT NULL,
       instruction    TEXT          NOT NULL,
-      step_image_url VARCHAR(1000) NULL,
+      step_image_url MEDIUMTEXT    NULL,
       CONSTRAINT fk_step_recipe FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
       INDEX idx_step_recipe (recipe_id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

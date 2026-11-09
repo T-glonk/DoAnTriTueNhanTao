@@ -113,6 +113,11 @@ export function HomePage() {
   };
 
   const handleFavorite = async (recipe: Recipe) => {
+    if (!user) {
+      toast.error('Vui lòng đăng nhập để lưu món ăn yêu thích!');
+      return;
+    }
+
     const isFav = favorites.has(recipe.id);
 
     if (isFav) {

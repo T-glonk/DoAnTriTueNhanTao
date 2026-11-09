@@ -56,29 +56,68 @@ function AppRoutes() {
 
   return (
     <Routes>
-      {/* Public routes */}
+      {/* Public auth routes */}
       <Route
         path="/login"
-        element={user ? <Navigate to={user.role === 'admin' ? '/admin' : '/dashboard'} replace /> : <LoginPage />}
+        element={user ? <Navigate to={user.role === 'admin' ? '/admin' : '/'} replace /> : <LoginPage />}
       />
       <Route
         path="/register"
-        element={user ? <Navigate to="/dashboard" replace /> : <RegisterPage />}
+        element={user ? <Navigate to="/" replace /> : <RegisterPage />}
       />
 
-      {/* User dashboard */}
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <UserLayout />
-          </ProtectedRoute>
-        }
-      >
+      {/* Main Home / User Layout (accessible by both guests and logged-in users) */}
+      <Route path="/" element={<UserLayout />}>
         <Route index element={<HomePage />} />
-        <Route path="favorites" element={<FavoritesPage />} />
-        <Route path="history" element={<HistoryPage />} />
-        <Route path="profile" element={<ProfilePage />} />
+        <Route path="dashboard" element={<HomePage />} />
+        <Route
+          path="favorites"
+          element={
+            <ProtectedRoute>
+              <FavoritesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="dashboard/favorites"
+          element={
+            <ProtectedRoute>
+              <FavoritesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="history"
+          element={
+            <ProtectedRoute>
+              <HistoryPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="dashboard/history"
+          element={
+            <ProtectedRoute>
+              <HistoryPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="dashboard/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
       </Route>
 
       {/* Admin dashboard */}
@@ -96,15 +135,6 @@ function AppRoutes() {
         <Route path="history" element={<HistoryManagePage />} />
         <Route path="settings" element={<SettingsPage />} />
       </Route>
-
-
-      {/* Redirect root */}
-      <Route
-        path="/"
-        element={
-          <Navigate to={user ? (user.role === 'admin' ? '/admin' : '/dashboard') : '/login'} replace />
-        }
-      />
 
       {/* 404 */}
       <Route

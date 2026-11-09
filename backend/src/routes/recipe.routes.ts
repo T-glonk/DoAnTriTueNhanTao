@@ -1,14 +1,14 @@
 import { Router, Request, Response } from 'express';
 import { getPool } from '../database/db';
-import { authenticateToken } from '../middleware/auth';
+import { authenticateToken, optionalAuth } from '../middleware/auth';
 import { suggestRecipes } from '../services/recipe.service';
 import { isAiEnabled } from '../services/gemini.service';
 import { v4 as uuidv4 } from 'uuid';
 
 const router = Router();
 
-// Gợi ý món ăn dựa trên nguyên liệu
-router.post('/suggest', authenticateToken, async (req: Request, res: Response): Promise<void> => {
+// Gợi ý món ăn dựa trên nguyên liệu (hỗ trợ cả khách và người dùng đăng nhập)
+router.post('/suggest', optionalAuth, async (req: Request, res: Response): Promise<void> => {
   try {
     const { ingredients, mode } = req.body;
     if (!ingredients || !Array.isArray(ingredients) || ingredients.length === 0) {
@@ -16,7 +16,7 @@ router.post('/suggest', authenticateToken, async (req: Request, res: Response): 
       return;
     }
 
-    const userId = req.user!.userId;
+    const userId = req.user?.userId;
 
     // Gọi dịch vụ gợi ý món ăn (Mặc định: Google Gemini AI, có thể chọn Database Cookpad)
     const { recipes, source } = await suggestRecipes(ingredients, userId, 6, mode || 'ai');
@@ -38,7 +38,7 @@ router.post('/suggest', authenticateToken, async (req: Request, res: Response): 
 });
 
 // Sinh chi tiết công thức và phân tích dinh dưỡng cho món ăn bằng AI
-router.post('/ai-recipe-detail', authenticateToken, async (req: Request, res: Response): Promise<void> => {
+router.post('/ai-recipe-detail', optionalAuth, async (req: Request, res: Response): Promise<void> => {
   try {
     const { dishName } = req.body;
     if (!dishName) {

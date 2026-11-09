@@ -2,7 +2,7 @@ import { getPool } from '../database/db';
 import { Recipe } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 import { suggestWithGemini, isAiEnabled } from './gemini.service';
-import { extractPrimaryIngredients } from './image.service';
+import { extractPrimaryIngredients, isImageUrlConflicting } from './image.service';
 
 export interface IngredientDetail {
   name: string;
@@ -22,6 +22,7 @@ export interface MatchedRecipe extends Recipe {
   source_url?: string;
   author_name?: string;
   source: 'database' | 'ai';
+  titleScore?: number;
 }
 
 /**
@@ -322,10 +323,12 @@ export async function suggestRecipesFromDatabase(
 ): Promise<MatchedRecipe[]> {
   const pool = getPool();
 
-  // 1. Lấy toàn bộ món ăn từ MySQL (Kho 220 món Cookpad)
+  // 1. Lấy toàn bộ món ăn thực tế chuẩn từ MySQL kho Admin
+  // Chỉ lấy các món có ảnh hợp lệ, không chấp nhận ảnh rác hoặc /photo.jpg
   const [recipeRows] = await pool.query<any[]>(`
     SELECT id, name, description, image_url, cooking_time, difficulty, servings, category, source_url, author_name
     FROM recipes
+    WHERE (image_url IS NOT NULL AND image_url != '' AND image_url NOT LIKE '%/photo.jpg' AND image_url NOT LIKE '%5d54a22a89ee%')
   `);
 
   if (!recipeRows || recipeRows.length === 0) {
@@ -355,6 +358,12 @@ export async function suggestRecipesFromDatabase(
   // 2. Tính toán điểm khớp cho từng món dựa trên Tên món ăn và Nguyên liệu
   for (const r of recipeRows) {
     const rTitle = r.name;
+
+    // BẢO VỆ CHỐNG SAI ẢNH: Nếu ảnh của món tự mâu thuẫn với tên món, loại bỏ ngay
+    if (r.image_url && isImageUrlConflicting(r.image_url, rTitle)) {
+      continue;
+    }
+
     const recipePrimaries = extractPrimaryIngredients(rTitle);
     const recipeMeats = [...recipePrimaries].filter(p => meatKeys.includes(p));
 
@@ -409,6 +418,19 @@ export async function suggestRecipesFromDatabase(
     const userIngMatchedCount = matchedUserIngs.size;
     if (userIngMatchedCount === 0) {
       continue;
+    }
+
+    // Kiểm tra ảnh: Bỏ qua nếu ảnh của món bị xung đột với tên món
+    if (r.image_url && isImageUrlConflicting(r.image_url, r.name)) {
+      continue;
+    }
+
+    // Điểm ưu tiên tên món ăn: Nếu người dùng nhập nguyên liệu chính mà từ khóa đó có trong tên món -> Ưu tiên cao nhất
+    let titleScore = 0;
+    for (const uIng of userIngredients) {
+      if (containsWord(r.name, uIng) || isIngredientMatch(uIng, r.name)) {
+        titleScore += 50;
+      }
     }
 
     const matchPercentage = Math.min(100, Math.round((userIngMatchedCount / Math.min(userIngredients.length, 3)) * 100));
@@ -466,18 +488,35 @@ export async function suggestRecipesFromDatabase(
       },
       tags: ['Chuẩn vị Việt', 'Món ngon mỗi ngày'],
       source: 'database',
+      titleScore,
     });
   }
 
-  // Sắp xếp: Ưu tiên món khớp nhiều nguyên liệu nhất & tỷ lệ khớp cao nhất
+  // Sắp xếp: Ưu tiên món khớp nhiều nguyên liệu nhất -> Tên món chứa trực tiếp nguyên liệu -> Tỷ lệ khớp
   scoredRecipes.sort((a, b) => {
     if (b.matched_count !== a.matched_count) {
       return b.matched_count - a.matched_count;
     }
+    const bTitleScore = b.titleScore || 0;
+    const aTitleScore = a.titleScore || 0;
+    if (bTitleScore !== aTitleScore) {
+      return bTitleScore - aTitleScore;
+    }
     return b.match_percentage - a.match_percentage;
   });
 
-  return scoredRecipes.slice(0, limit);
+  // Khử trùng lặp theo tên món ăn chuẩn hóa để đảm bảo đa dạng các món khác nhau
+  const uniqueScoredRecipes: MatchedRecipe[] = [];
+  const seenNames = new Set<string>();
+  for (const r of scoredRecipes) {
+    const norm = removeVietnameseAccents(r.name);
+    if (!seenNames.has(norm)) {
+      seenNames.add(norm);
+      uniqueScoredRecipes.push(r);
+    }
+  }
+
+  return uniqueScoredRecipes.slice(0, limit);
 }
 
 /**
@@ -491,20 +530,26 @@ export async function suggestRecipes(
 ): Promise<{ recipes: MatchedRecipe[]; source: 'database' | 'ai' | 'fallback'; ai_enabled: boolean }> {
   const effectiveUserId = userId || 'system';
 
+async function recordSearchHistory(userId?: string, ingredients?: string[]) {
+  if (!userId || userId === 'system' || userId === 'test-user') return;
+  try {
+    const pool = getPool();
+    const [uRows] = await pool.query<any[]>('SELECT id FROM users WHERE id = ?', [userId]);
+    if (uRows.length > 0) {
+      await pool.query(
+        `INSERT INTO search_history (id, user_id, ingredients) VALUES (?, ?, ?)`,
+        [uuidv4(), userId, JSON.stringify(ingredients || [])]
+      );
+    }
+  } catch (err) {
+    // ignore
+  }
+}
+
   // 1. Chế độ Database nếu người dùng chủ động chọn
   if (mode === 'database') {
     const dbRecipes = await suggestRecipesFromDatabase(ingredients, limit);
-    if (userId) {
-      try {
-        const pool = getPool();
-        await pool.query(
-          `INSERT INTO search_history (id, user_id, ingredients) VALUES (?, ?, ?)`,
-          [uuidv4(), userId, JSON.stringify(ingredients)]
-        );
-      } catch (err) {
-        console.error('Lỗi khi lưu lịch sử tìm kiếm:', err);
-      }
-    }
+    recordSearchHistory(userId, ingredients);
     return {
       recipes: dbRecipes,
       source: 'database',
@@ -513,10 +558,23 @@ export async function suggestRecipes(
   }
 
   // 2. Chế độ AI (MẶC ĐỊNH CHO ĐỒ ÁN TRÍ TUỆ NHÂN TẠO)
+  // GROUNDED RAG: Truy xuất các món ứng viên thực tế có ảnh chuẩn từ Database Cookpad
+  const dbCandidates = await suggestRecipesFromDatabase(ingredients, Math.max(limit * 2, 10));
+
   if (isAiEnabled()) {
     try {
-      console.log(`🤖 Đang gọi Google Gemini AI để gợi ý món ăn cho: ${ingredients.join(', ')}...`);
-      const aiResults = await suggestWithGemini(ingredients, effectiveUserId, limit);
+      console.log(`🤖 Đang gọi Google Gemini AI (Grounded RAG) để gợi ý món ăn cho: ${ingredients.join(', ')}...`);
+      const aiResults = await suggestWithGemini(
+        ingredients,
+        effectiveUserId,
+        limit,
+        dbCandidates.map(c => ({
+          name: c.name,
+          image_url: c.image_url,
+          category: c.category,
+          description: c.description,
+        }))
+      );
 
       if (aiResults && aiResults.length > 0) {
         const formattedAiRecipes: MatchedRecipe[] = aiResults.map(r => ({
@@ -539,18 +597,13 @@ export async function suggestRecipes(
           source: 'ai' as const,
         }));
 
-        // Lưu lịch sử tìm kiếm vào MySQL
-        if (userId) {
-          try {
-            const pool = getPool();
-            await pool.query(
-              `INSERT INTO search_history (id, user_id, ingredients) VALUES (?, ?, ?)`,
-              [uuidv4(), userId, JSON.stringify(ingredients)]
-            );
-          } catch (err) {
-            console.error('Lỗi khi lưu lịch sử tìm kiếm:', err);
-          }
-        }
+        // 1. Tự động lưu toàn bộ công thức, nguyên liệu, bước nấu, dinh dưỡng do AI sinh vào MySQL (chỉ lưu món có ảnh chuẩn)
+        saveAiRecipesToDatabase(formattedAiRecipes).catch(err => {
+          console.error('Lỗi ngầm khi lưu công thức AI vào CSDL:', err);
+        });
+
+        // 2. Lưu lịch sử tìm kiếm vào MySQL
+        recordSearchHistory(userId, ingredients);
 
         return {
           recipes: formattedAiRecipes,
@@ -565,19 +618,9 @@ export async function suggestRecipes(
 
   // 3. Fallback: Nếu AI gặp sự cố (mất mạng/hết quota/chưa có key), tự động tra cứu từ MySQL Database Cookpad
   console.log('📚 Đang sử dụng cơ sở dữ liệu Cookpad làm phương án dự phòng (Fallback)...');
-  const dbRecipes = await suggestRecipesFromDatabase(ingredients, limit);
+  const dbRecipes = dbCandidates.length > 0 ? dbCandidates.slice(0, limit) : await suggestRecipesFromDatabase(ingredients, limit);
 
-  if (userId) {
-    try {
-      const pool = getPool();
-      await pool.query(
-        `INSERT INTO search_history (id, user_id, ingredients) VALUES (?, ?, ?)`,
-        [uuidv4(), userId, JSON.stringify(ingredients)]
-      );
-    } catch (err) {
-      console.error('Lỗi khi lưu lịch sử tìm kiếm:', err);
-    }
-  }
+  recordSearchHistory(userId, ingredients);
 
   return {
     recipes: dbRecipes,
@@ -585,3 +628,101 @@ export async function suggestRecipes(
     ai_enabled: isAiEnabled(),
   };
 }
+
+/**
+ * Tự động lưu trữ các công thức món ăn do AI sáng tạo (kèm nguyên liệu, các bước nấu, dinh dưỡng) vào MySQL Database
+ */
+export async function saveAiRecipesToDatabase(recipes: MatchedRecipe[]): Promise<void> {
+  const pool = getPool();
+  for (const r of recipes) {
+    try {
+      // BẢO VỆ CHẶT CHẼ CSDL: Chỉ lưu công thức nếu ảnh là Cookpad CDN chuẩn và KHÔNG bị xung đột tên/hình
+      if (!r.image_url || !r.image_url.startsWith('https://img-global.cpcdn.com') || isImageUrlConflicting(r.image_url, r.name)) {
+        continue;
+      }
+
+      // Kiểm tra món đã tồn tại trong CSDL chưa để tránh duplicate
+      const [existing] = await pool.query<any[]>('SELECT id FROM recipes WHERE name = ? LIMIT 1', [r.name]);
+      if (existing.length > 0) {
+        continue;
+      }
+
+      // 1. Lưu vào bảng recipes
+      await pool.query(
+        `INSERT INTO recipes (id, name, description, image_url, cooking_time, difficulty, servings, category, source_url, author_name)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'AI Chef & Nutritionist')`,
+        [
+          r.id,
+          r.name,
+          r.description || `Món ${r.name} do AI Chef sáng tạo chuẩn vị Việt.`,
+          r.image_url || '',
+          r.cooking_time || 25,
+          r.difficulty || 'Dễ',
+          r.servings || '2-4 người',
+          r.category || 'Món chính',
+          r.source_url || 'https://foodai.vn',
+        ]
+      );
+
+      // 2. Lưu nguyên liệu vào recipe_ingredients
+      if (r.ingredients_detail && r.ingredients_detail.length > 0) {
+        for (const ing of r.ingredients_detail) {
+          await pool.query(
+            `INSERT INTO recipe_ingredients (recipe_id, raw_text, ingredient_name, quantity, is_main)
+             VALUES (?, ?, ?, ?, ?)`,
+            [r.id, ing.raw_text || ing.name, ing.name, ing.quantity || '', ing.matched ? 1 : 0]
+          );
+        }
+      } else if (r.ingredients && r.ingredients.length > 0) {
+        for (const ingStr of r.ingredients) {
+          await pool.query(
+            `INSERT INTO recipe_ingredients (recipe_id, raw_text, ingredient_name, quantity, is_main)
+             VALUES (?, ?, ?, ?, 1)`,
+            [r.id, ingStr, ingStr, '']
+          );
+        }
+      }
+
+      // 3. Lưu các bước chế biến vào recipe_steps
+      const steps = r.steps_detail || (r.instructions || []).map((inst, idx) => ({ step_number: idx + 1, instruction: inst }));
+      for (const st of steps) {
+        await pool.query(
+          `INSERT INTO recipe_steps (recipe_id, step_number, instruction, step_image_url)
+           VALUES (?, ?, ?, ?)`,
+          [r.id, st.step_number, st.instruction, st.step_image_url || null]
+        );
+      }
+
+      // 4. Lưu thông tin dinh dưỡng vào recipe_nutrition
+      if (r.nutrition) {
+        await pool.query(
+          `INSERT INTO recipe_nutrition (recipe_id, calories, protein, carbohydrates, fat, fiber, calcium, iron)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+          [
+            r.id,
+            r.nutrition.calories || 300,
+            r.nutrition.protein || 20,
+            r.nutrition.carbohydrates || 20,
+            r.nutrition.fat || 10,
+            r.nutrition.fiber || 3,
+            r.nutrition.calcium || 50,
+            r.nutrition.iron || 2,
+          ]
+        );
+      }
+
+      // 5. Lưu tags vào recipe_tags
+      if (r.tags && r.tags.length > 0) {
+        for (const tag of r.tags) {
+          await pool.query(
+            `INSERT INTO recipe_tags (recipe_id, tag_name) VALUES (?, ?)`,
+            [r.id, tag]
+          );
+        }
+      }
+    } catch (dbErr) {
+      console.error(`Lỗi khi lưu món AI "${r.name}" vào database:`, dbErr);
+    }
+  }
+}
+
