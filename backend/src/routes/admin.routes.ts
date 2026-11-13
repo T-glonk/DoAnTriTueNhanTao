@@ -588,6 +588,21 @@ router.post('/recipes', async (req: Request, res: Response): Promise<void> => {
       ]
     );
 
+    // Đồng bộ ngay hình ảnh vào cookpad_dish_images để AI tự động lấy được ảnh này
+    if (image_url && image_url.trim()) {
+      try {
+        const normKey = name.toLowerCase().trim();
+        await pool.query(
+          `INSERT INTO cookpad_dish_images (query_key, image_url, recipe_title, source)
+           VALUES (?, ?, ?, 'admin')
+           ON DUPLICATE KEY UPDATE image_url = VALUES(image_url), source = 'admin'`,
+          [normKey, image_url.trim(), name.trim()]
+        );
+      } catch (imgSyncErr) {
+        // ignore
+      }
+    }
+
     // 2. Insert Ingredients
     if (Array.isArray(ingredients) && ingredients.length > 0) {
       for (const ing of ingredients) {
@@ -720,6 +735,22 @@ router.put('/recipes/:id', async (req: Request, res: Response): Promise<void> =>
         recipeId
       ]
     );
+
+    // Đồng bộ ngay hình ảnh Admin cập nhật vào cookpad_dish_images để AI tự động lấy được ảnh này
+    if (image_url && image_url.trim()) {
+      try {
+        const finalName = (name || existing[0].name || '').trim();
+        const normKey = finalName.toLowerCase().trim();
+        await pool.query(
+          `INSERT INTO cookpad_dish_images (query_key, image_url, recipe_title, source)
+           VALUES (?, ?, ?, 'admin')
+           ON DUPLICATE KEY UPDATE image_url = VALUES(image_url), source = 'admin'`,
+          [normKey, image_url.trim(), finalName]
+        );
+      } catch (imgSyncErr) {
+        // ignore
+      }
+    }
 
     // Update ingredients if provided
     if (Array.isArray(ingredients)) {
