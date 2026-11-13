@@ -83,18 +83,20 @@ export async function suggestWithGemini(
   const selectedDishes = hasCandidates ? candidateRecipes.slice(0, count) : [];
 
   const candidateText = hasCandidates
-    ? `\nDANH SÁCH MÓN ĂN THỰC TẾ ĐÃ TRUY VẤN VÀ CHỌN LỌC TỪ CƠ SỞ DỮ LIỆU MYSQL:
+    ? `\nDANH SÁCH MÓN ĂN ỨNG VIÊN ĐÃ TRUY VẤN TỪ CƠ SỞ DỮ LIỆU MYSQL:
 ${selectedDishes.map((c, idx) => `${idx + 1}. Tên món: "${c.name}" | Danh mục: "${c.category || 'Món chính'}" | Ảnh: "${c.image_url}"`).join('\n')}
 
-QUY TẮC CỐT LÕI VỀ TÊN MÓN VÀ HÌNH ẢNH (BẮT BUỘC ĐỂ TRÙNG KHỚP 100% VỚI CƠ SỞ DỮ LIỆU):
-- Hệ thống CSDL đã chọn sẵn các món ăn phù hợp với nguyên liệu ở trên. Bạn BẮT BUỘC PHẢI tạo công thức và phân tích dinh dưỡng cho ĐÚNG các món ăn này.
-- BẮT BUỘC giữ nguyên chính xác 100% "name" và "image_url" tương ứng (TUYỆT ĐỐI KHÔNG tự ý đổi tên món hay thêm từ ngữ hoa mỹ).
-${candidateRecipes.length < count ? `- Nếu danh sách trên có ít hơn ${count} món (hiện tại có ${candidateRecipes.length} món), bạn BẮT BUỘC sáng tạo thêm ${count - candidateRecipes.length} món ăn thuần Việt quen thuộc ĐÚNG THEO NGUYÊN LIỆU NGƯỜI DÙNG ĐÃ NHẬP [${ingredientsList}].
-  + BẮT BUỘC CHỈ DÙNG các loại thịt/cá có trong [${ingredientsList}]. (Ví dụ: người dùng nhập cá ngừ, cá nục, cà chua thì các món bổ sung BẮT BUỘC phải là món chế biến từ Cá ngừ hoặc Cá nục như: 'Cá ngừ kho cà chua', 'Cá ngừ sốt cà', 'Cá nục chiên sốt cà chua', 'Cá ngừ áp chảo').
-  + TUYỆT ĐỐI KHÔNG dùng bất kỳ loài cá nào khác (cá linh, cá thu, cá diêu hồng, cá chép...) hay thịt khác (bò, heo, gà...)!
-  + Tên món ngắn gọn từ 2 đến 4 từ, "image_url" để trống "".\n` : '\n'}`
+HƯỚNG DẪN KẾT HỢP VỚI CƠ SỞ DỮ LIỆU:
+- Ưu tiên chọn lọc các món ăn từ danh sách CSDL trên NẾU món đó thực sự phù hợp với nguyên liệu [${ingredientsList}].
+- Đối với những món được chọn từ CSDL, hãy giữ nguyên tên món và "image_url" tương ứng.
+- QUY TẮC SỐ LƯỢNG (BẮT BUỘC): Mảng "recipes" trả về BẮT BUỘC PHẢI CÓ ĐỦ CHÍNH XÁC ${count} MÓN ĂN.
+- Nếu danh sách từ CSDL trên có ít hơn ${count} món phù hợp (hoặc có món chứa nguyên liệu lạ không phù hợp), bạn BẮT BUỘC sáng tạo thêm các món ăn thuần Việt quen thuộc, hấp dẫn ĐÚNG THEO NGUYÊN LIỆU [${ingredientsList}] để ĐẢM BẢO LUÔN CÓ ĐỦ ${count} MÓN.
+  + Ví dụ nếu có trứng, cà chua, hành lá: hãy đề xuất các món quen thuộc như: Trứng sốt cà chua, Canh cà chua trứng hành hoa, Trứng chiên hành cà chua, Trứng xào cà chua...
+  + Ví dụ nếu có thịt heo, tôm, đậu phụ: hãy đề xuất: Tôm rang thịt ba chỉ, Đậu hũ nhồi thịt, Canh đậu hũ thịt băm, Tôm xào đậu phụ, Thịt heo kho đậu hũ...
+  + Các món sáng tạo bổ sung này thì đặt "image_url": "" để hệ thống tự động gán hình ảnh chuẩn.\n`
     : `\nQUY TẮC TÊN MÓN ĂN:
-- Tên món ăn BẮT BUỘC PHẢI LÀ TÊN CHUẨN MỰC TỪ 2 ĐẾN 4 TỪ phổ biến trong ẩm thực Việt Nam (Ví dụ: 'Ếch xào sả ớt', 'Sườn xào chua ngọt', 'Cháo sườn', 'Canh gà lá giang'). TUYỆT ĐỐI KHÔNG đặt tên hoa mỹ dài dòng.\n`;
+- BẮT BUỘC TRẢ VỀ ĐỦ CHÍNH XÁC ${count} MÓN ĂN.
+- Tên món ăn BẮT BUỘC PHẢI LÀ TÊN CHUẨN MỰC TỪ 2 ĐẾN 4 TỪ phổ biến trong ẩm thực Việt Nam (Ví dụ: 'Trứng sốt cà chua', 'Canh cà chua trứng', 'Tôm rang thịt ba chỉ').\n`;
 
   const prompt = `Bạn là Bếp trưởng chuyên nghiệp (AI Chef) và Chuyên gia dinh dưỡng ẩm thực Việt Nam trong hệ thống FoodAI.
 Người dùng có các nguyên liệu có sẵn sau: [${ingredientsList}].
@@ -118,7 +120,7 @@ QUY TẮC CỐT LÕI (BẮT BUỘC TUÂN THỦ 100%):
 {
   "recipes": [
     {
-      "name": "Tên món ăn (BẮT BUỘC giữ nguyên 100% tên món từ danh sách CSDL)",
+      "name": "Tên món ăn ngắn gọn (2-4 từ, ví dụ: 'Trứng sốt cà chua', 'Canh cà chua trứng', 'Tôm rang thịt')",
       "description": "Mô tả ngắn gọn 1-2 câu về hương vị món ăn",
       "ai_reasoning": "Lời khuyên & phân tích từ AI Chef: Giải thích tại sao món này tối ưu với nguyên liệu có sẵn, bí quyết đầu bếp để nấu chuẩn vị",
       "matched_ingredients": ["nguyên liệu 1 có sẵn", "nguyên liệu 2 có sẵn"],

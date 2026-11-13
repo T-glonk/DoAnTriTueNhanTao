@@ -600,8 +600,14 @@ async function recordSearchHistory(userId?: string, ingredients?: string[]) {
   if (isAiEnabled()) {
     try {
       console.log(`🤖 Đang gọi Google Gemini AI (Grounded RAG) để phân tích món ăn cho: ${ingredients.join(', ')}...`);
+      // Lọc các món ứng viên chất lượng cao: nếu người dùng nhập >= 2 nguyên liệu, ưu tiên món khớp >= 2 nguyên liệu
+      // Tránh việc món chỉ khớp 1 nguyên liệu phụ (như bắp cải xào cà chua) làm loãng gợi ý khi người dùng nhập (trứng, cà chua)
+      const qualityCandidates = ingredients.length >= 2
+        ? dbCandidates.filter(c => c.matched_count >= 2 || (c.titleScore && c.titleScore >= 100))
+        : dbCandidates;
+
       // Truyền danh sách món ứng viên từ CSDL kèm ID, Tên món, Ảnh Cookpad
-      const candidateDishes = dbCandidates.map(c => ({
+      const candidateDishes = qualityCandidates.slice(0, limit).map(c => ({
         id: c.id,
         name: c.name,
         image_url: c.image_url,
