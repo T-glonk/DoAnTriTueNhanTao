@@ -473,6 +473,11 @@ export function isImageUrlConflicting(imageUrl: string, targetDish: string): boo
       return true;
     }
 
+    // E. Món không phải bánh (như trứng chiên, rau xào, thịt kho...) nhưng ảnh lại là bánh chiên / bánh mì / bánh ngọt
+    if (!normTarget.includes('banh') && (normSlug.includes('banh chien') || normSlug.includes('banh mi') || normSlug.includes('banh ngot') || normSlug.includes('banh bao') || normSlug.includes('banh xeo'))) {
+      return true;
+    }
+
     // 2. XUNG ĐỘT TỪNG LOÀI CÁ CỤ THỂ (Cá hồi != Cá thu != Cá cơm != Cá ngừ != Cá nục != Cá linh != Cá điêu hồng...)
     const specificFishList = [
       'ca_hoi', 'ca_thu', 'ca_ngu', 'ca_com', 'ca_nuc', 'ca_loc',
@@ -1102,16 +1107,16 @@ async function searchCookpadDatabase(recipeName: string, usedImages?: Set<string
         if (r.image_url && !usedImages?.has(r.image_url)) {
           if (isImageUrlConflicting(r.image_url, recipeName)) continue;
           const score = scoreRecipeCard(r.recipe_title || norm, recipeName);
-          if (score >= 40) {
+          if (score >= 75) {
             return r.image_url;
           }
         }
       }
     }
 
-    // 2. Tìm kiếm ứng viên tương đồng trong cookpad_dish_images
+    // 2. Chỉ tìm kiếm ứng viên tương đồng CAO trong cookpad_dish_images (score >= 85, không lấy ảnh tương đồng lỏng lẻo)
     const [fuzzyRows] = await pool.query<any[]>(
-      'SELECT image_url, recipe_title, query_key FROM cookpad_dish_images ORDER BY id DESC LIMIT 300'
+      'SELECT image_url, recipe_title, query_key FROM cookpad_dish_images ORDER BY id DESC LIMIT 100'
     );
 
     const candidates: Array<{ image_url: string; score: number }> = [];
@@ -1119,7 +1124,7 @@ async function searchCookpadDatabase(recipeName: string, usedImages?: Set<string
       if (r.image_url && !usedImages?.has(r.image_url)) {
         if (isImageUrlConflicting(r.image_url, recipeName)) continue;
         const score = scoreRecipeCard(r.recipe_title || r.query_key, recipeName);
-        if (score >= 50) {
+        if (score >= 85) {
           candidates.push({ image_url: r.image_url, score });
         }
       }
