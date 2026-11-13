@@ -12,8 +12,8 @@ Chương này đánh giá toàn diện các kết quả thực nghiệm đạt �
 
 Qua quá trình triển khai và thử nghiệm thực tế, hệ thống đã hoàn thành trọn vẹn tất cả các mục tiêu kỹ thuật đề ra ở Chương~\ref{ch:modau}:
 \begin{enumerate}[leftmargin=1.6em, itemsep=2pt]
-  \item \textbf{Cơ sở tri thức và Dữ liệu ẩm thực:} Đã xây dựng bộ công cụ tự động thu thập và chuẩn hóa hơn 220 món ăn truyền thống Việt Nam từ nền tảng Cookpad, lưu trữ trong cơ sở dữ liệu MySQL làm kho tri thức nội bộ và kho ảnh phong phú.
-  \item \textbf{Tạo sinh công thức thông minh (AI Chef):} Tích hợp thành công mô hình Google Gemini AI (\code{gemini-3.6-flash}), tạo sinh từ 4 đến 6 món ăn hấp dẫn cho mỗi lượt tìm kiếm với cấu trúc JSON chuẩn 100\%, bao gồm lời khuyên ẩm thực, công thức chế biến và phân loại độ khó.
+  \item \textbf{Cơ sở tri thức và Dữ liệu ẩm thực:} Đã xây dựng bộ công cụ tự động thu thập và chuẩn hóa hơn 550 món ăn truyền thống Việt Nam từ nền tảng Cookpad, lưu trữ trong cơ sở dữ liệu MySQL làm kho tri thức nội bộ và kho ảnh phong phú.
+  \item \textbf{Tạo sinh công thức thông minh (AI Chef):} Tích hợp thành công mô hình Google Gemini AI (\code{gemini-3.6-flash}), gợi ý từ 6 đến 8 món ăn hấp dẫn cho mỗi lượt tìm kiếm với cấu trúc JSON chuẩn 100\%, bao gồm lời khuyên ẩm thực, công thức chế biến và phân loại độ khó.
   \item \textbf{Khử ảo giác và Kiểm soát ràng buộc nguyên liệu:} Thuật toán lọc ngữ nghĩa tiếng Việt hoạt động chính xác tuyệt đối, loại bỏ hoàn toàn hiện tượng tự bịa thành phần đạm chính (thịt/cá lạ) khi người dùng không cung cấp.
   \item \textbf{Ước tính dinh dưỡng khoa học:} Tự động phân tích và cung cấp đầy đủ 8 chỉ số dinh dưỡng (calo, protein, carbs, chất béo, chất xơ, vitamin C, canxi, sắt) cho từng món ăn.
   \item \textbf{Pipeline hình ảnh đa tầng:} Tự động truy xuất và gắn ảnh chân thực, chất lượng cao, đảm bảo tính độc nhất giữa các món trong cùng một kết quả tìm kiếm.
@@ -53,7 +53,7 @@ Kết quả thực nghiệm khẳng định tính ưu việt của \textbf{Kiế
 \begin{itemize}[leftmargin=1.6em, itemsep=2pt]
   \item \textbf{Tính sáng tạo và linh hoạt của AI:} Ở chế độ AI Gemini, hệ thống thể hiện khả năng phối hợp nguyên liệu xuất sắc. Ngay cả khi người dùng nhập các tổ hợp nguyên liệu ít gặp (ví dụ: \en{``Bí ngòi, Lá lốt, Tôm''}), AI vẫn sáng tạo ra các món ăn hợp lý như \en{``Tôm cuộn lá lốt áp chảo bí ngòi''} hoặc \en{``Canh bí ngòi nấu tôm tía tô''} kèm lời khuyên dinh dưỡng hữu ích.
   \item \textbf{Tính tin cậy của thuật toán ràng buộc:} Nhờ có tầng tiền xử lý ngữ nghĩa và hậu kiểm từ khóa, các trường hợp nhập nguyên liệu chay hoàn toàn không bao giờ bị AI gán ghép thêm thịt bò, thịt heo hay gà.
-  \item \textbf{Độ bền vững cao nhờ Fallback:} Khi ngắt kết nối mạng hoặc thử nghiệm với API Key không hợp lệ, hệ thống chuyển mạch mượt mà sang tra cứu kho dữ liệu 220 món Cookpad mà không làm gián đoạn trải nghiệm của người dùng.
+  \item \textbf{Độ bền vững cao nhờ Fallback:} Khi ngắt kết nối mạng hoặc thử nghiệm với API Key không hợp lệ, hệ thống chuyển mạch mượt mà sang tra cứu kho dữ liệu hơn 550 món Cookpad mà không làm gián đoạn trải nghiệm của người dùng.
 \end{itemize}
 
 \section{Hạn chế}
