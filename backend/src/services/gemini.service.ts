@@ -83,19 +83,19 @@ export async function suggestWithGemini(
   const selectedDishes = hasCandidates ? candidateRecipes.slice(0, count) : [];
 
   const candidateText = hasCandidates
-    ? `\nDANH SÁCH MÓN ĂN ỨNG VIÊN ĐÃ TRUY VẤN TỪ CƠ SỞ DỮ LIỆU MYSQL:
-${selectedDishes.map((c, idx) => `${idx + 1}. Tên món: "${c.name}" | Danh mục: "${c.category || 'Món chính'}" | Ảnh: "${c.image_url}"`).join('\n')}
+    ? `\nDANH SÁCH MÓN ĂN THỰC TẾ TRUY VẤN VÀ CHỌN LỌC TỪ KHO CƠ SỞ DỮ LIỆU MYSQL:
+${selectedDishes.map((c, idx) => `${idx + 1}. ID: "${c.id}" | Tên món: "${c.name}" | Danh mục: "${c.category || 'Món chính'}" | Ảnh: "${c.image_url}"`).join('\n')}
 
-HƯỚNG DẪN KẾT HỢP VỚI CƠ SỞ DỮ LIỆU:
-- Ưu tiên chọn lọc các món ăn từ danh sách CSDL trên NẾU món đó thực sự phù hợp với nguyên liệu [${ingredientsList}].
-- Đối với những món được chọn từ CSDL, hãy giữ nguyên tên món và "image_url" tương ứng.
-- QUY TẮC SỐ LƯỢNG (BẮT BUỘC): Mảng "recipes" trả về BẮT BUỘC PHẢI CÓ ĐỦ CHÍNH XÁC ${count} MÓN ĂN KHÁC NHAU.
-- Nếu danh sách từ CSDL trên có ít hơn ${count} món phù hợp (hoặc có món chứa nguyên liệu lạ không phù hợp), bạn BẮT BUỘC sáng tạo thêm các món ăn thuần Việt quen thuộc, hấp dẫn ĐÚNG THEO NGUYÊN LIỆU [${ingredientsList}] để ĐẢM BẢO LUÔN CÓ ĐỦ ${count} MÓN.
-  + Ví dụ nếu có trứng, cà chua, hành lá: hãy đề xuất: Trứng sốt cà chua, Canh cà chua trứng hành hoa, Trứng chiên hành cà chua, Trứng xào cà chua, Canh trứng đậu cà chua, Trứng cuộn hành lá, Trứng hấp cà chua hành, Salad cà chua trứng...
-  + Ví dụ nếu có thịt heo, tôm, đậu phụ: hãy đề xuất: Tôm rang thịt ba chỉ, Đậu hũ nhồi thịt sốt cà, Canh đậu hũ thịt băm, Tôm xào đậu phụ, Thịt heo kho đậu hũ, Tôm hấp thịt cuộn, Chả tôm thịt đậu hũ, Canh tôm nấu đậu hũ...
-  + Các món sáng tạo bổ sung này thì đặt "image_url": "" để hệ thống tự động gán hình ảnh chuẩn.\n`
+QUY TẮC CỐT LÕI (BẮT BUỘC TUÂN THỦ 100%):
+- BẮT BUỘC chỉ phân tích và tính toán cho ĐÚNG các món ăn trong danh sách CSDL ở trên.
+- TUYỆT ĐỐI KHÔNG TỰ SINH RA HAY BỊA THÊM BẤT KỲ TÊN MÓN ĂN NÀO MỚI NẰM NGOÀI DANH SÁCH TRÊN!
+- BẮT BUỘC giữ nguyên chính xác 100% "name" và "image_url" tương ứng của từng món từ CSDL.
+- Nhiệm vụ của bạn là:
+  + Dựa vào tên món ăn, tính toán chính xác độ dinh dưỡng: calories, protein, carbohydrates, fat, fiber, calcium, iron, vitamin_c.
+  + Tính toán thời gian nấu chuẩn (cooking_time tính bằng số phút).
+  + Định lượng khối lượng thức ăn / khẩu phần (servings, ví dụ: '2-3 người', '2-4 người') và định lượng nguyên liệu cụ thể (gram, muỗng...).
+  + Hướng dẫn cách nấu 4 bước và phân tích bí quyết của Đầu bếp AI (ai_reasoning).\n`
     : `\nQUY TẮC TÊN MÓN ĂN:
-- BẮT BUỘC TRẢ VỀ ĐỦ CHÍNH XÁC ${count} MÓN ĂN KHÁC NHAU.
 - Tên món ăn BẮT BUỘC PHẢI LÀ TÊN CHUẨN MỰC TỪ 2 ĐẾN 4 TỪ phổ biến trong ẩm thực Việt Nam (Ví dụ: 'Trứng sốt cà chua', 'Canh cà chua trứng', 'Tôm rang thịt ba chỉ').\n`;
 
   const prompt = `Bạn là Bếp trưởng chuyên nghiệp (AI Chef) và Chuyên gia dinh dưỡng ẩm thực Việt Nam trong hệ thống FoodAI.
@@ -257,86 +257,87 @@ Quy định giá trị trường:
   console.log(`[Gemini] Đã parse & khử trùng lặp thành công ${uniqueRecipes.length} món ăn. Đang đối chiếu chính xác với CSDL và hình ảnh...`);
   const usedImages = new Set<string>();
 
-  // 2. Gán thông tin chính xác từ CSDL (nếu có ứng viên CSDL) hoặc tra cứu hình ảnh chất lượng cao
+  // 2. Gán thông tin chính xác từ CSDL (BẢO ĐẢM 100% LÀ MÓN TỪ KHO CƠ SỞ DỮ LIỆU)
   const recipesWithImages: Recipe[] = [];
-  for (let i = 0; i < uniqueRecipes.length; i++) {
-    const recipe = uniqueRecipes[i];
-    let matchedCandidate: RecipeCandidate | undefined;
 
-    if (candidateRecipes && candidateRecipes.length > 0) {
-      // Tìm candidate tương ứng theo tên chuẩn hóa hoặc độ tương đồng
-      matchedCandidate = candidateRecipes.find(c => 
-        removeVietnameseAccents(c.name) === removeVietnameseAccents(recipe.name) ||
-        areDishesSimilar(c.name, recipe.name)
+  if (candidateRecipes && candidateRecipes.length > 0) {
+    // Duyệt qua từng món ứng viên thực tế từ CSDL
+    for (const cand of candidateRecipes) {
+      // Tìm phân tích của AI tương ứng với món này
+      const aiMatch = uniqueRecipes.find(r => 
+        removeVietnameseAccents(r.name) === removeVietnameseAccents(cand.name) ||
+        areDishesSimilar(r.name, cand.name)
       );
+
+      const matchedList = aiMatch?.matched_ingredients || ingredients;
+      const missingList = aiMatch?.missing_ingredients || [];
+
+      const rawIngs: string[] = Array.isArray(aiMatch?.ingredients) && aiMatch.ingredients.length > 0
+        ? aiMatch.ingredients 
+        : [
+            `Nguyên liệu chính cho món ${cand.name}`,
+            'Gia vị nhà bếp cơ bản (mắm, muối, tiêu, dầu ăn)'
+          ];
+      const ingredientsDetail = rawIngs.map((ingStr: string) => {
+        const isMatched = (matchedList as string[]).some((m: string) => ingStr.toLowerCase().includes(m.toLowerCase()));
+        return {
+          name: ingStr,
+          raw_text: ingStr,
+          quantity: '',
+          matched: isMatched,
+        };
+      });
+
+      const rawInsts: string[] = Array.isArray(aiMatch?.instructions) && aiMatch.instructions.length > 0
+        ? aiMatch.instructions 
+        : [
+            `Bước 1: Sơ chế sạch các nguyên liệu chế biến món ${cand.name}.`,
+            `Bước 2: Tẩm ướp gia vị vừa khẩu vị gia đình.`,
+            `Bước 3: Chế biến món ${cand.name} ở nhiệt độ thích hợp cho chín thơm ngon.`,
+            `Bước 4: Trình bày món ${cand.name} ra đĩa và thưởng thức nóng cùng cơm.`
+          ];
+      const stepsDetail = rawInsts.map((inst: string, idx: number) => ({
+        step_number: idx + 1,
+        instruction: inst,
+      }));
+
+      recipesWithImages.push({
+        id: cand.id || uuidv4(),
+        user_id: userId,
+        name: cand.name, // 100% TÊN MÓN TỪ CSDL
+        description: aiMatch?.description || cand.description || `Món ${cand.name} chuẩn vị ẩm thực Việt Nam.`,
+        ai_reasoning: aiMatch?.ai_reasoning || 'Món ăn từ kho CSDL được AI Chef tối ưu dinh dưỡng dựa trên nguyên liệu có sẵn của bạn.',
+        ingredients: rawIngs,
+        instructions: rawInsts,
+        nutrition: {
+          calories: Number(aiMatch?.nutrition?.calories) || 300,
+          protein: Number(aiMatch?.nutrition?.protein) || 20,
+          carbohydrates: Number(aiMatch?.nutrition?.carbohydrates) || 20,
+          fat: Number(aiMatch?.nutrition?.fat) || 10,
+          fiber: Number(aiMatch?.nutrition?.fiber) || 3,
+          vitamin_c: Number(aiMatch?.nutrition?.vitamin_c) || 10,
+          calcium: Number(aiMatch?.nutrition?.calcium) || 50,
+          iron: Number(aiMatch?.nutrition?.iron) || 2,
+        },
+        image_url: cand.image_url, // 100% ẢNH TỪ CSDL
+        image_query: cand.name,
+        cooking_time: Number(aiMatch?.cooking_time) || 25,
+        difficulty: (['Dễ', 'Trung bình', 'Khó'].includes(aiMatch?.difficulty) ? aiMatch.difficulty : 'Trung bình') as 'Dễ' | 'Trung bình' | 'Khó',
+        servings: aiMatch?.servings || '2-4 người',
+        category: cand.category || aiMatch?.category || 'Món chính',
+        tags: aiMatch?.tags || ['Chuẩn vị Việt', 'Món ngon CSDL'],
+        created_at: new Date().toISOString(),
+        match_percentage: Number(aiMatch?.match_percentage) || 90,
+        matched_count: matchedList.length,
+        total_ingredients: rawIngs.length,
+        matched_ingredients: matchedList,
+        missing_ingredients: missingList,
+        ingredients_detail: ingredientsDetail,
+        steps_detail: stepsDetail,
+        source: 'ai' as const,
+      });
     }
-
-    // Nếu món ăn được chọn từ CSDL: BẮT BUỘC giữ nguyên ID, Tên món và Ảnh từ CSDL MySQL 100%
-    const finalName = matchedCandidate ? matchedCandidate.name : recipe.name;
-    const finalId = matchedCandidate?.id || uuidv4();
-    let imageUrl = matchedCandidate ? matchedCandidate.image_url : '';
-
-    // Nếu là món mới (không có trong CSDL) hoặc ảnh rỗng, tra cứu ảnh chất lượng cao
-    if (!imageUrl) {
-      imageUrl = await getFoodImage(finalName, recipe.image_query, usedImages);
-    }
-    if (imageUrl) usedImages.add(imageUrl);
-
-    const matchedList = recipe.matched_ingredients || ingredients;
-    const missingList = recipe.missing_ingredients || [];
-
-    const rawIngs: string[] = Array.isArray(recipe.ingredients) ? recipe.ingredients : [];
-    const ingredientsDetail = rawIngs.map((ingStr: string) => {
-      const isMatched = (matchedList as string[]).some((m: string) => ingStr.toLowerCase().includes(m.toLowerCase()));
-      return {
-        name: ingStr,
-        raw_text: ingStr,
-        quantity: '',
-        matched: isMatched,
-      };
-    });
-
-    const rawInsts: string[] = Array.isArray(recipe.instructions) ? recipe.instructions : [];
-    const stepsDetail = rawInsts.map((inst: string, idx: number) => ({
-      step_number: idx + 1,
-      instruction: inst,
-    }));
-
-    recipesWithImages.push({
-      id: finalId,
-      user_id: userId,
-      name: finalName,
-      description: recipe.description || matchedCandidate?.description || `Món ${finalName} chuẩn vị ẩm thực Việt Nam.`,
-      ai_reasoning: recipe.ai_reasoning || 'Món ăn được AI Chef tối ưu dựa trên nguyên liệu có sẵn của bạn.',
-      ingredients: recipe.ingredients,
-      instructions: recipe.instructions,
-      nutrition: {
-        calories: Number(recipe.nutrition?.calories) || 300,
-        protein: Number(recipe.nutrition?.protein) || 20,
-        carbohydrates: Number(recipe.nutrition?.carbohydrates) || 20,
-        fat: Number(recipe.nutrition?.fat) || 10,
-        fiber: Number(recipe.nutrition?.fiber) || 3,
-        vitamin_c: Number(recipe.nutrition?.vitamin_c) || 10,
-        calcium: Number(recipe.nutrition?.calcium) || 50,
-        iron: Number(recipe.nutrition?.iron) || 2,
-      },
-      image_url: imageUrl,
-      image_query: recipe.image_query,
-      cooking_time: Number(recipe.cooking_time) || 25,
-      difficulty: (['Dễ', 'Trung bình', 'Khó'].includes(recipe.difficulty) ? recipe.difficulty : 'Trung bình') as 'Dễ' | 'Trung bình' | 'Khó',
-      servings: recipe.servings || '2-4 người',
-      category: matchedCandidate?.category || recipe.category || 'Món chính',
-      tags: recipe.tags || ['AI Chef', 'Chuẩn vị Việt'],
-      created_at: new Date().toISOString(),
-      match_percentage: Number(recipe.match_percentage) || 90,
-      matched_count: matchedList.length,
-      total_ingredients: recipe.ingredients.length,
-      matched_ingredients: matchedList,
-      missing_ingredients: missingList,
-      ingredients_detail: ingredientsDetail,
-      steps_detail: stepsDetail,
-      source: 'ai' as const,
-    });
+    return recipesWithImages;
   }
 
   return recipesWithImages;

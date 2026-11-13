@@ -593,21 +593,25 @@ async function recordSearchHistory(userId?: string, ingredients?: string[]) {
     };
   }
 
-  // 2. Chế độ AI (MẶC ĐỊNH CHO ĐỒ ÁN TRÍ TUỆ NHÂN TẠO)
-  // BƯỚC 1: Truy xuất các món ứng viên thực tế từ Database MySQL theo đúng logic nguyên liệu
-  const dbCandidates = await suggestRecipesFromDatabase(ingredients, Math.max(limit * 2, 10));
+  // 2. Chế độ AI (Grounded RAG)
+  // BƯỚC 1: Truy xuất trực tiếp các món ăn thực tế từ Database MySQL theo từ khoá nguyên liệu
+  const dbCandidates = await suggestRecipesFromDatabase(ingredients, limit);
+
+  if (dbCandidates.length === 0) {
+    recordSearchHistory(userId, ingredients);
+    return {
+      recipes: [],
+      source: 'database',
+      ai_enabled: isAiEnabled(),
+    };
+  }
 
   if (isAiEnabled()) {
     try {
-      console.log(`🤖 Đang gọi Google Gemini AI (Grounded RAG) để phân tích món ăn cho: ${ingredients.join(', ')}...`);
-      // Lọc các món ứng viên chất lượng cao: nếu người dùng nhập >= 2 nguyên liệu, ưu tiên món khớp >= 2 nguyên liệu
-      // Tránh việc món chỉ khớp 1 nguyên liệu phụ (như bắp cải xào cà chua) làm loãng gợi ý khi người dùng nhập (trứng, cà chua)
-      const qualityCandidates = ingredients.length >= 2
-        ? dbCandidates.filter(c => c.matched_count >= 2 || (c.titleScore && c.titleScore >= 100))
-        : dbCandidates;
+      console.log(`🤖 Đang gọi Google Gemini AI để tính toán dinh dưỡng, thời gian nấu, khối lượng cho ${dbCandidates.length} món ăn từ CSDL: ${ingredients.join(', ')}...`);
 
-      // Truyền danh sách món ứng viên từ CSDL kèm ID, Tên món, Ảnh Cookpad
-      const candidateDishes = qualityCandidates.slice(0, limit).map(c => ({
+      // Chỉ truyền danh sách các món ăn thực tế từ CSDL kèm ID, Tên món, Ảnh Cookpad
+      const candidateDishes = dbCandidates.map(c => ({
         id: c.id,
         name: c.name,
         image_url: c.image_url,
@@ -618,7 +622,7 @@ async function recordSearchHistory(userId?: string, ingredients?: string[]) {
       const aiResults = await suggestWithGemini(
         ingredients,
         effectiveUserId,
-        limit,
+        dbCandidates.length,
         candidateDishes
       );
 
@@ -693,40 +697,25 @@ export async function saveAiRecipesToDatabase(recipes: MatchedRecipe[]): Promise
         [r.id, r.name]
       );
 
-      let targetRecipeId = r.id;
-
-      if (existing.length > 0) {
-        targetRecipeId = existing[0].id;
-        // Cập nhật thông tin mô tả, thời gian, khẩu phần nếu có thay đổi
-        await pool.query(
-          `UPDATE recipes 
-           SET description = COALESCE(?, description),
-               cooking_time = ?,
-               difficulty = ?,
-               servings = ?,
-               category = COALESCE(?, category),
-               updated_at = NOW()
-           WHERE id = ?`,
-          [r.description, r.cooking_time || 25, r.difficulty || 'Dễ', r.servings || '2-4 người', r.category || 'Món chính', targetRecipeId]
-        );
-      } else {
-        // Món mới từ AI sáng tạo: INSERT vào bảng recipes
-        await pool.query(
-          `INSERT INTO recipes (id, name, description, image_url, cooking_time, difficulty, servings, category, source_url, author_name)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'AI Chef & Nutritionist')`,
-          [
-            targetRecipeId,
-            r.name,
-            r.description || `Món ${r.name} do AI Chef sáng tạo chuẩn vị Việt.`,
-            r.image_url || '',
-            r.cooking_time || 25,
-            r.difficulty || 'Dễ',
-            r.servings || '2-4 người',
-            r.category || 'Món chính',
-            r.source_url || 'https://foodai.vn',
-          ]
-        );
+      // QUY TẮC CỐT LÕI: TUYỆT ĐỐI KHÔNG TỰ TẠO MÓN MỚI LƯU VÀO BẢNG RECIPES!
+      // Nếu món không tồn tại trong CSDL thì bỏ qua ngay lập tức để tránh làm bẩn CSDL
+      if (existing.length === 0) {
+        continue;
       }
+
+      const targetRecipeId = existing[0].id;
+      // Cập nhật thông tin mô tả, thời gian nấu, khẩu phần vào bảng recipes theo đúng id món
+      await pool.query(
+        `UPDATE recipes 
+         SET description = COALESCE(?, description),
+             cooking_time = ?,
+             difficulty = ?,
+             servings = ?,
+             category = COALESCE(?, category),
+             updated_at = NOW()
+         WHERE id = ?`,
+        [r.description, r.cooking_time || 25, r.difficulty || 'Dễ', r.servings || '2-4 người', r.category || 'Món chính', targetRecipeId]
+      );
 
       // 2. Cập nhật chi tiết nguyên liệu, các bước nấu, dinh dưỡng, tags cho món này
       // Xóa dữ liệu cũ (nếu có) để nạp công thức chi tiết mới do AI phân tích
