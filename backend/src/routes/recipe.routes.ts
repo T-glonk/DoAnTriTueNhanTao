@@ -18,8 +18,8 @@ router.post('/suggest', optionalAuth, async (req: Request, res: Response): Promi
 
     const userId = req.user?.userId;
 
-    // Gọi dịch vụ gợi ý món ăn (Mặc định: Google Gemini AI, có thể chọn Database Cookpad)
-    const { recipes, source } = await suggestRecipes(ingredients, userId, 6, mode || 'ai');
+    // Gọi dịch vụ gợi ý món ăn (Mặc định: Google Gemini AI, gợi ý 8 món)
+    const { recipes, source } = await suggestRecipes(ingredients, userId, 8, mode || 'ai');
 
     res.json({
       success: true,

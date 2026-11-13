@@ -35,6 +35,8 @@ export function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 3;
 
   // Lấy nguyên liệu từ trang lịch sử nếu có
   useEffect(() => {
@@ -86,6 +88,7 @@ export function HomePage() {
     setIsLoading(true);
     setHasSearched(true);
     setRecipes([]);
+    setCurrentPage(1);
 
     try {
       const response = await api.post<{
@@ -302,48 +305,120 @@ export function HomePage() {
         )}
 
         {/* Results */}
-        {!isLoading && recipes.length > 0 && (
-          <div className="animate-fade-in">
-            {/* Result header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 p-4 sm:p-5 bg-white rounded-3xl shadow-xs border border-gray-100">
-              <div>
-                <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                  <Sparkles className="text-purple-600" size={22} />
-                  <span>Món ăn được sáng tạo bởi Trí Tuệ Nhân Tạo ({recipes.length} món)</span>
-                </h2>
-                
-                <div className="flex flex-wrap items-center gap-2 mt-1.5">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-800 border border-purple-200">
-                    <Sparkles size={12} className="text-purple-600" />
-                    Google Gemini AI (AI Chef & Nutritionist)
-                  </span>
-                  <span className="text-xs text-gray-400">• Nguyên liệu có sẵn: {ingredients.join(', ')}</span>
+        {!isLoading && recipes.length > 0 && (() => {
+          const totalPages = Math.ceil(recipes.length / ITEMS_PER_PAGE);
+          const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+          const currentRecipes = recipes.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+          return (
+            <div id="recipe-results-section" className="animate-fade-in scroll-mt-6">
+              {/* Result header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 p-4 sm:p-5 bg-white rounded-3xl shadow-xs border border-gray-100">
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                    <Sparkles className="text-purple-600" size={22} />
+                    <span>Món ăn được sáng tạo bởi Trí Tuệ Nhân Tạo ({recipes.length} món)</span>
+                  </h2>
+                  
+                  <div className="flex flex-wrap items-center gap-2 mt-1.5">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-800 border border-purple-200">
+                      <Sparkles size={12} className="text-purple-600" />
+                      Google Gemini AI (AI Chef & Nutritionist)
+                    </span>
+                    <span className="text-xs text-gray-400">• Nguyên liệu có sẵn: {ingredients.join(', ')}</span>
+                    {totalPages > 1 && (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-orange-100 text-orange-700">
+                        Trang {currentPage} / {totalPages} (3 món/trang)
+                      </span>
+                    )}
+                  </div>
                 </div>
+
+                <button
+                  onClick={() => handleSuggest()}
+                  className="btn-secondary text-sm flex items-center gap-1.5 self-start sm:self-auto hover:border-orange-300"
+                >
+                  <RotateCcw size={14} />
+                  <span>Gợi ý lại</span>
+                </button>
               </div>
 
-              <button
-                onClick={() => handleSuggest()}
-                className="btn-secondary text-sm flex items-center gap-1.5 self-start sm:self-auto hover:border-orange-300"
-              >
-                <RotateCcw size={14} />
-                <span>Gợi ý lại</span>
-              </button>
-            </div>
+              {/* Recipe Grid: hiển thị 3 món trên trang hiện tại */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
+                {currentRecipes.map(recipe => (
+                  <RecipeCard
+                    key={recipe.id}
+                    recipe={recipe}
+                    onFavorite={handleFavorite}
+                    isFavorite={favorites.has(recipe.id)}
+                    onViewDetail={setSelectedRecipe}
+                  />
+                ))}
+              </div>
 
-            {/* Recipe Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
-              {recipes.map(recipe => (
-                <RecipeCard
-                  key={recipe.id}
-                  recipe={recipe}
-                  onFavorite={handleFavorite}
-                  isFavorite={favorites.has(recipe.id)}
-                  onViewDetail={setSelectedRecipe}
-                />
-              ))}
+              {/* Thanh cuộn / Chuyển trang (Hiển thị 3 món đầu, chuyển trang để xem các món còn lại) */}
+              {totalPages > 1 && (
+                <div className="mt-8 p-4 sm:p-5 bg-white rounded-3xl border border-gray-100 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div className="text-sm text-gray-600 flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse flex-shrink-0" />
+                    <span>
+                      Đang xem món <strong>{startIndex + 1} - {Math.min(startIndex + ITEMS_PER_PAGE, recipes.length)}</strong> trên tổng số <strong>{recipes.length} món</strong>
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2 flex-wrap justify-center">
+                    <button
+                      onClick={() => {
+                        setCurrentPage(prev => Math.max(1, prev - 1));
+                        document.getElementById('recipe-results-section')?.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                      disabled={currentPage === 1}
+                      className="px-4 py-2 rounded-xl text-sm font-semibold border border-gray-200 text-gray-700 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-300 transition-all disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-1.5 cursor-pointer"
+                    >
+                      ← Trang trước
+                    </button>
+
+                    {/* Nút số trang */}
+                    <div className="flex items-center gap-1.5">
+                      {Array.from({ length: totalPages }).map((_, idx) => {
+                        const pageNum = idx + 1;
+                        const isAct = pageNum === currentPage;
+                        return (
+                          <button
+                            key={pageNum}
+                            onClick={() => {
+                              setCurrentPage(pageNum);
+                              document.getElementById('recipe-results-section')?.scrollIntoView({ behavior: 'smooth' });
+                            }}
+                            className={`min-w-9 h-9 px-3 rounded-xl text-sm font-bold transition-all flex items-center justify-center cursor-pointer ${
+                              isAct
+                                ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/20'
+                                : 'bg-gray-100 text-gray-600 hover:bg-orange-100 hover:text-orange-600'
+                            }`}
+                          >
+                            Trang {pageNum}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        setCurrentPage(prev => Math.min(totalPages, prev + 1));
+                        document.getElementById('recipe-results-section')?.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                      disabled={currentPage === totalPages}
+                      className="px-4 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:opacity-95 shadow-md shadow-orange-500/20 transition-all disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <span>Trang tiếp theo ({Math.max(0, recipes.length - startIndex - currentRecipes.length)} món)</span>
+                      <span>→</span>
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* Empty state: before search */}
         {!isLoading && !hasSearched && (

@@ -69,7 +69,7 @@ export interface RecipeCandidate {
 export async function suggestWithGemini(
   ingredients: string[],
   userId: string = 'system',
-  count: number = 6,
+  count: number = 8,
   candidateRecipes?: RecipeCandidate[]
 ): Promise<Recipe[]> {
   if (!isValidGeminiKey(GEMINI_API_KEY)) {
@@ -89,13 +89,13 @@ ${selectedDishes.map((c, idx) => `${idx + 1}. Tên món: "${c.name}" | Danh mụ
 HƯỚNG DẪN KẾT HỢP VỚI CƠ SỞ DỮ LIỆU:
 - Ưu tiên chọn lọc các món ăn từ danh sách CSDL trên NẾU món đó thực sự phù hợp với nguyên liệu [${ingredientsList}].
 - Đối với những món được chọn từ CSDL, hãy giữ nguyên tên món và "image_url" tương ứng.
-- QUY TẮC SỐ LƯỢNG (BẮT BUỘC): Mảng "recipes" trả về BẮT BUỘC PHẢI CÓ ĐỦ CHÍNH XÁC ${count} MÓN ĂN.
+- QUY TẮC SỐ LƯỢNG (BẮT BUỘC): Mảng "recipes" trả về BẮT BUỘC PHẢI CÓ ĐỦ CHÍNH XÁC ${count} MÓN ĂN KHÁC NHAU.
 - Nếu danh sách từ CSDL trên có ít hơn ${count} món phù hợp (hoặc có món chứa nguyên liệu lạ không phù hợp), bạn BẮT BUỘC sáng tạo thêm các món ăn thuần Việt quen thuộc, hấp dẫn ĐÚNG THEO NGUYÊN LIỆU [${ingredientsList}] để ĐẢM BẢO LUÔN CÓ ĐỦ ${count} MÓN.
-  + Ví dụ nếu có trứng, cà chua, hành lá: hãy đề xuất các món quen thuộc như: Trứng sốt cà chua, Canh cà chua trứng hành hoa, Trứng chiên hành cà chua, Trứng xào cà chua...
-  + Ví dụ nếu có thịt heo, tôm, đậu phụ: hãy đề xuất: Tôm rang thịt ba chỉ, Đậu hũ nhồi thịt, Canh đậu hũ thịt băm, Tôm xào đậu phụ, Thịt heo kho đậu hũ...
+  + Ví dụ nếu có trứng, cà chua, hành lá: hãy đề xuất: Trứng sốt cà chua, Canh cà chua trứng hành hoa, Trứng chiên hành cà chua, Trứng xào cà chua, Canh trứng đậu cà chua, Trứng cuộn hành lá, Trứng hấp cà chua hành, Salad cà chua trứng...
+  + Ví dụ nếu có thịt heo, tôm, đậu phụ: hãy đề xuất: Tôm rang thịt ba chỉ, Đậu hũ nhồi thịt sốt cà, Canh đậu hũ thịt băm, Tôm xào đậu phụ, Thịt heo kho đậu hũ, Tôm hấp thịt cuộn, Chả tôm thịt đậu hũ, Canh tôm nấu đậu hũ...
   + Các món sáng tạo bổ sung này thì đặt "image_url": "" để hệ thống tự động gán hình ảnh chuẩn.\n`
     : `\nQUY TẮC TÊN MÓN ĂN:
-- BẮT BUỘC TRẢ VỀ ĐỦ CHÍNH XÁC ${count} MÓN ĂN.
+- BẮT BUỘC TRẢ VỀ ĐỦ CHÍNH XÁC ${count} MÓN ĂN KHÁC NHAU.
 - Tên món ăn BẮT BUỘC PHẢI LÀ TÊN CHUẨN MỰC TỪ 2 ĐẾN 4 TỪ phổ biến trong ẩm thực Việt Nam (Ví dụ: 'Trứng sốt cà chua', 'Canh cà chua trứng', 'Tôm rang thịt ba chỉ').\n`;
 
   const prompt = `Bạn là Bếp trưởng chuyên nghiệp (AI Chef) và Chuyên gia dinh dưỡng ẩm thực Việt Nam trong hệ thống FoodAI.
@@ -116,9 +116,10 @@ QUY TẮC CỐT LÕI (BẮT BUỘC TUÂN THỦ 100%):
    - Tính toán đầy đủ thành phần dinh dưỡng: calories, protein, carbohydrates, fat, fiber, calcium, iron, vitamin_c.
    - Đưa ra lời khuyên từ Bếp trưởng (ai_reasoning): bí quyết chế biến, mẹo xử lý nguyên liệu để giữ độ tươi ngon và dưỡng chất.
 
-3. FORMAT JSON ĐẦU RA (CHỈ TRẢ VỀ JSON THUẦN, KHÔNG KÈM TEXT HAY MARKDOWN):
+3. FORMAT JSON ĐẦU RA (CHỈ TRẢ VỀ JSON THUẦN, MẢNG recipes BẮT BUỘC CÓ ĐỦ ${count} PHẦN TỬ):
 {
   "recipes": [
+    // BẮT BUỘC liệt kê đủ ${count} món ăn khác nhau (từ món 1 đến món ${count})
     {
       "name": "Tên món ăn ngắn gọn (2-4 từ, ví dụ: 'Trứng sốt cà chua', 'Canh cà chua trứng', 'Tôm rang thịt')",
       "description": "Mô tả ngắn gọn 1-2 câu về hương vị món ăn",

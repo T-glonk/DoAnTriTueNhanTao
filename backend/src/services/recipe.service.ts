@@ -561,7 +561,7 @@ export async function suggestRecipesFromDatabase(
 export async function suggestRecipes(
   ingredients: string[],
   userId?: string,
-  limit: number = 6,
+  limit: number = 8,
   mode: 'ai' | 'database' = 'ai'
 ): Promise<{ recipes: MatchedRecipe[]; source: 'database' | 'ai' | 'fallback'; ai_enabled: boolean }> {
   const effectiveUserId = userId || 'system';
