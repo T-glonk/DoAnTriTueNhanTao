@@ -36,14 +36,9 @@ export function LoginPage() {
     }
   };
 
-  const fillDemo = (role: 'admin' | 'user') => {
-    if (role === 'admin') {
-      setEmail('admin@foodsystem.com');
-      setPassword('Admin@123456');
-    } else {
-      setEmail('user@foodsystem.com');
-      setPassword('User@123456');
-    }
+  const fillDemo = () => {
+    setEmail('user@foodsystem.com');
+    setPassword('User@123456');
   };
 
   return (
@@ -62,26 +57,17 @@ export function LoginPage() {
         <div className="card shadow-lg border-0">
           <h2 className="text-xl font-bold text-gray-800 mb-6 text-center">Đăng nhập</h2>
 
-          {/* Demo accounts */}
-          <div className="flex gap-2 mb-6 p-3 bg-blue-50 rounded-xl">
-            <div className="flex-1">
-              <p className="text-xs text-blue-600 font-medium mb-2">Tài khoản demo:</p>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => fillDemo('user')}
-                  className="flex-1 text-xs py-1.5 px-2 bg-white border border-blue-200 text-blue-700 rounded-lg hover:bg-blue-50 transition-colors"
-                >
-                  👤 Khách hàng
-                </button>
-                <button
-                  type="button"
-                  onClick={() => fillDemo('admin')}
-                  className="flex-1 text-xs py-1.5 px-2 bg-white border border-blue-200 text-blue-700 rounded-lg hover:bg-blue-50 transition-colors"
-                >
-                  🛡️ Admin
-                </button>
-              </div>
+          {/* Demo account */}
+          <div className="mb-6 p-3 bg-orange-50/70 border border-orange-100 rounded-xl">
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-orange-700 font-medium">Trải nghiệm nhanh:</span>
+              <button
+                type="button"
+                onClick={fillDemo}
+                className="text-xs py-1.5 px-3 bg-white border border-orange-200 text-orange-700 rounded-lg hover:bg-orange-50 transition-colors shadow-sm font-medium"
+              >
+                👤 Điền tài khoản Khách hàng
+              </button>
             </div>
           </div>
 
