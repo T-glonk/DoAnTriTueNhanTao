@@ -1,0 +1,142 @@
+% ---------------------------------------------------------------------
+%  CHƯƠNG 2 — CƠ SỞ LÝ THUYẾT VÀ CÔNG NGHỆ
+% ---------------------------------------------------------------------
+\chapter{Cơ sở lý thuyết và công nghệ}
+\label{ch:coso}
+
+\begin{muctieu}
+Chương này hệ thống hóa các kiến thức lý thuyết nền tảng về Trí tuệ nhân tạo, Mô hình ngôn ngữ lớn (LLM), kỹ thuật Prompt Engineering, thuật toán so khớp ngữ nghĩa tiếng Việt, đồng thời giới thiệu danh mục công nghệ và công cụ phần mềm được sử dụng để xây dựng hệ thống FoodAI.
+\end{muctieu}
+
+\section{Kiến thức nền tảng về Trí tuệ nhân tạo và LLM}
+
+\subsection{Trí tuệ nhân tạo tạo sinh và Mô hình ngôn ngữ lớn (LLM)}
+
+Trí tuệ nhân tạo tạo sinh \en{(Generative AI)} là một nhánh quan trọng của Trí tuệ nhân tạo, tập trung vào việc tạo ra các nội dung mới (như văn bản, hình ảnh, mã nguồn hoặc âm thanh) dựa trên dữ liệu đã được học~\cite{RussellNorvig2021, HoangKiem}. Trọng tâm của sự phát triển vượt bậc này là kiến trúc \term{Transformer} dựa trên cơ chế tự chú ý \en{(Self-Attention Mechanism)} được đề xuất bởi Vaswani và các cộng sự~\cite{Vaswani2017}.
+
+\begin{dinhnghia}[Mô hình ngôn ngữ lớn --- LLM]
+Mô hình ngôn ngữ lớn \en{(Large Language Model --- LLM)} là một mạng nơ-ron sâu được tiền huấn luyện trên khối lượng khổng lồ dữ liệu văn bản đa lĩnh vực với hàng tỷ tham số, có khả năng hiểu ngữ cảnh, suy luận logic, dịch thuật, tóm tắt và sinh văn bản tự nhiên liền mạch như con người~\cite{Brown2020}.
+\end{dinhnghia}
+
+Trong đồ án này, hệ thống tích hợp dòng mô hình \term{Google Gemini} thế hệ mới (cụ thể là \code{gemini-3.6-flash}), một mô hình đa phương thức \en{(Multimodal Model)} có tốc độ suy luận nhanh, khả năng thấu hiểu ngữ cảnh sâu rộng và hỗ trợ xuất dữ liệu có cấu trúc định dạng chuẩn mực~\cite{Gemini2023, GoogleGenAISDK}.
+
+\subsection{Kỹ thuật Prompt Engineering và Xuất dữ liệu có cấu trúc}
+
+Kỹ thuật thiết kế câu lệnh \en{(Prompt Engineering)} là nghệ thuật xây dựng và tối ưu hóa các chỉ dẫn đầu vào cho mô hình ngôn ngữ lớn nhằm định hướng mô hình tạo ra kết quả chính xác, đúng trọng tâm và tuân thủ các quy tắc nghiệp vụ đặt ra.
+
+\begin{ghinho}
+Để mô hình LLM đóng vai trò như một chuyên gia ẩm thực đáng tin cậy, prompt được thiết kế theo cấu trúc phân vai \en{(System Persona)}: vừa là Bếp trưởng chuyên nghiệp am hiểu ẩm thực Việt Nam (\en{AI Chef}), vừa là Chuyên gia phân tích dinh dưỡng (\en{Nutritionist}).
+\end{ghinho}
+
+Các quy tắc thiết kế Prompt cốt lõi trong hệ thống FoodAI bao gồm:
+\begin{itemize}[leftmargin=1.6em, itemsep=2pt]
+  \item \textbf{Ép kiểu dữ liệu có cấu trúc (Structured JSON Output):} Sử dụng chế độ \code{responseMimeType: 'application/json'} kết hợp với định dạng JSON Schema chặt chẽ, loại bỏ hoàn toàn các đoạn văn tự do không có cấu trúc.
+  \item \textbf{Đa dạng hóa phương pháp chế biến (100\% Diversity Rule):} Bắt buộc mô hình sinh ra danh sách món ăn trải rộng trên nhiều phong cách nấu nướng khác nhau (món xào, món canh/súp, món chiên/rán, món kho/rim, món gỏi/salad, món điểm tâm).
+  \item \textbf{Ước tính hàm lượng dinh dưỡng định lượng:} Yêu cầu mô hình suy luận và tính toán chính xác các chỉ số vi chất và đa lượng (năng lượng \en{calories}, protein, carbohydrate, lipid, chất xơ, vitamin C, canxi, sắt).
+\end{itemize}
+
+\subsection{Khống chế hiện tượng ảo giác (Hallucination)}
+
+Hiện tượng ảo giác \en{(Hallucination)} là xu hướng mô hình LLM tự sáng tạo ra các thông tin không có thật hoặc không có trong dữ liệu đầu vào~\cite{Ji2023Hallucination}. Trong bài toán gợi ý món ăn, ảo giác biểu hiện qua việc AI tự ý đưa thêm các loại thịt cá đắt tiền (ví dụ: người dùng chỉ nhập rau củ nhưng AI lại gợi ý món bò xào hoặc sườn nướng).
+
+Để khắc phục hiện tượng này, đồ án kết hợp kỹ thuật Tăng cường tạo sinh bằng truy xuất thông tin \en{(Retrieval-Augmented Generation --- RAG)}~\cite{Lewis2020RAG} cùng cơ chế kiểm soát hai lớp \en{(Two-tier Constraint Mechanism)}:
+\begin{enumerate}[leftmargin=1.6em, itemsep=2pt]
+  \item \textbf{Lớp 1 (Truy xuất ứng viên thực tế từ CSDL - RAG):} Hệ thống định hướng truy xuất các món ăn thực tế từ kho Cookpad MySQL trước để làm neo dữ liệu cho AI, ngăn chặn việc LLM sáng tạo các món ăn không có thực trong ẩm thực Việt.
+  \item \textbf{Lớp 2 (Hậu kiểm ngữ nghĩa bằng thuật toán):} Sử dụng thuật toán trích xuất thành phần đạm chính \en{(Primary Protein Extractor)} để rà soát kết quả đầu ra, tự động loại bỏ các món ăn vi phạm trước khi gửi về giao diện người dùng.
+\end{enumerate}
+
+\section{Thuật toán gợi ý và Xử lý ngôn ngữ tự nhiên tiếng Việt}
+
+\subsection{Hệ thống gợi ý dựa trên nội dung (Content-Based Recommendation)}
+
+Hệ thống gợi ý dựa trên nội dung hoạt động bằng cách so sánh đặc trưng của các món ăn trong cơ sở tri thức với tập nguyên liệu mà người dùng hiện có~\cite{Adomavicius2005, Trattner2017}.
+
+Cho tập nguyên liệu người dùng nhập là $U = \{u_1, u_2, \dots, u_m\}$ và tập nguyên liệu cấu thành món ăn $R = \{r_1, r_2, \dots, r_n\}$. Độ tương đồng Jaccard giữa người dùng và món ăn được định nghĩa theo công thức:
+\begin{equation}
+J(U, R) = \frac{|U \cap R|}{|U \cup R|}.
+\label{eq:jaccard}
+\end{equation}
+
+Tuy nhiên, trong bài toán nấu ăn thực tế, người dùng chỉ mong muốn tận dụng tối đa những nguyên liệu mình có, không nhất thiết phải có toàn bộ nguyên liệu phụ (gia vị, hành ngò) của món ăn. Do đó, hệ thống xây dựng chỉ số Tỷ lệ khớp nguyên liệu \en{(Match Percentage --- $M(U, R)$)}:
+\begin{equation}
+M(U, R) = \min\left(100, \mathrm{round}\left(\frac{|U \cap R|}{\min(|U|, K)} \times 100\right)\right),
+\label{eq:match_score}
+\end{equation}
+trong đó $K$ là ngưỡng số lượng nguyên liệu chính đại diện (mặc định chọn $K = 3$).
+
+\subsection{Xử lý ngôn ngữ tự nhiên và Chuẩn hóa tiếng Việt}
+
+Ngôn ngữ tiếng Việt có đặc thù ngữ âm phức tạp với hệ thống dấu thanh và nhiều phương ngữ khác nhau. Để so khớp chính xác tên nguyên liệu, hệ thống thực hiện quy trình tiền xử lý gồm các bước:
+\begin{enumerate}[leftmargin=1.6em, itemsep=2pt]
+  \item \textbf{Chuẩn hóa Unicode (NFD Normalization):} Phân tách ký tự và dấu thanh để loại bỏ triệt để các dấu sắc, huyền, hỏi, ngã, nặng và chuyển về chữ thường:
+  \begin{equation}
+  \mathrm{Normalize}(s) = \mathrm{RegexReplace}(s, [\text{U+0300--U+036F}], \emptyset).
+  \end{equation}
+  \item \textbf{Khớp theo ranh giới từ nguyên vẹn (Whole-word Boundary):} Sử dụng biểu thức chính quy với ranh giới từ nguyên vẹn để tránh hiện tượng dính từ (ví dụ: tránh nhận diện nhầm từ \en{``heo''} trong \en{``bánh bèo''}).
+  \item \textbf{Tra cứu ma trận từ điển đồng nghĩa (Ingredient Synonym Matrix):} Xây dựng danh mục các nhóm nguyên liệu tương đương trong ẩm thực Việt Nam (Bảng~\ref{tab:tudien}).
+\end{enumerate}
+
+\begin{table}[H]
+\centering
+\caption{Mẫu danh mục nhóm nguyên liệu đồng nghĩa và biến thể tiếng Việt.}
+\label{tab:tudien}
+\begin{tabularx}{\textwidth}{@{}>{\bfseries\color{daunavy}}p{2.2cm} >{\color{forestgreen}\raggedright\arraybackslash}X >{\color{daumaroon}\raggedright\arraybackslash}p{4.6cm}@{}}
+\toprule
+\rowcolor{gray100}\bfseries\color{daunavy}Nguyên liệu chuẩn & \bfseries\color{forestgreen}Các biến thể đồng nghĩa & \bfseries\color{daumaroon}Từ khóa loại trừ (Excludes) \\
+\midrule
+Thịt heo   & ba chỉ, thịt lợn, sườn non, giò heo, thịt xay & mắm tôm, mắm nêm, bột ngọt \\
+Thịt bò    & thăn bò, bắp bò, nạm bò, gầu bò, ba chỉ bò    & quả bơ, bơ tỏi, bơ lạt, bò húc \\
+Thịt gà    & ức gà, đùi gà, cánh gà, gà ta, gà ác          & đậu gà, nấm đùi gà, bột nêm gà \\
+Tôm        & tôm sú, tôm thẻ, tôm đất, tôm nõn, tôm tươi   & mắm tôm, muối tôm, tôm chua \\
+Cá         & cá lóc, cá basa, cá hồi, cá thu, cá điêu hồng & cà chua, cà tím, cà rốt, nước mắm \\
+Đậu phụ    & đậu hũ, tàu hũ, đậu khuôn, đậu non            & dầu ăn, mè \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\noindent\textbf{Mô tả:} Bảng~\ref{tab:tudien} biểu diễn cấu trúc từ điển dữ liệu nguyên liệu ẩm thực dùng trong hệ thống với 3 cột: Nguyên liệu chuẩn (tên chính danh), Các biến thể đồng nghĩa (tên địa phương, cách gọi khác nhau) và Từ khóa loại trừ (danh sách các từ ghép dễ gây nhầm lẫn ngữ nghĩa).
+
+\noindent\textbf{Diễn giải:} Bảng từ điển này giải quyết bài toán cốt lõi về tính đa dạng và sự nhập nhằng trong tiếng Việt khi xử lý ngôn ngữ tự nhiên. Việc gom các biến thể như ``thịt lợn'', ``ba chỉ'' về nguyên liệu chuẩn ``thịt heo'' giúp tăng độ phủ so khớp tìm kiếm. Đồng thời, danh sách từ khóa loại trừ (Negative Excludes) như phân biệt ``cá'' với ``cà chua'', ``bò'' với ``bơ tỏi'' hay ``gà'' với ``đậu gà'' là chìa khóa giúp thuật toán loại bỏ hoàn toàn các gợi ý sai lệch, ngăn chặn hiện tượng hiểu sai ngữ cảnh của người dùng.
+
+\begin{luuy}
+Cơ chế loại trừ từ khóa \en{(Negative Exclude Rules)} đóng vai trò sống còn trong xử lý tiếng Việt: nếu người dùng tìm kiếm nguyên liệu \code{cá}, hệ thống phải chủ động loại bỏ các từ ghép thực vật như \code{cà chua}, \code{cà rốt}, \code{cà tím} để tránh kết quả gợi ý sai lệch nghiêm trọng.
+\end{luuy}
+
+\section{Công nghệ và Thư viện sử dụng}
+
+Toàn bộ hệ thống FoodAI được thiết kế theo mô hình phân lớp rõ ràng với các công nghệ tiên tiến nhất hiện nay, chi tiết được tổng hợp ở Bảng~\ref{tab:congcu}.
+
+\begin{table}[H]
+\centering
+\caption{Danh mục công nghệ, framework và thư viện sử dụng trong hệ thống.}
+\label{tab:congcu}
+\begin{tabularx}{\textwidth}{@{}>{\bfseries\color{daunavy}}p{4.2cm} >{\color{daumaroon}}p{2.2cm} >{\raggedright\arraybackslash}X@{}}
+\toprule
+\rowcolor{gray100}\bfseries\color{daunavy}Thành phần & \bfseries\color{daumaroon}Phiên bản & \bfseries\color{daunavy}Mục đích sử dụng \\
+\midrule
+Node.js \& Express      & 20.x / 4.18  & Môi trường máy chủ Backend RESTful API \\
+TypeScript              & 5.4.x        & Ngôn ngữ lập trình kiểm soát kiểu tĩnh an toàn \\
+React \& Vite           & 18.2 / 5.1   & Thư viện xây dựng giao diện người dùng SPA \\
+Tailwind CSS            & 3.4.1        & Thiết kế giao diện hiện đại, responsive \\
+MySQL / better-sqlite3  & 8.0 / 9.4    & Cơ sở dữ liệu lưu trữ người dùng, công thức, ảnh \\
+@google/generative-ai   & 0.21.0       & SDK kết nối và tương tác với Google Gemini AI \\
+JSON Web Token (JWT)    & 9.0.2        & Cơ chế xác thực và bảo mật phiên người dùng \\
+bcryptjs                & 2.4.3        & Mã hóa một chiều mật khẩu người dùng an toàn \\
+Recharts                & 2.12.2       & Thư viện vẽ biểu đồ thống kê cho trang quản trị \\
+Lucide React            & 0.344        & Bộ biểu tượng giao diện trực quan \\
+Python \& BeautifulSoup & 3.11 / 4.x   & Công cụ cào và trích xuất dữ liệu ẩm thực Cookpad \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\noindent\textbf{Mô tả:} Bảng~\ref{tab:congcu} tổng hợp đầy đủ danh mục các công nghệ, framework, thư viện và bộ công cụ được lựa chọn phát triển hệ thống FoodAI, bao gồm tên thành phần, phiên bản cụ thể và mục đích sử dụng tương ứng cho từng tầng kiến trúc (Frontend, Backend, AI Engine, Cơ sở dữ liệu và Công cụ cào dữ liệu).
+
+\noindent\textbf{Diễn giải:} Việc lựa chọn hệ sinh thái công nghệ trong bảng dựa trên tiêu chí tính hiện đại, độ ổn định và hiệu năng cao. Node.js kết hợp TypeScript đảm bảo an toàn kiểu dữ liệu và xử lý bất đồng bộ mượt mà ở Backend; React 18 với Vite và Tailwind CSS tối ưu hóa tốc độ tải trang và trải nghiệm người dùng ở Frontend; SDK Google Generative AI cung cấp kết nối trực tiếp đến mô hình Gemini tiên tiến~\cite{GoogleGenAISDK}; tiêu chuẩn JSON Web Token (JWT)~\cite{Jones2015JWT} và thuật toán băm BCrypt~\cite{Provos1999Bcrypt} đảm bảo an ninh xác thực và mã hóa mật khẩu; còn MySQL 8.0 bảo đảm tính toàn vẹn của dữ liệu quan hệ và phục vụ đắc lực cho tầng dự phòng Fallback khi mất mạng~\cite{NodeJSOfficial, ExpressOfficial, TypeScriptOfficial, ReactOfficial, MySQLManual, Cookpad2024, PexelsAPI2024}.
+
+\section{Các công trình liên quan}
+
+Các nghiên cứu về hệ thống gợi ý món ăn \en{(Food Recommendation Systems)} trên thế giới đã trải qua nhiều giai đoạn phát triển~\cite{Trattner2017}. Giai đoạn đầu chủ yếu dựa trên kỹ thuật lọc cộng tác \en{(Collaborative Filtering)} hoặc phân rã ma trận \en{(Matrix Factorization)}. Ưu điểm của phương pháp này là khai thác tốt hành vi người dùng, nhưng gặp hạn chế nghiêm trọng về vấn đề \en{Cold-Start} (không thể gợi ý cho người dùng mới hoặc khi danh sách nguyên liệu nhập vào chưa từng xuất hiện trong lịch sử).
+
+Những năm gần đây, hướng tiếp cận sử dụng cơ sở tri thức \en{(Knowledge Graphs)} và xử lý ngôn ngữ tự nhiên đã giúp cải thiện khả năng khớp công thức~\cite{Nguyen2020}. Tuy nhiên, các hệ thống này vẫn bị giới hạn trong tập công thức cố định sẵn có, không thể tự sáng tạo ra công thức mới khi người dùng có các nguyên liệu không phổ biến.
+
+Đồ án này kế thừa ưu điểm của cả hai trường phái bằng cách đề xuất \textbf{Kiến trúc gợi ý Hybrid}: tận dụng khả năng sáng tạo không giới hạn của Mô hình ngôn ngữ lớn (Google Gemini) làm động cơ tạo sinh chính, kết hợp với cơ sở tri thức công thức Cookpad và bộ lọc ngữ nghĩa tiếng Việt làm hàng rào kiểm soát chất lượng và phương án dự phòng khi mất kết nối mạng.

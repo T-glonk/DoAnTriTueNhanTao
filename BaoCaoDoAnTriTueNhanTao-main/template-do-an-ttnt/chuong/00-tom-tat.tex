@@ -1,0 +1,15 @@
+% ---------------------------------------------------------------------
+%  TÓM TẮT
+% ---------------------------------------------------------------------
+\begin{abstract}
+
+Trong cuộc sống hiện đại, bài toán quản lý nguyên liệu thực phẩm gia đình và trả lời câu hỏi \en{``Hôm nay nấu món gì?''} là nhu cầu thường nhật của hàng triệu người nội trợ. Việc không biết tận dụng các nguyên liệu có sẵn trong tủ lạnh không chỉ gây lãng phí thực phẩm mà còn tốn kém thời gian và chi phí sinh hoạt. Các hệ thống tra cứu công thức nấu ăn truyền thống thường đòi hỏi người dùng phải biết trước tên món ăn hoặc đưa ra kết quả gượng ép, thiếu tính sáng tạo. Ngược lại, việc ứng dụng trực tiếp các mô hình ngôn ngữ lớn \en{(LLM)} thuần túy thường đối mặt với hiện tượng ảo giác \en{(hallucination)}, tự ý đưa thêm các nguyên liệu đắt tiền hoặc thịt cá mà người dùng không có.
+
+Đồ án này nghiên cứu và phát triển \textbf{Hệ thống AI gợi ý món ăn theo nguyên liệu (FoodAI)} kết hợp giữa mô hình ngôn ngữ lớn thế hệ mới \term{Google Gemini AI} và thuật toán lọc ràng buộc ngữ nghĩa \en{(Heuristic Constraint Filtering)} tiếng Việt. Hệ thống đóng vai trò như một \en{``AI Chef \& Chuyên gia dinh dưỡng''}, có khả năng phân tích danh sách nguyên liệu người dùng nhập, tạo sinh từ 4 đến 6 món ăn đa dạng về phương pháp chế biến (xào, canh, chiên, kho, gỏi, điểm tâm), ước tính chi tiết hàm lượng dinh dưỡng (calo, protein, carbs, chất béo, chất xơ, vitamin), đồng thời tự động truy xuất hình ảnh món ăn thực tế chất lượng cao từ kho dữ liệu Cookpad và các nền tảng ảnh trực tuyến. Để đảm bảo độ sẵn sàng cao, hệ thống tích hợp cơ chế dự phòng \en{(Fallback)} tự động tra cứu từ cơ sở dữ liệu nội bộ khi mất kết nối mạng hoặc quá hạn mức \en{API}.
+
+Toàn bộ giải pháp được đóng gói thành ứng dụng web hoàn chỉnh với giao diện tương tác hiện đại xây dựng trên nền tảng React, TypeScript, Node.js, Express và cơ sở dữ liệu quan hệ MySQL, hỗ trợ xác thực phân quyền JWT cho người dùng và quản trị viên. Kết quả thử nghiệm trên hàng trăm kịch bản nguyên liệu khác nhau cho thấy hệ thống đạt tỷ lệ bám sát nguyên liệu 98\%, triệt tiêu hoàn toàn lỗi tự bịa thành phần đạm chính, thời gian phản hồi trung bình dưới 2 giây với chế độ dự phòng và dưới 4 giây với chế độ AI, mang lại trải nghiệm tiện ích, tiết kiệm và cá nhân hóa cho người dùng.
+
+\vspace{0.8em}
+\noindent\textbf{Từ khoá:} Trí tuệ nhân tạo, Mô hình ngôn ngữ lớn (LLM), Google Gemini AI, Hệ thống gợi ý món ăn, Xử lý ngôn ngữ tự nhiên tiếng Việt, Phân tích dinh dưỡng, FoodAI.
+
+\end{abstract}

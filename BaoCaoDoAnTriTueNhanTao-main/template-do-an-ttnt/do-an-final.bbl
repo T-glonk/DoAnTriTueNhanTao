@@ -1,0 +1,119 @@
+\begin{thebibliography}{10}
+
+\bibitem{Adomavicius2005}
+Gediminas Adomavicius and Alexander Tuzhilin.
+\newblock Toward the next generation of recommender systems: A survey of the
+  state-of-the-art and possible extensions.
+\newblock {\em IEEE Transactions on Knowledge and Data Engineering},
+  17(6):734--749, 2005.
+
+\bibitem{Brown2020}
+Tom~B. Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared Kaplan,
+  Prafulla Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda
+  Askell, et~al.
+\newblock Language models are few-shot learners.
+\newblock {\em Advances in Neural Information Processing Systems (NeurIPS)},
+  33:1877--1901, 2020.
+
+\bibitem{Cookpad2024}
+{Cookpad Inc.}
+\newblock Cookpad vietnam: Mạng xã hội chia sẻ công thức nấu ăn
+  lớn nhất việt nam.
+\newblock Cookpad Community Platform, 2024.
+
+\bibitem{ExpressOfficial}
+{Express.js Team}.
+\newblock Express: Fast, unopinionated, minimalist web framework for node.js.
+\newblock OpenJS Foundation, 2024.
+
+\bibitem{Gemini2023}
+{Gemini Team, Google}.
+\newblock Gemini: A family of highly capable multimodal models.
+\newblock {\em arXiv preprint arXiv:2312.11805}, 2023.
+
+\bibitem{GoogleGenAISDK}
+{Google LLC}.
+\newblock Google gen ai {SDK} for node.js and typescript documentation.
+\newblock Google AI for Developers, 2024.
+
+\bibitem{Ji2023Hallucination}
+Ziwei Ji, Nayeon Lee, Rita Frieske, Tiezheng Yu, Dan Su, Yan Xu, Etsuko Ishii,
+  Ye~Jin Bang, Andrea Madotto, and Pascale Fung.
+\newblock Survey of hallucination in natural language generation.
+\newblock {\em ACM Computing Surveys}, 55(12):1--38, 2023.
+
+\bibitem{Jones2015JWT}
+Michael~B. Jones, John Bradley, and Nat Sakimura.
+\newblock {JSON Web Token (JWT)}.
+\newblock RFC 7519, Internet Engineering Task Force (IETF), 2015.
+
+\bibitem{HoangKiem}
+Hoàng Kiếm.
+\newblock {\em Giáo trình nhập môn Trí tuệ Nhân tạo}.
+\newblock NXB Đại học Quốc gia Thành phố Hồ Chí Minh, 2007.
+
+\bibitem{Lewis2020RAG}
+Patrick Lewis, Ethan Perez, Aleksandara Piktus, Fabio Petroni, Vladimir
+  Karpukhin, Naman Goyal, Heinrich K{\"u}ttler, Mike Lewis, Wen tau Yih, Tim
+  Rockt{\"a}schel, Sebastian Riedel, and Douwe Kiela.
+\newblock Retrieval-augmented generation for knowledge-intensive {NLP} tasks.
+\newblock In {\em Advances in Neural Information Processing Systems (NeurIPS)},
+  volume~33, pages 9459--9474, 2020.
+
+\bibitem{TypeScriptOfficial}
+{Microsoft Corporation}.
+\newblock Typescript: Typed javascript at any scale.
+\newblock Microsoft Documentation, 2024.
+
+\bibitem{Nguyen2020}
+Dat~Quoc Nguyen and Anh~Tuan Nguyen.
+\newblock {PhoBERT}: Pre-trained language models for vietnamese.
+\newblock In {\em Findings of the Association for Computational Linguistics:
+  EMNLP 2020}, pages 1037--1042, 2020.
+
+\bibitem{NodeJSOfficial}
+{Node.js Foundation}.
+\newblock Node.js v20.x long-term support ({LTS}) documentation.
+\newblock OpenJS Foundation, 2024.
+
+\bibitem{MySQLManual}
+{Oracle Corporation}.
+\newblock Mysql 8.0 reference manual.
+\newblock Oracle Help Center, 2024.
+
+\bibitem{PexelsAPI2024}
+{Pexels Inc.}
+\newblock Pexels rest api: High quality free stock photos and videos
+  documentation.
+\newblock Canva / Pexels, 2024.
+
+\bibitem{Provos1999Bcrypt}
+Niels Provos and David Mazi{\`e}res.
+\newblock A future-adaptable password scheme.
+\newblock In {\em Proceedings of the FREENIX Track: 1999 USENIX Annual
+  Technical Conference}, pages 81--91, 1999.
+
+\bibitem{ReactOfficial}
+{React Team, Meta}.
+\newblock React 18: The library for web and native user interfaces.
+\newblock Meta Platforms, Inc., 2024.
+
+\bibitem{RussellNorvig2021}
+Stuart Russell and Peter Norvig.
+\newblock {\em Artificial Intelligence: A Modern Approach}.
+\newblock Pearson, 4th edition, 2021.
+
+\bibitem{Trattner2017}
+Christoph Trattner and David Elsweiler.
+\newblock Food recommender systems: Important factors, challenges and future
+  directions.
+\newblock {\em ACM Computing Surveys}, 50(1):1--34, 2017.
+
+\bibitem{Vaswani2017}
+Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones,
+  Aidan~N. Gomez, {\L}ukasz Kaiser, and Illia Polosukhin.
+\newblock Attention is all you need.
+\newblock In {\em Advances in Neural Information Processing Systems (NeurIPS)},
+  volume~30, pages 5998--6008, 2017.
+
+\end{thebibliography}

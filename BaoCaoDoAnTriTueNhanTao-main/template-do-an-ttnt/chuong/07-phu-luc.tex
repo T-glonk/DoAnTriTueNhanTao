@@ -1,0 +1,81 @@
+% ---------------------------------------------------------------------
+%  PHỤ LỤC
+% ---------------------------------------------------------------------
+\chapter{Phụ lục}
+\markboth{Phụ lục}{}
+
+\section*{A. Hướng dẫn cài đặt và chạy chương trình}
+\phantomsection
+\addcontentsline{toc}{section}{A. Hướng dẫn cài đặt và chạy chương trình}
+
+Để cài đặt và triển khai hệ thống FoodAI trên máy tính cá nhân hoặc máy chủ thử nghiệm, người dùng thực hiện tuần tự theo các bước dưới đây:
+
+\begin{lstlisting}[language=bash, caption={Các bước cấu hình môi trường và khởi chạy ứng dụng FoodAI.}]
+# 1. Clone ma nguon du an tu kho luu tru Git
+git clone https://github.com/phamtanhao/food-recommendation-ai.git
+cd food-recommendation-ai
+
+# 2. Cau hinh bien moi truong cho Backend
+cd backend
+cp .env.example .env
+# Chinh sua cac tham so trong file .env:
+# GEMINI_API_KEY=AIzaSy... (Khoa Google Gemini API)
+# PEXELS_API_KEY=...      (Khoa Pexels API)
+# JWT_SECRET=super_secret_jwt_key_2026
+# PORT=5000
+
+# 3. Cai dat thu vien va khoi tao co so du lieu MySQL / SQLite
+npm install
+npm run db:init      # Tu dong tao cac bang va nap tai khoan mac dinh
+npm run db:seed      # Nap kho tri thuc 220 mon an Cookpad tu JSON
+
+# 4. Khoi chay may chu Backend (Lang nghe tai cong 5000)
+npm run dev
+
+# 5. Mo cua so Terminal moi de cai dat va chay Frontend
+cd ../frontend
+npm install
+npm run dev          # Khoi chay ung dung Vite tai http://localhost:5173
+
+# 6. Tai khoan dang nhap thu nghiem (Demo Accounts):
+# - Tai khoan Admin: admin@foodsystem.com    / Mat khau: Admin@123456
+# - Tai khoan User:  user@foodsystem.com     / Mat khau: User@123456
+\end{lstlisting}
+
+\section*{B. Bảng tự kiểm trước khi nộp đồ án}
+\phantomsection
+\addcontentsline{toc}{section}{B. Bảng tự kiểm trước khi nộp đồ án}
+
+Bảng đối chiếu mười tiêu chuẩn chất lượng theo Rubric đánh giá học phần AIP202:
+
+\begin{tukiem}
+  \item Sản phẩm chạy ổn định trên môi trường máy tính khác, không phụ thuộc cục bộ.
+  \item Đã chạy thử nghiệm đầy đủ các luồng nghiệp vụ trên đúng môi trường trình chiếu bảo vệ.
+  \item Mã nguồn được quản lý chuyên nghiệp bằng kho lưu trữ \code{git}, phân chia nhánh và commit rõ ràng.
+  \item Có đầy đủ tệp hướng dẫn \code{README.md}, \code{package.json} và tài liệu mô tả API.
+  \item Mọi hình vẽ, sơ đồ kiến trúc, bảng số liệu và giải thuật đều có chú thích, nhãn tham chiếu và được trích dẫn trong thân bài.
+  \item Mọi mục tiêu đề ra ở Chương~\ref{ch:modau} đều được đối chiếu và giải trình kết quả cụ thể ở Chương~\ref{ch:ketqua}.
+  \item Mọi số liệu thực nghiệm trong báo cáo được đo đạc từ hệ thống chạy thật, bảo đảm tính trung thực học thuật.
+  \item Mọi tài liệu tham khảo trong \code{refs.bib} đều được trích dẫn ít nhất một lần theo chuẩn IEEE.
+  \item Đã khai báo minh bạch phần ứng dụng mô hình Trí tuệ nhân tạo (Google Gemini) và cơ chế kiểm soát thuật toán.
+  \item Đã kiểm tra toàn bộ bản in PDF, loại bỏ hoàn toàn các hộp gợi ý và khối văn mẫu.
+\end{tukiem}
+
+\section*{C. Nhận xét của giảng viên hướng dẫn}
+\phantomsection
+\addcontentsline{toc}{section}{C. Nhận xét của giảng viên hướng dẫn}
+
+\khungnhanxet[7.5cm]
+
+\vspace{0.8em}
+\noindent\begin{minipage}[t]{0.5\textwidth}
+\color{daunavy}
+{\color{daumaroon}\bfseries Điểm số}
+
+\vspace{0.7em}
+\dongchamnhan{Bằng số:}
+
+\vspace{0.9em}
+\dongchamnhan{Bằng chữ:}
+\end{minipage}\hfill
+\okyten{\dauGVHD}{Giảng viên hướng dẫn}

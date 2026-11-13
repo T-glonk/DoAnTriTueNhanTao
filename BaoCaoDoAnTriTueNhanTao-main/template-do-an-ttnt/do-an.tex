@@ -1,0 +1,66 @@
+% !TEX program = xelatex
+\documentclass[12pt, a4paper, oneside]{book}
+\input{styles/settings}
+
+% =====================================================================
+%  THÔNG TIN ĐỒ ÁN
+% =====================================================================
+\crname{BÁO CÁO ĐỒ ÁN TRÍ TUỆ NHÂN TẠO}
+\cmonhoc{}
+\ctname{HỆ THỐNG AI GỢI Ý MÓN ĂN\\THEO NGUYÊN LIỆU}
+\cstuname{Phạm Tấn Hào & MSSV: 2351220282\\Trần Quốc Trung & MSSV: 2351220096}
+\cfootername{Phạm Tấn Hào (2351220282) \textperiodcentered{} Trần Quốc Trung (2351220096)}
+\cmssv{}
+\clopsv{23CT2}
+\csCouncil{Công nghệ thông tin}
+\csSupervise{TS. Đỗ Phúc Hảo}
+\cttime{2025--2026}
+\csdeptname{KHOA CÔNG NGHỆ THÔNG TIN}
+\csplace{Đà Nẵng}
+
+\begin{document}
+
+\coverpage
+
+% ---------------------------------------------------------------------
+%  PHẦN ĐẦU
+% ---------------------------------------------------------------------
+\frontmatter
+\dauPageStyle
+
+\input{chuong/00-loi-cam-doan}
+\input{chuong/00-loi-cam-on}
+\input{chuong/00-tom-tat}
+
+\tableofcontents
+\listoffigures
+\listoftables
+\listofalgorithms
+
+% ---------------------------------------------------------------------
+%  THÂN BÁO CÁO
+% ---------------------------------------------------------------------
+\mainmatter
+\dauPageStyle
+
+\input{chuong/01-mo-dau}
+\input{chuong/02-co-so-ly-thuyet}
+\input{chuong/03-phan-tich-thiet-ke}
+\input{chuong/04-cai-dat}
+\input{chuong/05-ket-qua-danh-gia}
+\input{chuong/06-ket-luan}
+
+% ---------------------------------------------------------------------
+%  TÀI LIỆU THAM KHẢO VÀ PHỤ LỤC
+% ---------------------------------------------------------------------
+\backmatter
+
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Tài liệu tham khảo}
+\bibliographystyle{plain}
+\bibliography{refs}
+
+\input{chuong/07-phu-luc}
+
+\end{document}

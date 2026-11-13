@@ -34,6 +34,7 @@ export function getPool(): Pool {
       charset: 'utf8mb4',
       timezone: '+07:00',
       multipleStatements: true,
+      ssl: process.env.DB_SSL === 'true' || process.env.DB_HOST?.includes('tidbcloud.com') || process.env.DB_HOST?.includes('aivencloud.com') ? { rejectUnauthorized: false } : undefined,
     };
     pool = mysql.createPool(dbConfig);
   }

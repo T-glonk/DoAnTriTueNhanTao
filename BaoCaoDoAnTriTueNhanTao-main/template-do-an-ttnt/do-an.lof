@@ -1,0 +1,28 @@
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Sơ đồ phân rã ca sử dụng (Use Case Diagram) của hệ thống FoodAI.}}{13}{figure.caption.10}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Sơ đồ tuần tự quy trình Đăng ký tài khoản người dùng mới.}}{14}{figure.caption.11}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Sơ đồ tuần tự quy trình Đăng nhập và Phân quyền người dùng (JWT).}}{15}{figure.caption.12}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Sơ đồ tuần tự quy trình Gợi ý món ăn thông minh Hybrid.}}{17}{figure.caption.13}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Sơ đồ tuần tự quy trình Xem chi tiết công thức nấu và Phân tích dinh dưỡng.}}{18}{figure.caption.14}%
+\contentsline {figure}{\numberline {3.6}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Sơ đồ tuần tự quy trình Quản lý và Lưu món ăn yêu thích.}}{19}{figure.caption.15}%
+\contentsline {figure}{\numberline {3.7}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Sơ đồ tuần tự quy trình Quản trị tài khoản người dùng.}}{20}{figure.caption.16}%
+\contentsline {figure}{\numberline {3.8}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Sơ đồ kiến trúc phân tầng tổng thể của hệ thống FoodAI.}}{21}{figure.caption.17}%
+\contentsline {figure}{\numberline {3.9}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Sơ đồ khối luồng xử lý gợi ý món ăn thông minh (Hybrid Flowchart).}}{24}{figure.caption.20}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Giao diện Đăng ký tài khoản người dùng mới trên FoodAI.}}{31}{figure.caption.21}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Giao diện Đăng nhập hệ thống (hỗ trợ phím tắt tài khoản Demo).}}{32}{figure.caption.22}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Giao diện Bảng điều khiển Gợi ý món ăn thông minh (Home Dashboard).}}{33}{figure.caption.23}%
+\contentsline {figure}{\numberline {4.4}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Giao diện Modal Chi tiết Công thức nấu và Phân tích dinh dưỡng từ AI Chef.}}{34}{figure.caption.24}%
+\contentsline {figure}{\numberline {4.5}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Giao diện Quản lý Danh sách Món ăn yêu thích của người dùng.}}{35}{figure.caption.25}%
+\contentsline {figure}{\numberline {4.6}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Giao diện Lịch sử tìm kiếm nguyên liệu và Tính năng tái sử dụng (Dùng lại).}}{36}{figure.caption.26}%
+\contentsline {figure}{\numberline {4.7}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Giao diện Quản lý Thông tin tài khoản cá nhân và Đổi mật khẩu.}}{37}{figure.caption.27}%
+\contentsline {figure}{\numberline {4.8}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Giao diện Bảng điều khiển Tổng quan Quản trị và Thống kê thời gian thực.}}{38}{figure.caption.28}%
+\contentsline {figure}{\numberline {4.9}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Giao diện Quản lý danh sách Người dùng và Phân quyền tài khoản.}}{39}{figure.caption.29}%
+\contentsline {figure}{\numberline {4.10}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Giao diện Quản lý Kho Món Ăn và Hình ảnh Cookpad CDN (MySQL).}}{40}{figure.caption.30}%
+\contentsline {figure}{\numberline {4.11}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Giao diện Giám sát Lịch sử Tìm kiếm và Nhật ký AI Query Logs.}}{41}{figure.caption.31}%
+\contentsline {figure}{\numberline {4.12}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Giao diện Cấu hình Hệ thống, Giám sát Mô hình AI Gemini và CSDL MySQL.}}{42}{figure.caption.32}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }

@@ -1,0 +1,40 @@
+% ---------------------------------------------------------------------
+%  CHƯƠNG 6 — KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN
+% ---------------------------------------------------------------------
+\chapter{Kết luận và hướng phát triển}
+\label{ch:ketluan}
+
+\begin{muctieu}
+Chương cuối cùng tổng kết các đóng góp chính của đồ án, rút ra những bài học kinh nghiệm sâu sắc trong quá trình nghiên cứu ứng dụng Trí tuệ nhân tạo và đề xuất các định hướng phát triển mở rộng trong tương lai.
+\end{muctieu}
+
+\section{Kết luận}
+
+Đồ án \textbf{``Hệ thống AI gợi ý món ăn theo nguyên liệu''} đã hoàn thành toàn diện các mục tiêu nghiên cứu và phát triển đặt ra ban đầu. Hệ thống giải quyết hiệu quả bài toán thực tế của hàng triệu gia đình: tận dụng tối đa các nguyên liệu sẵn có trong tủ lạnh để tạo ra những bữa ăn thơm ngon, chuẩn vị Việt Nam, tiết kiệm thời gian, giảm thiểu lãng phí thực phẩm và hỗ trợ quản lý chế độ dinh dưỡng lành mạnh.
+
+Những đóng góp chính của đồ án bao gồm:
+\begin{itemize}[leftmargin=1.6em, itemsep=2pt]
+  \item \textbf{Đề xuất kiến trúc gợi ý Hybrid hiệu quả:} Kết hợp hài hòa giữa năng lực sáng tạo phong phú của Mô hình ngôn ngữ lớn (Google Gemini AI) với tính chuẩn xác, nghiêm ngặt của thuật toán lọc ràng buộc ngữ nghĩa tiếng Việt.
+  \item \textbf{Giải quyết triệt để bài toán ảo giác (Hallucination):} Ngăn chặn hoàn toàn việc AI tự ý thêm các loại thịt cá đắt tiền mà người dùng không có sẵn, đảm bảo công thức luôn có tính khả thi cao trong thực tế.
+  \item \textbf{Xây dựng kho dữ liệu và Pipeline hình ảnh phong phú:} Tự động hóa việc thu thập và chuẩn hóa hơn 220 món ăn Cookpad, đối soát và gán hình ảnh minh họa chân thực, chất lượng cao.
+  \item \textbf{Hiện thực hóa sản phẩm phần mềm hoàn chỉnh:} Đóng gói thành ứng dụng web đơn trang hiện đại (React, TypeScript, Express, MySQL) với đầy đủ chức năng quản trị, xác thực JWT an toàn và cơ chế dự phòng hoạt động bền bỉ.
+\end{itemize}
+
+\section{Bài học rút ra}
+
+Quá trình thực hiện đồ án đã đem lại những bài học kinh nghiệm chuyên môn sâu sắc:
+\begin{enumerate}[leftmargin=1.6em, itemsep=3pt]
+  \item \textbf{Vai trò và giới hạn của Trí tuệ nhân tạo:} Mô hình ngôn ngữ lớn (LLM) là công cụ cực kỳ mạnh mẽ cho bài toán tạo sinh văn bản và tư duy ẩm thực, nhưng không thể giao toàn quyền mà không có cơ chế giám sát. Việc kết hợp AI với các thuật toán luật định \en{(Rule-based)} và cơ sở dữ liệu truyền thống là chìa khóa để xây dựng các sản phẩm thực tế có độ tin cậy cao.
+  \item \textbf{Tầm quan trọng của Kỹ thuật Prompt Engineering:} Việc phân vai chuyên gia rõ ràng, định nghĩa schema JSON đầu ra tường minh và thiết lập các quy tắc loại trừ trong câu lệnh giúp tiết kiệm tài nguyên xử lý và hạn chế lỗi cú pháp.
+  \item \textbf{Tư duy thiết kế hệ thống chịu lỗi (Fault-Tolerant System):} Trong môi trường sản xuất, các API của bên thứ ba hoàn toàn có thể gặp sự cố mất mạng hoặc quá tải. Việc xây dựng sẵn tầng dự phòng nội bộ \en{(Fallback Layer)} đảm bảo trải nghiệm của người dùng không bao giờ bị đứt quãng.
+\end{enumerate}
+
+\section{Hướng phát triển}
+
+Để nâng cao hơn nữa giá trị thực tiễn của sản phẩm, các hướng phát triển tiềm năng trong tương lai bao gồm:
+\begin{itemize}[leftmargin=1.6em, itemsep=2pt]
+  \item \textbf{Tích hợp Thị giác máy tính (Computer Vision):} Huấn luyện mô hình nhận diện vật thể (YOLOv8 / Vision Transformer) cho phép người dùng chỉ cần chụp ảnh các khay thực phẩm trong tủ lạnh là hệ thống tự động nhận diện và trích xuất danh sách nguyên liệu.
+  \item \textbf{Lập kế hoạch thực đơn tuần thông minh (Weekly Meal Planner):} Tự động phân bổ thực đơn 7 ngày cho cả gia đình, cân đối tổng lượng calo và vi chất theo thể trạng người dùng (hỗ trợ chế độ ăn kiêng Keto, giảm cân, người bệnh tiểu đường hoặc tim mạch).
+  \item \textbf{Phát triển ứng dụng di động đa nền tảng:} Xây dựng ứng dụng di động bằng React Native, tích hợp tính năng nhắc nhở hạn sử dụng của thực phẩm và tạo danh sách đi chợ tự động.
+  \item \textbf{Mạng xã hội ẩm thực cộng đồng:} Cho phép người dùng đánh giá món ăn, chấm điểm độ ngon của gợi ý AI và chia sẻ hình ảnh thành phẩm sau khi nấu.
+\end{itemize}

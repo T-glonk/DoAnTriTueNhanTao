@@ -166,8 +166,12 @@ export async function initializeDatabase(): Promise<void> {
   const [recipeCount] = await pool.query<any[]>('SELECT COUNT(*) as total FROM recipes');
   if (recipeCount[0].total === 0) {
     const jsonPaths = [
-      path.resolve(__dirname, '../../../crawler/cookpad_recipes.json'),
-      path.resolve(process.cwd(), 'crawler/cookpad_recipes.json'),
+      path.resolve(__dirname, '../../data/cookpad_recipes.json'),
+      path.resolve(__dirname, '../data/cookpad_recipes.json'),
+      path.resolve(process.cwd(), 'backend/data/cookpad_recipes.json'),
+      path.resolve(process.cwd(), 'data/cookpad_recipes.json'),
+      path.resolve(__dirname, '../../../_archive/crawler/cookpad_recipes.json'),
+      path.resolve(process.cwd(), '_archive/crawler/cookpad_recipes.json'),
     ];
 
     let rawData = '';

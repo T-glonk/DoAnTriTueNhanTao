@@ -1,0 +1,55 @@
+\xpg@aux {}{vietnamese}
+\contentsline {chapter}{Lời cam đoan}{i}{chapter*.1}%
+\contentsline {chapter}{Lời cảm ơn}{ii}{chapter*.2}%
+\contentsline {chapter}{Tóm tắt}{iii}{chapter*.3}%
+\contentsline {chapter}{\numberline {1}Mở đầu}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Lý do chọn đề tài}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Mục tiêu của đồ án}{2}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}Mục tiêu tổng quát}{2}{subsection.1.2.1}%
+\contentsline {subsection}{\numberline {1.2.2}Mục tiêu cụ thể}{2}{subsection.1.2.2}%
+\contentsline {section}{\numberline {1.3}Phạm vi và đối tượng}{3}{section.1.3}%
+\contentsline {subsection}{\numberline {1.3.1}Phạm vi nghiên cứu và triển khai}{3}{subsection.1.3.1}%
+\contentsline {subsection}{\numberline {1.3.2}Đối tượng phục vụ}{4}{subsection.1.3.2}%
+\contentsline {section}{\numberline {1.4}Bố cục báo cáo}{4}{section.1.4}%
+\contentsline {chapter}{\numberline {2}Cơ sở lý thuyết và công nghệ}{5}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Kiến thức nền tảng về Trí tuệ nhân tạo và LLM}{5}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}Trí tuệ nhân tạo tạo sinh và Mô hình ngôn ngữ lớn (LLM)}{5}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}Kỹ thuật Prompt Engineering và Xuất dữ liệu có cấu trúc}{6}{subsection.2.1.2}%
+\contentsline {subsection}{\numberline {2.1.3}Khống chế hiện tượng ảo giác (Hallucination)}{6}{subsection.2.1.3}%
+\contentsline {section}{\numberline {2.2}Thuật toán gợi ý và Xử lý ngôn ngữ tự nhiên tiếng Việt}{7}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Hệ thống gợi ý dựa trên nội dung (Content-Based Recommendation)}{7}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Xử lý ngôn ngữ tự nhiên và Chuẩn hóa tiếng Việt}{7}{subsection.2.2.2}%
+\contentsline {section}{\numberline {2.3}Công nghệ và Thư viện sử dụng}{8}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Các công trình liên quan}{9}{section.2.4}%
+\contentsline {chapter}{\numberline {3}Phân tích và thiết kế}{11}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Phân tích yêu cầu hệ thống}{11}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Yêu cầu chức năng (Functional Requirements --- FR)}{11}{subsection.3.1.1}%
+\contentsline {subsection}{\numberline {3.1.2}Yêu cầu phi chức năng (Non-Functional Requirements --- NFR)}{12}{subsection.3.1.2}%
+\contentsline {section}{\numberline {3.2}Đặc tả Use Case và Quy trình nghiệp vụ}{13}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Thiết kế kiến trúc hệ thống}{13}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Thiết kế cơ sở dữ liệu}{14}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Thiết kế thuật toán gợi ý và Xử lý ảnh thông minh}{16}{section.3.5}%
+\contentsline {subsection}{\numberline {3.5.1}Luồng thực thi gợi ý món ăn thông minh}{16}{subsection.3.5.1}%
+\contentsline {subsection}{\numberline {3.5.2}Giải thuật gợi ý món ăn Hybrid (Mã giả)}{17}{subsection.3.5.2}%
+\contentsline {chapter}{\numberline {4}Cài đặt và thử nghiệm}{19}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Môi trường triển khai}{19}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Cài đặt các thành phần cốt lõi phía Backend}{19}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Mô-đun dịch vụ Gemini AI và Trích xuất JSON kiên cố}{19}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Mô-đun chuẩn hóa NLP tiếng Việt và So khớp nguyên liệu}{20}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}Mô-đun trích xuất đạm chính và Chấm điểm ảnh Cookpad}{21}{subsection.4.2.3}%
+\contentsline {section}{\numberline {4.3}Cài đặt phía Frontend và Giao diện người dùng}{22}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Kiểm thử hệ thống}{23}{section.4.4}%
+\contentsline {chapter}{\numberline {5}Kết quả và đánh giá}{25}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Kết quả đạt được}{25}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Độ đo và Đánh giá định lượng}{26}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Bàn luận}{27}{section.5.3}%
+\contentsline {section}{\numberline {5.4}Hạn chế}{28}{section.5.4}%
+\contentsline {chapter}{\numberline {6}Kết luận và hướng phát triển}{29}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Kết luận}{29}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Bài học rút ra}{30}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Hướng phát triển}{30}{section.6.3}%
+\contentsline {chapter}{Tài liệu tham khảo}{31}{section*.18}%
+\contentsline {chapter}{Phụ lục}{32}{chapter*.20}%
+\contentsline {section}{A. Hướng dẫn cài đặt và chạy chương trình}{32}{section*.21}%
+\contentsline {section}{B. Bảng tự kiểm trước khi nộp đồ án}{33}{section*.22}%
+\contentsline {section}{C. Nhận xét của giảng viên hướng dẫn}{34}{section*.23}%

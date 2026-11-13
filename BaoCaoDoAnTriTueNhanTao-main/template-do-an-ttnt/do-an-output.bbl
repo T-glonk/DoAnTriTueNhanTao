@@ -1,0 +1,54 @@
+\begin{thebibliography}{1}
+
+\bibitem{Adomavicius2005}
+Gediminas Adomavicius and Alexander Tuzhilin.
+\newblock Toward the next generation of recommender systems: A survey of the
+  state-of-the-art and possible extensions.
+\newblock {\em IEEE Transactions on Knowledge and Data Engineering},
+  17(6):734--749, 2005.
+
+\bibitem{Brown2020}
+Tom~B. Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared Kaplan,
+  Prafulla Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda
+  Askell, et~al.
+\newblock Language models are few-shot learners.
+\newblock {\em Advances in Neural Information Processing Systems (NeurIPS)},
+  33:1877--1901, 2020.
+
+\bibitem{Gemini2023}
+{Gemini Team, Google}.
+\newblock Gemini: A family of highly capable multimodal models.
+\newblock {\em arXiv preprint arXiv:2312.11805}, 2023.
+
+\bibitem{Min2023}
+Bonan Min, Hayley Ross, Elior Sulem, Amir Pouran~Ben Veyseh, Thien~Huu Nguyen,
+  Oscar Sainz, Eneko Agirre, Ilana Heintz, and Dan Roth.
+\newblock Recent advances in natural language processing via large language
+  models: A survey.
+\newblock {\em ACM Computing Surveys}, 56(2):1--40, 2023.
+
+\bibitem{Nguyen2020}
+Dat~Quoc Nguyen and Anh~Tuan Nguyen.
+\newblock Phobert: Pre-trained language models for vietnamese.
+\newblock In {\em Findings of the Association for Computational Linguistics:
+  EMNLP 2020}, pages 1037--1042, 2020.
+
+\bibitem{RussellNorvig2021}
+Stuart Russell and Peter Norvig.
+\newblock {\em Artificial Intelligence: A Modern Approach}.
+\newblock Pearson, 4th edition, 2021.
+
+\bibitem{Trattner2017}
+Christoph Trattner and David Elsweiler.
+\newblock Food recommender systems: Important factors, challenges and future
+  directions.
+\newblock {\em ACM Computing Surveys}, 50(1):1--34, 2017.
+
+\bibitem{Vaswani2017}
+Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones,
+  Aidan~N. Gomez, {\L}ukasz Kaiser, and Illia Polosukhin.
+\newblock Attention is all you need.
+\newblock In {\em Advances in Neural Information Processing Systems (NeurIPS)},
+  volume~30, pages 5998--6008, 2017.
+
+\end{thebibliography}

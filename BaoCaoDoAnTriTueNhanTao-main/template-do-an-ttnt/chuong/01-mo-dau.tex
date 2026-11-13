@@ -1,0 +1,68 @@
+% ---------------------------------------------------------------------
+%  CHƯƠNG 1 — MỞ ĐẦU
+% ---------------------------------------------------------------------
+\chapter{Mở đầu}
+\label{ch:modau}
+
+\begin{muctieu}
+Chương mở đầu trình bày bối cảnh thực tế dẫn đến sự ra đời của đề tài, xác định các mục tiêu nghiên cứu cụ thể, phân định phạm vi triển khai và phác thảo bố cục tổng thể của toàn bộ báo cáo đồ án.
+\end{muctieu}
+
+\section{Lý do chọn đề tài}
+
+Trong nhịp sống hiện đại bận rộn, việc tự nấu ăn tại nhà mang lại nhiều lợi ích to lớn về mặt sức khỏe, dinh dưỡng và gắn kết gia đình. Tuy nhiên, một trong những khó khăn phổ biến nhất mà hầu hết mọi người gặp phải mỗi ngày là câu hỏi: \en{``Hôm nay ăn gì?''} hay \en{``Tủ lạnh còn những nguyên liệu này thì nấu được món gì ngon?''}. Theo các khảo sát thực tế về tiêu dùng thực phẩm, một lượng lớn thực phẩm tươi sống, rau củ và thịt cá bị bỏ phí hàng tuần chỉ vì người dùng không biết cách kết hợp các nguyên liệu còn sót lại thành một bữa ăn hoàn chỉnh, dẫn đến tình trạng thực phẩm quá hạn sử dụng và gây lãng phí kinh tế đáng kể.
+
+Các phương pháp tra cứu công thức nấu ăn truyền thống trên các trang mạng xã hội hay ứng dụng thông thường bộc lộ nhiều điểm hạn chế:
+\begin{itemize}[leftmargin=1.6em, itemsep=2pt]
+  \item \textbf{Đòi hỏi biết trước tên món:} Người dùng bắt buộc phải biết rõ tên món ăn cụ thể (ví dụ: \en{``Thịt kho tàu''}, \en{``Canh chua cá lóc''}) để tìm kiếm, điều này không giải quyết được nhu cầu xuất phát từ danh sách các nguyên liệu ngẫu nhiên có sẵn.
+  \item \textbf{Thuật toán so khớp máy móc:} Các hệ thống tìm kiếm từ khóa thông thường thường đưa ra kết quả nghèo nàn nếu nguyên liệu người dùng nhập không khớp hoàn toàn với cơ sở dữ liệu có sẵn.
+  \item \textbf{Thiếu thông tin phân tích dinh dưỡng chuyên sâu:} Đa số công thức chỉ dừng lại ở các bước chế biến mà không cung cấp chỉ số dinh dưỡng (năng lượng \en{calories}, đạm \en{protein}, chất béo \en{fat}, carbohydrate, chất xơ) giúp người dùng quản lý chế độ ăn uống lành mạnh.
+\end{itemize}
+
+Sự bùng nổ của Trí tuệ nhân tạo tạo sinh \en{(Generative AI)} và các Mô hình ngôn ngữ lớn \en{(Large Language Models --- LLMs)}, tiêu biểu như \term{Google Gemini}, đã mở ra cơ hội đột phá để giải quyết triệt để bài toán này. Khả năng hiểu ngữ cảnh sâu sắc, tư duy sáng tạo công thức ẩm thực linh hoạt và khả năng suy luận logic của LLM cho phép hệ thống đóng vai trò như một đầu bếp chuyên nghiệp kiêm chuyên gia dinh dưỡng ảo \en{(AI Chef \& Nutritionist)}. Tuy nhiên, thách thức lớn nhất khi áp dụng LLM là hiện tượng ảo giác \en{(hallucination)} --- mô hình có xu hướng tự ý thêm vào các nguyên liệu thịt cá đắt tiền mà người dùng không có sẵn. 
+
+Do đó, việc nghiên cứu và xây dựng đề tài \textbf{``Hệ thống AI gợi ý món ăn theo nguyên liệu''} là vô cùng cấp thiết. Đề tài kết hợp sức mạnh sáng tạo không giới hạn của \term{Google Gemini AI} với thuật toán lọc ràng buộc ngữ nghĩa tiếng Việt nghiêm ngặt và kho dữ liệu thực nghiệm phong phú từ cộng đồng \term{Cookpad}, mang đến một giải pháp công nghệ toàn diện, hữu ích và có giá trị thực tiễn cao cho cuộc sống hàng ngày.
+
+\section{Mục tiêu của đồ án}
+
+\subsection{Mục tiêu tổng quát}
+Xây dựng một hệ thống ứng dụng web thông minh hoàn chỉnh ứng dụng Trí tuệ nhân tạo, cho phép người dùng nhập vào danh sách nguyên liệu tùy ý hiện có để nhận được các gợi ý món ăn chuẩn vị Việt Nam, kèm theo công thức chế biến chi tiết, phân tích chỉ số dinh dưỡng khoa học và hình ảnh minh họa thực tế hấp dẫn.
+
+\subsection{Mục tiêu cụ thể}
+Để hiện thực hóa mục tiêu tổng quát, đồ án đặt ra các mục tiêu kỹ thuật đo lường được sau:
+\begin{enumerate}[leftmargin=1.6em, itemsep=2pt]
+  \item \textbf{Thu thập và chuẩn hóa dữ liệu ẩm thực:} Xây dựng công cụ thu thập tự động \en{(Crawler)} và chuẩn hóa hơn 200 món ăn truyền thống Việt Nam từ nền tảng Cookpad làm cơ sở tri thức nội bộ và kho ảnh phong phú.
+  \item \textbf{Phát triển mô-đun AI tạo sinh công thức (AI Chef):} Ứng dụng mô hình Google Gemini để phân tích nguyên liệu, thiết kế Prompt kỹ thuật cao tạo sinh từ 4 đến 6 món ăn đa dạng về phong cách chế biến (xào, canh, chiên, kho, gỏi, điểm tâm) với cấu trúc dữ liệu JSON chuẩn mực.
+  \item \textbf{Xây dựng thuật toán ràng buộc nguyên liệu và khử ảo giác:} Cài đặt bộ lọc xử lý ngôn ngữ tự nhiên tiếng Việt \en{(Vietnamese NLP)} nhằm chuẩn hóa dấu Unicode, so khớp từ vựng theo ranh giới từ nguyên vẹn và kiểm soát nghiêm ngặt không cho phép AI tự ý thêm thịt cá lạ khi người dùng không cung cấp.
+  \item \textbf{Tính toán chỉ số dinh dưỡng tự động:} Cung cấp bảng phân tích định lượng dinh dưỡng chuẩn xác (calo, protein, carbs, fat, chất xơ, vitamin C, canxi, sắt) cho từng món ăn được gợi ý.
+  \item \textbf{Thiết kế Pipeline truy xuất hình ảnh đa tầng:} Tự động tìm kiếm và đối soát hình ảnh món ăn thực tế chất lượng cao từ kho Cookpad, Pexels API và danh mục ảnh HD, đảm bảo tính thẩm mỹ trực quan và độ độc nhất của từng món gợi ý.
+  \item \textbf{Xây dựng ứng dụng web phân quyền và cơ chế dự phòng (Fallback):} Hiện thực hóa nền tảng web hoàn chỉnh (React, TypeScript, Express, MySQL) hỗ trợ xác thực JWT, phân quyền Khách hàng và Quản trị viên, cùng cơ chế tự động chuyển sang cơ sở dữ liệu nội bộ khi mất kết nối AI.
+\end{enumerate}
+
+\section{Phạm vi và đối tượng}
+
+\subsection{Phạm vi nghiên cứu và triển khai}
+\begin{itemize}[leftmargin=1.6em, itemsep=2pt]
+  \item \textbf{Về ngôn ngữ và văn hóa ẩm thực:} Tập trung chủ yếu vào văn hóa ẩm thực Việt Nam (món cơm gia đình, món xào, món canh chua/ngọt, món kho mặn, món gỏi nộm truyền thống) với giao diện và dữ liệu bằng tiếng Việt.
+  \item \textbf{Về dữ liệu đầu vào:} Hệ thống tiếp nhận danh sách nguyên liệu nhập qua văn bản hoặc chọn nhanh từ danh mục nguyên liệu phổ biến (tối đa 15 nguyên liệu trong một phiên tìm kiếm).
+  \item \textbf{Về nền tảng phần mềm:} Phát triển dưới dạng ứng dụng web đơn trang \en{(Single Page Application --- SPA)} tương thích linh hoạt trên cả trình duyệt máy tính cá nhân \en{(Desktop)} và thiết bị di động \en{(Mobile Responsive)}.
+  \item \textbf{Giới hạn phạm vi:} Đồ án chưa triển khai tính năng nhận diện nguyên liệu qua camera thời gian thực, chưa tích hợp thanh toán trực tuyến mua sắm nguyên liệu hay đặt món ăn bên ngoài.
+\end{itemize}
+
+\subsection{Đối tượng phục vụ}
+\begin{itemize}[leftmargin=1.6em, itemsep=2pt]
+  \item \textbf{Người dùng thông thường (Khách hàng):} Người nội trợ, sinh viên, người độc thân muốn tự nấu ăn tại nhà từ những nguyên liệu sẵn có trong tủ lạnh một cách nhanh chóng, tiết kiệm và đảm bảo dinh dưỡng.
+  \item \textbf{Quản trị viên (Admin):} Người phụ trách theo dõi tình trạng hệ thống, giám sát thống kê mức độ sử dụng AI, quản lý người dùng và cấu hình các khóa API dịch vụ.
+\end{itemize}
+
+\section{Bố cục báo cáo}
+
+Phần còn lại của báo cáo đồ án được tổ chức thành các chương theo cấu trúc logic như sau:
+\begin{itemize}[leftmargin=1.6em, itemsep=3pt]
+  \item \textbf{Chương~\ref{ch:coso} --- Cơ sở lý thuyết và công nghệ:} Trình bày cơ sở lý thuyết về Trí tuệ nhân tạo, Mô hình ngôn ngữ lớn (LLM), kỹ thuật Prompt Engineering, xử lý ngôn ngữ tự nhiên tiếng Việt và tổng quan các công nghệ, thư viện lập trình được sử dụng.
+  \item \textbf{Chương~\ref{ch:thietke} --- Phân tích và thiết kế:} Phân tích chi tiết yêu cầu bài toán, thiết kế kiến trúc hệ thống 3 tầng, thiết kế cơ sở dữ liệu quan hệ MySQL, lược đồ Use Case, các sơ đồ tuần tự nghiệp vụ cốt lõi và thuật toán gợi ý món ăn Hybrid.
+  \item \textbf{Chương~\ref{ch:caidat} --- Cài đặt và thử nghiệm:} Trình bày môi trường triển khai, cấu trúc mã nguồn các mô-đun cốt lõi phía Backend và Frontend, hình ảnh giao diện thực tế cùng các kịch bản kiểm thử hệ thống.
+  \item \textbf{Chương~\ref{ch:ketqua} --- Kết quả và đánh giá:} Đối chiếu kết quả thực tế với các mục tiêu đề ra, đánh giá định lượng các chỉ số hiệu năng và thảo luận về các ưu điểm, hạn chế của giải pháp.
+  \item \textbf{Chương~\ref{ch:ketluan} --- Kết luận và hướng phát triển:} Tổng kết các đóng góp chính của đồ án, rút ra các bài học kinh nghiệm và đề xuất các hướng mở rộng tiềm năng trong tương lai.
+  \item \textbf{Phụ lục:} Cung cấp tài liệu hướng dẫn cài đặt, cấu hình và khởi chạy ứng dụng, cùng bảng tự kiểm tra chuẩn quy cách.
+\end{itemize}
