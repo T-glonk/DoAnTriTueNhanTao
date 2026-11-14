@@ -162,9 +162,9 @@ export async function initializeDatabase(): Promise<void> {
     console.log('✅ Đã tạo tài khoản Người dùng: user@foodsystem.com / User@123456');
   }
 
-  // Tự động seed dữ liệu Cookpad nếu bảng recipes trống
+  // Tự động seed dữ liệu Cookpad nếu bảng recipes chưa đủ 500 món (bảo đảm cả môi trường Cloud/Render luôn có 552 món thực tế)
   const [recipeCount] = await pool.query<any[]>('SELECT COUNT(*) as total FROM recipes');
-  if (recipeCount[0].total === 0) {
+  if (recipeCount[0].total < 500) {
     const jsonPaths = [
       path.resolve(__dirname, '../../data/cookpad_recipes.json'),
       path.resolve(__dirname, '../data/cookpad_recipes.json'),
