@@ -24,39 +24,39 @@
 \contentsline {chapter}{\numberline {3}Thiết kế hệ thống}{12}{chapter.3}%
 \contentsline {section}{\numberline {3.1}Đặc tả Use Case và Sơ đồ tuần tự nghiệp vụ}{12}{section.3.1}%
 \contentsline {subsection}{\numberline {3.1.1}Sơ đồ phân rã ca sử dụng (Use Case Diagram)}{12}{subsection.3.1.1}%
-\contentsline {subsection}{\numberline {3.1.2}Sơ đồ tuần tự các quy trình nghiệp vụ cốt lõi (Sequence Diagrams)}{13}{subsection.3.1.2}%
+\contentsline {subsection}{\numberline {3.1.2}Sơ đồ tuần tự các quy trình nghiệp vụ cốt lõi (Sequence Diagrams)}{14}{subsection.3.1.2}%
 \contentsline {subsubsection}{\numberline {3.1.2.1}1. Sơ đồ tuần tự Đăng ký tài khoản người dùng mới}{14}{subsubsection.3.1.2.1}%
 \contentsline {subsubsection}{\numberline {3.1.2.2}2. Sơ đồ tuần tự Đăng nhập và Phân quyền người dùng}{15}{subsubsection.3.1.2.2}%
-\contentsline {subsubsection}{\numberline {3.1.2.3}3. Sơ đồ tuần tự Gợi ý món ăn thông minh Hybrid}{16}{subsubsection.3.1.2.3}%
-\contentsline {subsubsection}{\numberline {3.1.2.4}4. Sơ đồ tuần tự Xem chi tiết công thức nấu và Phân tích dinh dưỡng}{17}{subsubsection.3.1.2.4}%
-\contentsline {subsubsection}{\numberline {3.1.2.5}5. Sơ đồ tuần tự Quản lý và Lưu món ăn yêu thích}{18}{subsubsection.3.1.2.5}%
-\contentsline {subsubsection}{\numberline {3.1.2.6}6. Sơ đồ tuần tự Quản trị tài khoản người dùng}{19}{subsubsection.3.1.2.6}%
-\contentsline {section}{\numberline {3.2}Thiết kế kiến trúc hệ thống}{20}{section.3.2}%
-\contentsline {section}{\numberline {3.3}Thiết kế cơ sở dữ liệu}{21}{section.3.3}%
-\contentsline {section}{\numberline {3.4}Thiết kế thuật toán gợi ý và Xử lý ảnh thông minh}{23}{section.3.4}%
-\contentsline {subsection}{\numberline {3.4.1}Luồng thực thi gợi ý món ăn thông minh}{24}{subsection.3.4.1}%
-\contentsline {subsection}{\numberline {3.4.2}Giải thuật gợi ý món ăn theo kiến trúc Database-First RAG (Mã giả)}{25}{subsection.3.4.2}%
-\contentsline {chapter}{\numberline {4}Cài đặt và thử nghiệm}{27}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Môi trường triển khai}{27}{section.4.1}%
-\contentsline {section}{\numberline {4.2}Cài đặt các thành phần cốt lõi phía Backend}{27}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Mô-đun dịch vụ Gemini AI và Trích xuất JSON kiên cố}{27}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Mô-đun chuẩn hóa NLP tiếng Việt và So khớp nguyên liệu}{28}{subsection.4.2.2}%
-\contentsline {subsection}{\numberline {4.2.3}Mô-đun trích xuất đạm chính và Chấm điểm ảnh Cookpad}{30}{subsection.4.2.3}%
-\contentsline {section}{\numberline {4.3}Cài đặt phía Frontend và Giao diện người dùng}{30}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}Giao diện phân hệ Khách hàng (Client Web Application)}{31}{subsection.4.3.1}%
-\contentsline {subsection}{\numberline {4.3.2}Giao diện phân hệ Quản trị viên (Admin Panel)}{37}{subsection.4.3.2}%
-\contentsline {section}{\numberline {4.4}Kiểm thử hệ thống}{43}{section.4.4}%
-\contentsline {chapter}{\numberline {5}Kết quả và đánh giá}{45}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Kết quả đạt được}{45}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Độ đo và Đánh giá định lượng}{46}{section.5.2}%
-\contentsline {section}{\numberline {5.3}Bàn luận}{48}{section.5.3}%
-\contentsline {section}{\numberline {5.4}Hạn chế}{48}{section.5.4}%
-\contentsline {chapter}{\numberline {6}Kết luận và hướng phát triển}{49}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Kết luận}{49}{section.6.1}%
-\contentsline {section}{\numberline {6.2}Bài học rút ra}{50}{section.6.2}%
-\contentsline {section}{\numberline {6.3}Hướng phát triển}{50}{section.6.3}%
-\contentsline {chapter}{Tài liệu tham khảo}{51}{section*.35}%
-\contentsline {chapter}{Phụ lục}{52}{chapter*.37}%
-\contentsline {section}{A. Hướng dẫn cài đặt và chạy chương trình}{52}{section*.38}%
-\contentsline {section}{B. Bảng tự kiểm trước khi nộp đồ án}{53}{section*.39}%
-\contentsline {section}{C. Nhận xét của giảng viên hướng dẫn}{54}{section*.40}%
+\contentsline {subsubsection}{\numberline {3.1.2.3}3. Sơ đồ tuần tự Gợi ý món ăn thông minh Hybrid}{17}{subsubsection.3.1.2.3}%
+\contentsline {subsubsection}{\numberline {3.1.2.4}4. Sơ đồ tuần tự Xem chi tiết công thức nấu và Phân tích dinh dưỡng}{19}{subsubsection.3.1.2.4}%
+\contentsline {subsubsection}{\numberline {3.1.2.5}5. Sơ đồ tuần tự Quản lý và Lưu món ăn yêu thích}{20}{subsubsection.3.1.2.5}%
+\contentsline {subsubsection}{\numberline {3.1.2.6}6. Sơ đồ tuần tự Quản trị tài khoản người dùng}{22}{subsubsection.3.1.2.6}%
+\contentsline {section}{\numberline {3.2}Thiết kế kiến trúc hệ thống}{23}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Thiết kế cơ sở dữ liệu}{24}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Thiết kế thuật toán gợi ý và Xử lý ảnh thông minh}{27}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Luồng thực thi gợi ý món ăn thông minh}{27}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.2}Giải thuật gợi ý món ăn theo kiến trúc Database-First RAG (Mã giả)}{28}{subsection.3.4.2}%
+\contentsline {chapter}{\numberline {4}Cài đặt và thử nghiệm}{31}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Môi trường triển khai}{31}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Cài đặt các thành phần cốt lõi phía Backend}{31}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Mô-đun dịch vụ Gemini AI và Trích xuất JSON kiên cố}{31}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Mô-đun chuẩn hóa NLP tiếng Việt và So khớp nguyên liệu}{33}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}Mô-đun trích xuất đạm chính và Chấm điểm ảnh Cookpad}{34}{subsection.4.2.3}%
+\contentsline {section}{\numberline {4.3}Cài đặt phía Frontend và Giao diện người dùng}{35}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Giao diện phân hệ Khách hàng (Client Web Application)}{35}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Giao diện phân hệ Quản trị viên (Admin Panel)}{41}{subsection.4.3.2}%
+\contentsline {section}{\numberline {4.4}Kiểm thử hệ thống}{46}{section.4.4}%
+\contentsline {chapter}{\numberline {5}Kết quả và đánh giá}{48}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Kết quả đạt được}{48}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Độ đo và Đánh giá định lượng}{49}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Bàn luận}{51}{section.5.3}%
+\contentsline {section}{\numberline {5.4}Hạn chế}{51}{section.5.4}%
+\contentsline {chapter}{\numberline {6}Kết luận và hướng phát triển}{52}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Kết luận}{52}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Bài học rút ra}{53}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Hướng phát triển}{53}{section.6.3}%
+\contentsline {chapter}{Tài liệu tham khảo}{54}{section*.35}%
+\contentsline {chapter}{Phụ lục}{56}{chapter*.37}%
+\contentsline {section}{A. Hướng dẫn cài đặt và chạy chương trình}{56}{section*.38}%
+\contentsline {section}{B. Bảng tự kiểm trước khi nộp đồ án}{57}{section*.39}%
+\contentsline {section}{C. Nhận xét của giảng viên hướng dẫn}{58}{section*.40}%

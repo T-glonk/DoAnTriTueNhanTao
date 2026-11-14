@@ -3,11 +3,11 @@
 \contentsline {table}{\numberline {2.1}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Mẫu danh mục nhóm nguyên liệu đồng nghĩa và biến thể tiếng Việt.}}{8}{table.caption.8}%
 \contentsline {table}{\numberline {2.2}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Danh mục công nghệ, framework và thư viện sử dụng trong hệ thống.}}{10}{table.caption.9}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {3.1}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Lược đồ cấu trúc bảng người dùng ({\normalfont \ttfamily \color {daumaroon}users}).}}{22}{table.caption.18}%
-\contentsline {table}{\numberline {3.2}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Lược đồ cấu trúc bảng món ăn nội bộ ({\normalfont \ttfamily \color {daumaroon}recipes}).}}{23}{table.caption.19}%
+\contentsline {table}{\numberline {3.1}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Lược đồ cấu trúc bảng người dùng ({\normalfont \ttfamily \color {daumaroon}users}).}}{25}{table.caption.18}%
+\contentsline {table}{\numberline {3.2}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Lược đồ cấu trúc bảng món ăn nội bộ ({\normalfont \ttfamily \color {daumaroon}recipes}).}}{26}{table.caption.19}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {4.1}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Bảng tổng hợp các ca kiểm thử chức năng và ngoại lệ hệ thống.}}{43}{table.caption.33}%
+\contentsline {table}{\numberline {4.1}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Bảng tổng hợp các ca kiểm thử chức năng và ngoại lệ hệ thống.}}{47}{table.caption.33}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {5.1}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Đánh giá định lượng hiệu năng giữa Chế độ AI Gemini và Chế độ Fallback Database.}}{47}{table.caption.34}%
+\contentsline {table}{\numberline {5.1}{\ignorespaces \xpg@aux {}{vietnamese}\ignorespaces Đánh giá định lượng hiệu năng giữa Chế độ AI Gemini và Chế độ Fallback Database.}}{50}{table.caption.34}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
