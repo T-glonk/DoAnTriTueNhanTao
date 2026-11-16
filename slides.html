@@ -3,1405 +3,1166 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FoodAI — Báo Cáo Bảo Vệ Đồ Án Trí Tuệ Nhân Tạo (20 Slides)</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <title>FoodAI — Báo Cáo Đồ Án Trí Tuệ Nhân Tạo (20 Slides)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg-dark: #0b1120;
-      --bg-card: #131c31;
-      --bg-card-border: rgba(255, 255, 255, 0.08);
-      --primary: #f97316;
-      --primary-glow: rgba(249, 115, 22, 0.25);
-      --primary-light: #fdba74;
-      --accent-blue: #38bdf8;
-      --accent-green: #10b981;
-      --accent-purple: #a855f7;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-font-smoothing: antialiased;
-    }
-
     body {
-      background: var(--bg-dark);
-      color: var(--text-main);
-      font-family: var(--font-sans);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #0f172a;
       overflow: hidden;
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      user-select: none;
     }
-
-    /* TOP PROGRESS BAR */
-    #progress-container {
-      width: 100%;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.08);
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 100;
-    }
-    #progress-bar {
-      height: 100%;
-      width: 5%;
-      background: linear-gradient(90deg, #f97316, #fb923c, #38bdf8);
-      transition: width 0.35s ease;
-      box-shadow: 0 0 10px var(--primary-glow);
-    }
-
-    /* SLIDE STAGE */
-    #slide-viewport {
-      flex: 1;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px 32px 70px 32px;
-    }
-
     .slide {
-      position: absolute;
-      width: 92%;
-      max-width: 1300px;
-      height: 84vh;
-      max-height: 800px;
-      background: radial-gradient(circle at 10% 10%, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.85) 100%);
-      border: 1px solid var(--bg-card-border);
-      border-radius: 20px;
-      padding: 40px 48px;
-      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1);
       display: none;
-      flex-direction: column;
       opacity: 0;
-      transform: translateY(12px) scale(0.985);
-      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      overflow-y: auto;
+      transition: opacity 0.35s ease-in-out, transform 0.35s ease-in-out;
+      transform: scale(0.98);
     }
-
     .slide.active {
       display: flex;
       opacity: 1;
-      transform: translateY(0) scale(1);
-      z-index: 10;
+      transform: scale(1);
     }
-
-    /* CUSTOM SCROLLBAR FOR OVERFLOW SLIDES */
-    .slide::-webkit-scrollbar {
-      width: 6px;
-    }
-    .slide::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.15);
-      border-radius: 4px;
-    }
-
-    /* SLIDE HEADER */
-    .slide-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--primary);
-      background: rgba(249, 115, 22, 0.12);
-      border: 1px solid rgba(249, 115, 22, 0.25);
-      padding: 4px 12px;
-      border-radius: 999px;
-      margin-bottom: 12px;
-      width: fit-content;
-    }
-
-    .slide-title {
-      font-size: 1.95rem;
-      font-weight: 800;
-      line-height: 1.25;
-      color: #fff;
-      margin-bottom: 24px;
-      background: linear-gradient(135deg, #ffffff 40%, #cbd5e1 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .slide-content {
-      flex: 1;
-      font-size: 1.05rem;
-      line-height: 1.65;
-      color: #e2e8f0;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    /* GRIDS & CARDS */
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-    .grid-4 {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-    }
-
-    .card {
-      background: rgba(19, 28, 49, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      border-radius: 14px;
-      padding: 20px;
-      transition: border-color 0.2s, transform 0.2s;
-    }
-    .card:hover {
-      border-color: rgba(249, 115, 22, 0.35);
-      transform: translateY(-2px);
-    }
-    .card-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .card-title .icon {
-      font-size: 1.3rem;
-    }
-
-    .badge {
-      display: inline-block;
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 3px 8px;
-      border-radius: 6px;
-      background: rgba(255, 255, 255, 0.08);
-      color: #cbd5e1;
-    }
-    .badge-orange { background: rgba(249, 115, 22, 0.15); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.3); }
-    .badge-blue { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
-    .badge-green { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
-
-    /* TABLES */
-    .slide-table {
-      width: 100%;
-      border-collapse: collapse;
-      border-radius: 10px;
-      overflow: hidden;
-      margin-top: 10px;
-      font-size: 0.95rem;
-    }
-    .slide-table th {
-      background: rgba(30, 41, 59, 0.9);
-      padding: 12px 16px;
-      text-align: left;
-      font-weight: 700;
-      color: #cbd5e1;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    .slide-table td {
-      background: rgba(15, 23, 42, 0.5);
-      padding: 12px 16px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-      color: #e2e8f0;
-    }
-    .slide-table tr:hover td {
-      background: rgba(249, 115, 22, 0.05);
-    }
-
-    /* CODE & ASCII DIAGRAMS */
-    pre, code {
-      font-family: var(--font-mono);
-    }
-    .diagram-box {
-      background: #090e18;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      padding: 18px;
-      font-family: var(--font-mono);
-      font-size: 0.88rem;
-      line-height: 1.45;
-      color: #38bdf8;
-      overflow-x: auto;
-      white-space: pre;
-    }
-
-    /* BULLET LISTS */
-    ul.bullet-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    ul.bullet-list li {
-      position: relative;
-      padding-left: 28px;
-    }
-    ul.bullet-list li::before {
-      content: "•";
-      position: absolute;
-      left: 8px;
-      top: -2px;
-      color: var(--primary);
-      font-size: 1.4rem;
-    }
-
-    /* HIGHLIGHT TEXT */
-    .hl-orange { color: #fb923c; font-weight: 600; }
-    .hl-blue { color: #38bdf8; font-weight: 600; }
-    .hl-green { color: #34d399; font-weight: 600; }
-
-    /* TITLE SLIDE (SLIDE 1) SPECIAL STYLING */
-    .title-slide-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      height: 100%;
-      gap: 20px;
-    }
-    .title-badge {
-      font-size: 0.85rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 6px 18px;
-      border-radius: 999px;
-      background: linear-gradient(90deg, rgba(249, 115, 22, 0.2), rgba(56, 189, 248, 0.2));
-      border: 1px solid rgba(249, 115, 22, 0.4);
-      color: #ffedd5;
-    }
-    .main-project-title {
-      font-size: 2.8rem;
-      font-weight: 900;
-      letter-spacing: -0.02em;
-      line-height: 1.18;
-      background: linear-gradient(135deg, #ffffff 30%, #fb923c 70%, #f97316 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      max-width: 900px;
-    }
-    .title-subtitle {
-      font-size: 1.25rem;
-      color: #94a3b8;
-      max-width: 800px;
-      font-weight: 400;
-      font-style: italic;
-    }
-    .title-info-grid {
-      margin-top: 15px;
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
-      width: 100%;
-      max-width: 820px;
-      text-align: left;
-    }
-    .title-info-card {
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      padding: 16px 20px;
-    }
-
-    /* BOTTOM CONTROLS BAR */
-    #bottom-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 64px;
-      background: rgba(11, 17, 32, 0.95);
-      backdrop-filter: blur(12px);
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 32px;
-      z-index: 90;
-    }
-
-    .brand-section {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: #cbd5e1;
-    }
-    .brand-logo {
-      background: linear-gradient(135deg, #f97316, #ea580c);
-      color: #fff;
-      padding: 4px 10px;
-      border-radius: 8px;
-      font-weight: 800;
-      font-size: 0.95rem;
-      box-shadow: 0 2px 8px rgba(249, 115, 22, 0.4);
-    }
-
-    .controls-center {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .btn-ctrl {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: #f8fafc;
-      font-family: inherit;
-      font-size: 0.88rem;
-      font-weight: 600;
-      padding: 8px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.2s;
-    }
-    .btn-ctrl:hover {
-      background: rgba(255, 255, 255, 0.12);
-      border-color: rgba(255, 255, 255, 0.25);
-    }
-    .btn-ctrl.btn-primary {
-      background: #f97316;
-      border-color: #ea580c;
-    }
-    .btn-ctrl.btn-primary:hover {
-      background: #fb923c;
-    }
-
-    .slide-counter {
-      font-family: var(--font-mono);
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: #f8fafc;
-      padding: 0 10px;
-      letter-spacing: 0.05em;
-    }
-
-    .controls-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    /* SPEAKER NOTES MODAL / DRAWER */
-    #notes-modal {
-      display: none;
-      position: fixed;
-      bottom: 74px;
-      right: 32px;
-      width: 480px;
-      max-height: 420px;
-      background: #0f172a;
-      border: 1px solid rgba(249, 115, 22, 0.4);
-      border-radius: 16px;
-      padding: 20px 24px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 25px rgba(249, 115, 22, 0.15);
-      z-index: 120;
-      flex-direction: column;
-      gap: 12px;
-      overflow-y: auto;
-    }
-    #notes-modal.show {
-      display: flex;
-      animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .notes-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding-bottom: 10px;
-    }
-    .notes-title {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: var(--primary-light);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .notes-close {
-      background: none;
-      border: none;
-      color: #94a3b8;
-      cursor: pointer;
-      font-size: 1.2rem;
-    }
-    .notes-body {
-      font-size: 0.95rem;
-      line-height: 1.6;
-      color: #e2e8f0;
-      font-style: italic;
-    }
-
-    /* OVERVIEW THUMBNAILS MODAL */
-    #overview-modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(11, 17, 32, 0.92);
-      backdrop-filter: blur(16px);
-      z-index: 150;
-      padding: 40px;
-      overflow-y: auto;
-    }
-    #overview-modal.show {
-      display: block;
-      animation: fadeIn 0.2s ease;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    .overview-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 16px;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-    .overview-item {
-      background: #131c31;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      padding: 16px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .overview-item:hover, .overview-item.active {
-      border-color: var(--primary);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(249, 115, 22, 0.25);
-    }
-    .overview-num {
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--primary);
-      margin-bottom: 6px;
-    }
-    .overview-title {
-      font-size: 0.92rem;
-      font-weight: 700;
-      color: #fff;
-      line-height: 1.35;
-    }
-
-    /* SHORTCUT HINTS */
-    .shortcut-hint {
-      font-size: 0.75rem;
-      color: #64748b;
-      margin-left: 4px;
-      font-family: var(--font-mono);
+    .code-font {
+      font-family: 'JetBrains Mono', monospace;
     }
   </style>
 </head>
-<body>
+<body class="h-screen w-screen flex flex-col justify-between text-slate-800 antialiased select-none">
 
-  <!-- TOP PROGRESS BAR -->
-  <div id="progress-container">
-    <div id="progress-bar"></div>
-  </div>
-
-  <!-- SLIDE VIEWPORT -->
-  <div id="slide-viewport">
-
-    <!-- SLIDE 1: TRANG TIÊU ĐỀ -->
-    <div class="slide active" data-slide="1">
-      <div class="title-slide-container">
-        <div class="title-badge">TRƯỜNG ĐẠI HỌC KIẾN TRÚC ĐÀ NẴNG — KHOA CÔNG NGHỆ THÔNG TIN</div>
-        <h1 class="main-project-title">BÁO CÁO ĐỒ ÁN TRÍ TUỆ NHÂN TẠO<br><span style="color: #fff;">HỆ THỐNG AI GỢI Ý MÓN ĂN THEO NGUYÊN LIỆU (FoodAI)</span></h1>
-        <p class="title-subtitle">Ứng dụng Google Gemini AI và Kiến trúc Grounded RAG trên kho dữ liệu thực nghiệm Cookpad Việt Nam</p>
-        
-        <div class="title-info-grid">
-          <div class="title-info-card">
-            <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--primary); font-weight: 700; margin-bottom: 6px;">Giảng viên hướng dẫn</div>
-            <div style="font-size: 1.15rem; font-weight: 800; color: #fff;">TS. Đỗ Phúc Hảo</div>
-            <div style="font-size: 0.85rem; color: #94a3b8; margin-top: 4px;">Khoa Công nghệ Thông tin</div>
-          </div>
-          <div class="title-info-card">
-            <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--accent-blue); font-weight: 700; margin-bottom: 6px;">Sinh viên thực hiện — Lớp 23CT2</div>
-            <div style="font-size: 1.05rem; font-weight: 700; color: #fff; display: flex; justify-content: space-between;">
-              <span>1. Phạm Tấn Hào</span> <span style="font-family: var(--font-mono); color: #cbd5e1;">2351220282</span>
-            </div>
-            <div style="font-size: 1.05rem; font-weight: 700; color: #fff; display: flex; justify-content: space-between; margin-top: 4px;">
-              <span>2. Trần Quốc Trung</span> <span style="font-family: var(--font-mono); color: #cbd5e1;">2351220096</span>
-            </div>
-          </div>
-        </div>
-
-        <div style="margin-top: 10px; font-size: 0.85rem; color: #64748b;">Đà Nẵng, Năm học 2025 – 2026</div>
+  <!-- TOP HEADER / CONTROL BAR -->
+  <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 text-white px-6 py-3 flex items-center justify-between z-50">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-orange-600 flex items-center justify-center font-bold text-white shadow-lg shadow-orange-500/30">🍜</div>
+      <div>
+        <h1 class="font-bold text-sm text-slate-200">FoodAI — Báo Cáo Đồ Án Trí Tuệ Nhân Tạo</h1>
+        <p class="text-xs text-slate-400">Đại học Kiến trúc Đà Nẵng · GVHD: TS. Đỗ Phúc Hảo</p>
       </div>
     </div>
 
-    <!-- SLIDE 2: NỘI DUNG BÁO CÁO (OUTLINE) -->
-    <div class="slide" data-slide="2">
-      <div class="slide-tag">Nội dung báo cáo</div>
-      <h2 class="slide-title">BỐ CỤC BÀI THUYẾT TRÌNH (5 PHẦN)</h2>
-      <div class="slide-content">
-        <div class="grid-2">
-          <div class="card" style="border-left: 4px solid var(--primary);">
-            <div class="card-title"><span class="icon">🎯</span> Phần 1: Đặt Vấn Đề & Mục Tiêu Đồ Án</div>
-            <p style="color: #94a3b8; font-size: 0.95rem;">Bối cảnh thực tế tủ lạnh gia đình, nghịch lý lãng phí thực phẩm và bài toán gợi ý món ăn theo nguyên liệu có sẵn.</p>
-          </div>
-          <div class="card" style="border-left: 4px solid var(--accent-blue);">
-            <div class="card-title"><span class="icon">🧠</span> Phần 2: Cơ Sở Lý Thuyết & Kiến Trúc Grounded RAG</div>
-            <p style="color: #94a3b8; font-size: 0.95rem;">Nguyên lý mô hình ngôn ngữ lớn (LLM), hiện tượng ảo giác (hallucination) và giải pháp Grounded RAG neo chặt CSDL.</p>
-          </div>
-          <div class="card" style="border-left: 4px solid var(--accent-green);">
-            <div class="card-title"><span class="icon">⚙️</span> Phần 3: Thuật Toán & Xử Lý Ngôn Ngữ Tiếng Việt</div>
-            <p style="color: #94a3b8; font-size: 0.95rem;">Chuẩn hóa Unicode NFD, ma trận từ điển đồng nghĩa ẩm thực, luật loại trừ phủ định và thuật toán xếp hạng đa tiêu chí.</p>
-          </div>
-          <div class="card" style="border-left: 4px solid var(--accent-purple);">
-            <div class="card-title"><span class="icon">💻</span> Phần 4: Hiện Thực Hóa & Trình Diễn Hệ Thống (Demo)</div>
-            <p style="color: #94a3b8; font-size: 0.95rem;">Demo giao diện Client phân trang 3 món/trang, dinh dưỡng 4 bước, sổ tay yêu thích và trang Admin quản trị ảnh Cookpad.</p>
-          </div>
-        </div>
-        <div class="card" style="border-left: 4px solid #f59e0b; margin-top: 4px;">
-          <div class="card-title"><span class="icon">📊</span> Phần 5: Kết Quả Thực Nghiệm Định Lượng & Phương Hướng Tương Lai</div>
-          <p style="color: #94a3b8; font-size: 0.95rem;">Đo lường 150 kịch bản thử nghiệm so sánh AI vs Fallback, độ hài lòng người dùng và kế hoạch mở rộng thị giác máy tính YOLOv8.</p>
-        </div>
+    <!-- Quick Navigation -->
+    <div class="flex items-center gap-4">
+      <select id="slideSelect" class="bg-slate-800 text-slate-200 text-xs rounded-lg px-3 py-1.5 border border-slate-700 focus:outline-none focus:border-orange-500">
+        <!-- Generated by JS -->
+      </select>
+
+      <div class="flex items-center gap-1.5 bg-slate-800/80 rounded-lg p-1 border border-slate-700">
+        <button id="prevBtn" class="p-1.5 hover:bg-slate-700 text-slate-300 rounded transition" title="Slide trước (Phím Mũi tên trái)">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        </button>
+        <span id="slideCounter" class="text-xs font-semibold px-2 text-orange-400 min-w-[50px] text-center">1 / 20</span>
+        <button id="nextBtn" class="p-1.5 hover:bg-slate-700 text-slate-300 rounded transition" title="Slide tiếp theo (Phím Mũi tên phải / Space)">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </button>
       </div>
+
+      <button id="toggleNotesBtn" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-lg border border-slate-700 transition flex items-center gap-1.5">
+        <span>🎙️ Lời thoại (S)</span>
+      </button>
+
+      <button id="fullscreenBtn" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg border border-slate-700 transition" title="Toàn màn hình (F)">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+      </button>
     </div>
+  </header>
 
-    <!-- SLIDE 3: BỐI CẢNH THỰC TẾ & TÍNH CẤP THIẾT -->
-    <div class="slide" data-slide="3">
-      <div class="slide-tag">Đặt vấn đề</div>
-      <h2 class="slide-title">BỐI CẢNH THỰC TẾ & TÍNH CẤP THIẾT</h2>
-      <div class="slide-content">
-        <div class="grid-3">
-          <div class="card">
-            <div class="card-title"><span class="icon">🧊</span> Nhu Cầu Thường Nhật</div>
-            <p style="font-size: 0.95rem; color: #cbd5e1; margin-top: 8px;">
-              Câu hỏi <em>"Hôm nay ăn gì?"</em> và <em>"Tủ lạnh còn những nguyên liệu này thì nấu món gì ngon?"</em> là trăn trở thường nhật của hàng triệu người nội trợ, sinh viên và nhân viên văn phòng.
-            </p>
-          </div>
-          <div class="card">
-            <div class="card-title"><span class="icon">🥦</span> Lãng Phí Thực Phẩm</div>
-            <p style="font-size: 0.95rem; color: #cbd5e1; margin-top: 8px;">
-              Hàng triệu tấn thực phẩm rau củ, thịt cá tươi sống bị hư hỏng, bỏ phí mỗi năm chỉ vì người dùng không biết cách kết hợp những phần nguyên liệu lẻ tẻ còn sót lại.
-            </p>
-          </div>
-          <div class="card">
-            <div class="card-title"><span class="icon">🩺</span> Xu Hướng Dinh Dưỡng</div>
-            <p style="font-size: 0.95rem; color: #cbd5e1; margin-top: 8px;">
-              Người dùng hiện đại không chỉ quan tâm ăn no mà còn đòi hỏi <strong>chỉ số năng lượng (Calo), đạm, chất xơ</strong> để bảo vệ sức khỏe tim mạch và quản lý cân nặng.
-            </p>
-          </div>
-        </div>
-        <div class="card" style="background: rgba(249, 115, 22, 0.08); border-color: rgba(249, 115, 22, 0.3);">
-          <div style="font-weight: 700; color: #fb923c; margin-bottom: 6px;">💡 Đặt bài toán cho Trí Tuệ Nhân Tạo:</div>
-          <div style="color: #e2e8f0; font-size: 1rem;">
-            Xây dựng một trợ lý AI thông minh có thể nhận vào bất kỳ tập hợp nguyên liệu nào sẵn có trong tủ lạnh, tự động suy luận và gợi ý danh sách món ăn tối ưu nhất, có công thức chuẩn và hình ảnh chân thực.
-          </div>
-        </div>
-      </div>
-    </div>
+  <!-- MAIN SLIDES CONTAINER -->
+  <main class="flex-1 relative overflow-hidden bg-slate-100 flex items-center justify-center p-6">
+    <div id="slidesWrapper" class="w-full max-w-6xl aspect-[16/9] bg-white rounded-2xl shadow-2xl border border-slate-200/80 overflow-hidden relative flex flex-col">
 
-    <!-- SLIDE 4: HẠN CHẾ PHƯƠNG PHÁP TRUYỀN THỐNG & THÁCH THỨC VỚI LLM -->
-    <div class="slide" data-slide="4">
-      <div class="slide-tag">Thách thức công nghệ</div>
-      <h2 class="slide-title">HẠN CHẾ CŨ & THÁCH THỨC ẢO GIÁC CỦA AI</h2>
-      <div class="slide-content">
-        <table class="slide-table">
-          <thead>
-            <tr>
-              <th style="width: 28%;">Phương pháp</th>
-              <th style="width: 32%;">Đặc điểm vận hành</th>
-              <th style="width: 40%;">Hạn chế cốt tử</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong class="hl-blue">Tra cứu Web truyền thống</strong></td>
-              <td>Tìm kiếm chuỗi SQL cứng (`LIKE %keyword%`) theo tên món ăn.</td>
-              <td>Bắt buộc người dùng phải biết trước tên món; không thể gợi ý linh hoạt khi người dùng chỉ có 2-3 nguyên liệu ngẫu nhiên.</td>
-            </tr>
-            <tr>
-              <td><strong class="hl-orange">Dùng Chatbot LLM tự do</strong><br><small style="color: #94a3b8;">(ChatGPT, Claude, Gemini)</small></td>
-              <td>Hỏi tự do qua hội thoại prompt text trực tiếp.</td>
-              <td><strong style="color: #ef4444;">Ảo giác (Hallucination):</strong> Tự bịa thêm thịt bò, tôm hùm đắt tiền; tự sáng chế tên món kỳ dị không có thật; hoàn toàn không có ảnh chụp thực tế khớp món.</td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="card" style="margin-top: 10px; border-left: 4px solid #ef4444;">
-          <div style="font-weight: 700; color: #fca5a5; margin-bottom: 4px;">⚠️ Nghịch lý cốt lõi cần giải quyết:</div>
-          <div style="color: #e2e8f0;">
-            Làm sao để vừa tận dụng được trí thông minh tạo sinh công thức nấu ăn của LLM, vừa <strong>buộc mô hình phải tuân thủ nghiêm ngặt nguyên liệu người dùng có</strong> và đảm bảo món ăn cùng hình ảnh phải có thật 100% ngoài đời?
+      <!-- SLIDE 1: TITLE -->
+      <div class="slide active w-full h-full p-12 flex-col justify-between bg-gradient-to-br from-white via-orange-50/30 to-amber-50/40 relative" data-notes="Kính thưa quý Thầy Cô trong Hội đồng chấm đồ án và các bạn sinh viên. Hôm nay, nhóm chúng em gồm Phạm Tấn Hào và Trần Quốc Trung, dưới sự hướng dẫn của TS. Đỗ Phúc Hảo, xin được báo cáo đồ án Trí tuệ Nhân tạo với đề tài: 'Hệ thống AI gợi ý món ăn theo nguyên liệu - FoodAI'.">
+        <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-orange-500 via-amber-500 to-red-500"></div>
+        <div class="flex items-center justify-between">
+          <div class="inline-flex items-center gap-2 px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-xs font-bold uppercase tracking-wider">
+            🤖 BÁO CÁO ĐỒ ÁN TRÍ TUỆ NHÂN TẠO (AIP202)
           </div>
+          <span class="text-xs text-slate-400 font-semibold">Slide 01/20</span>
         </div>
-      </div>
-    </div>
 
-    <!-- SLIDE 5: MỤC TIÊU VÀ ĐÓNG GÓP CỐT LÕI -->
-    <div class="slide" data-slide="5">
-      <div class="slide-tag">Mục tiêu nghiên cứu</div>
-      <h2 class="slide-title">MỤC TIÊU VÀ ĐÓNG GÓP KHOA HỌC CỦA ĐỒ ÁN</h2>
-      <div class="slide-content">
-        <div class="grid-3">
-          <div class="card">
-            <div class="card-title"><span class="icon">🎯</span> 1. Kiến Trúc Lai Ghép Grounded RAG</div>
-            <p style="font-size: 0.95rem; color: #cbd5e1; margin-top: 8px;">
-              Xây dựng giải pháp kết hợp mô hình lớn <strong>Google Gemini AI</strong> với tri thức thực tế từ <strong>552 công thức CSDL MySQL</strong>, neo chặt ngữ cảnh để loại bỏ 100% ảo giác.
-            </p>
-          </div>
-          <div class="card">
-            <div class="card-title"><span class="icon">🔬</span> 2. Khắc Phục Nhầm Lẫn NLP Tiếng Việt</div>
-            <p style="font-size: 0.95rem; color: #cbd5e1; margin-top: 8px;">
-              Thiết kế ma trận đồng nghĩa ẩm thực và tập luật loại trừ phủ định, giải quyết dứt điểm các lỗi nhận diện từ ghép phổ biến: <em>cá $\ne$ cà chua</em>, <em>thịt bò $\ne$ bơ tỏi</em>, <em>thịt gà $\ne$ đậu gà</em>.
-            </p>
-          </div>
-          <div class="card">
-            <div class="card-title"><span class="icon">🚀</span> 3. Sản Phẩm Ứng Dụng Hoàn Chỉnh</div>
-            <p style="font-size: 0.95rem; color: #cbd5e1; margin-top: 8px;">
-              Triển khai hệ thống Web Fullstack hoàn chỉnh (React 18 + Node.js Express + MySQL), gợi ý 6-8 món phân trang 3 món/trang, gắn link ảnh CDN Cookpad chuẩn xác và giao diện Quản trị viên điều hành.
-            </p>
-          </div>
+        <div class="text-center my-auto">
+          <div class="inline-block p-4 bg-orange-500 text-white rounded-2xl shadow-xl shadow-orange-500/20 mb-4 text-4xl">🍜</div>
+          <h1 class="text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+            HỆ THỐNG AI GỢI Ý MÓN ĂN<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-amber-600">THEO NGUYÊN LIỆU (FoodAI)</span>
+          </h1>
+          <p class="text-slate-600 text-base max-w-2xl mx-auto mt-4 font-medium">
+            Ứng dụng Mô hình Ngôn ngữ Lớn Google Gemini AI kết hợp Kiến trúc Grounded RAG và Cơ sở Dữ liệu Ẩm thực Thực tế Cookpad Việt Nam
+          </p>
         </div>
-        <div class="card" style="border-left: 4px solid var(--accent-green); margin-top: 8px;">
-          <div style="font-weight: 700; color: #34d399; margin-bottom: 4px;">🌟 Ý nghĩa thực tiễn:</div>
-          <div style="color: #cbd5e1; font-size: 0.95rem;">
-            Đưa ứng dụng Trí tuệ Nhân tạo từ phòng thí nghiệm vào giải quyết trực tiếp một nhu cầu thiết yếu hàng ngày, giúp tiết kiệm chi phí mua sắm và thúc đẩy lối sống dinh dưỡng lành mạnh cho cộng đồng.
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- SLIDE 6: KIẾN TRÚC TỔNG THỂ HỆ THỐNG (3-TIER) -->
-    <div class="slide" data-slide="6">
-      <div class="slide-tag">Kiến trúc hệ thống</div>
-      <h2 class="slide-title">KIẾN TRÚC PHÂN TẦNG (THREE-TIER ARCHITECTURE)</h2>
-      <div class="slide-content">
-        <div class="grid-3">
-          <div class="card" style="border-top: 4px solid var(--accent-blue);">
-            <div class="card-title"><span class="icon">🖥️</span> Tầng 1: Client (Frontend)</div>
-            <ul class="bullet-list" style="margin-top: 10px; font-size: 0.9rem;">
-              <li><strong>React 18</strong> & <strong>TypeScript</strong>: Giao diện tương tác cao, kiểu dữ liệu chặt chẽ.</li>
-              <li><strong>Tailwind CSS</strong>: Thiết kế Responsive chuẩn di động & máy tính.</li>
-              <li><strong>Axios Interceptor</strong>: Quản lý Token JWT và xử lý lỗi đồng bộ.</li>
-            </ul>
-          </div>
-          <div class="card" style="border-top: 4px solid var(--primary);">
-            <div class="card-title"><span class="icon">⚙️</span> Tầng 2: Server (Backend REST)</div>
-            <ul class="bullet-list" style="margin-top: 10px; font-size: 0.9rem;">
-              <li><strong>Node.js & Express</strong>: Xử lý bất đồng bộ non-blocking I/O.</li>
-              <li><code>gemini.service.ts</code>: Giao tiếp SDK AI, đóng gói Prompt RAG.</li>
-              <li><code>recipe.service.ts</code>: Lọc từ khóa, ranking điểm đa tiêu chí.</li>
-              <li><code>image.service.ts</code>: Khử xung đột ảnh Cookpad.</li>
-            </ul>
-          </div>
-          <div class="card" style="border-top: 4px solid var(--accent-green);">
-            <div class="card-title"><span class="icon">🗄️</span> Tầng 3: Data & Cloud AI</div>
-            <ul class="bullet-list" style="margin-top: 10px; font-size: 0.9rem;">
-              <li><strong>MySQL 8.0</strong>: 9 bảng chuẩn hóa 3NF, lưu 552 công thức chuẩn.</li>
-              <li><strong>Google Gemini API</strong>: Cloud LLM suy luận dinh dưỡng & công thức.</li>
-              <li><strong>Cookpad CDN Registry</strong>: Hơn 2.000 link ảnh món ăn phân giải 1200x630.</li>
-            </ul>
-          </div>
-        </div>
-        <div class="diagram-box" style="margin-top: 6px; font-size: 0.8rem; text-align: center;">
-[Client: React UI]  ◄─── HTTP / REST JSON ───►  [Backend: Node.js Express]  ◄─── SQL Queries ───►  [MySQL Database 3NF]
-                                                             │
-                                                             └─── AI SDK (Prompt + Schema) ───►  [Google Gemini API]
-        </div>
-      </div>
-    </div>
-
-    <!-- SLIDE 7: KIẾN TRÚC GROUNDED RAG — KHỬ ẢO GIÁC -->
-    <div class="slide" data-slide="7">
-      <div class="slide-tag">Trọng tâm kỹ thuật</div>
-      <h2 class="slide-title">QUY TRÌNH GROUNDED RAG — CHỐNG ẢO GIÁC LLM</h2>
-      <div class="slide-content">
-        <div class="grid-2">
-          <div class="card">
-            <div class="card-title"><span class="icon">1️⃣</span> Bước 1: Truy xuất ứng viên (Retrieval)</div>
-            <p style="font-size: 0.9rem; color: #cbd5e1;">Lọc kho 552 món ăn trong MySQL bằng thuật toán so khớp nguyên liệu, chọn ra 10-15 món thực tế có độ tương thích cao nhất.</p>
-          </div>
-          <div class="card">
-            <div class="card-title"><span class="icon">2️⃣</span> Bước 2: Đóng gói ngữ cảnh (Context Grounding)</div>
-            <p style="font-size: 0.9rem; color: #cbd5e1;">Truyền danh sách món ứng viên có thật (kèm ID, tên chuẩn, ảnh CDN Cookpad) vào Prompt của Gemini làm tri thức nền bắt buộc.</p>
-          </div>
-          <div class="card">
-            <div class="card-title"><span class="icon">3️⃣</span> Bước 3: AI Làm Giàu Tri Thức (Enrichment)</div>
-            <p style="font-size: 0.9rem; color: #cbd5e1;">AI chỉ tính toán Calo, vi chất, thời gian nấu và mẹo chế biến. <strong style="color: #f87171;">Nghiêm cấm tuyệt đối sinh tên món lạ ngoài danh sách</strong>.</p>
-          </div>
-          <div class="card">
-            <div class="card-title"><span class="icon">4️⃣</span> Bước 4: Đồng bộ CSDL (Database Sync)</div>
-            <p style="font-size: 0.9rem; color: #cbd5e1;">Lưu kết quả phân tích dinh dưỡng của AI ngược vào bảng <code>recipe_nutrition</code> của MySQL, làm giàu kho tri thức nội bộ.</p>
-          </div>
-        </div>
-        <div class="card" style="background: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.3);">
-          <strong style="color: #34d399;">🔑 Kết quả đạt được:</strong> Tỷ lệ triệt tiêu ảo giác thịt cá lạ đạt <span class="hl-green">100%</span> trong 150 kịch bản kiểm thử thực tế. Người dùng chỉ nhập "trứng" và "cà chua" sẽ không bao giờ bị AI ép nấu món có tôm hay thịt bò.
-        </div>
-      </div>
-    </div>
-
-    <!-- SLIDE 8: CÔNG NGHỆ & CƠ SỞ DỮ LIỆU -->
-    <div class="slide" data-slide="8">
-      <div class="slide-tag">Công nghệ & Dữ liệu</div>
-      <h2 class="slide-title">HỆ SINH THÁI CÔNG NGHỆ & CƠ SỞ DỮ LIỆU</h2>
-      <div class="slide-content">
-        <div class="grid-2">
-          <div class="card">
-            <div class="card-title"><span class="icon">🤖</span> Google Gemini AI SDK</div>
-            <ul class="bullet-list" style="font-size: 0.9rem;">
-              <li>Mô hình áp dụng: <code>gemini-3.6-flash</code> / <code>gemini-3.5-flash</code> tối ưu tốc độ và chi phí token.</li>
-              <li>Cấu hình ép kiểu dữ liệu: <code>responseMimeType: 'application/json'</code> kèm JSON Schema định sẵn.</li>
-              <li>Loại bỏ 100% lỗi sai định dạng parse JSON thường gặp khi giao tiếp với LLM.</li>
-            </ul>
-          </div>
-          <div class="card">
-            <div class="card-title"><span class="icon">🗄️</span> Chuẩn Hóa CSDL MySQL 8.0</div>
-            <ul class="bullet-list" style="font-size: 0.9rem;">
-              <li>Bao gồm <strong>9 bảng quan hệ</strong> đạt chuẩn 3NF: <code>users</code>, <code>recipes</code>, <code>recipe_ingredients</code>, <code>recipe_steps</code>, <code>recipe_nutrition</code>, <code>recipe_tags</code>, <code>favorite_recipes</code>, <code>search_history</code>, <code>cookpad_dish_images</code>.</li>
-              <li>Bảo mật: Hash mật khẩu <strong>BCrypt</strong> (Salt Rounds = 12), Token JWT có thời hạn 7 ngày.</li>
-              <li>Quy mô: <strong>552 món ăn</strong> thực tế và hơn <strong>2.000 ảnh CDN Cookpad</strong>.</li>
-            </ul>
-          </div>
-        </div>
-        <div class="card" style="border-left: 4px solid var(--accent-blue);">
-          <div style="font-weight: 700; color: #38bdf8; margin-bottom: 4px;">🔒 Khả năng sẵn sàng và chịu tải:</div>
-          <div style="font-size: 0.92rem; color: #cbd5e1;">Backend tích hợp bộ đệm kết nối MySQL Connection Pool, bộ giới hạn tần suất truy vấn Rate Limiter (ngăn tấn công từ chối dịch vụ) và Middleware bắt lỗi tập trung.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SLIDE 9: TIỀN XỬ LÝ NLP TIẾNG VIỆT & MA TRẬN ĐỒNG NGHĨA -->
-    <div class="slide" data-slide="9">
-      <div class="slide-tag">Kỹ thuật NLP</div>
-      <h2 class="slide-title">TIỀN XỬ LÝ NLP TIẾNG VIỆT & MA TRẬN ĐỒNG NGHĨA</h2>
-      <div class="slide-content">
-        <div class="grid-2">
-          <div class="card">
-            <div class="card-title"><span class="icon">🔤</span> Chuẩn Hóa Unicode NFD & Boundary</div>
-            <p style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 8px;">
-              Tách ký tự và dấu thanh để so sánh không phụ thuộc cách gõ Telex/VNI:
-            </p>
-            <div class="diagram-box" style="font-size: 0.78rem; padding: 10px;">
-Normalize(s) = RegexReplace(s.normalize('NFD'), /[\u0300-\u036f]/g, '')
-Whole-word regex: (^|[^a-z0-9])target([^a-z0-9]|$)
-            </div>
-            <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 6px;">→ Ngăn dính từ (ví dụ: không nhận nhầm chữ <em>heo</em> trong từ <em>bánh bèo</em>).</p>
-          </div>
-          <div class="card">
-            <div class="card-title"><span class="icon">📚</span> Ma Trận Đồng Nghĩa Ẩm Thực</div>
-            <ul class="bullet-list" style="font-size: 0.9rem;">
-              <li><strong>Thịt bò:</strong> thăn bò, bắp bò, gầu bò, nạm bò, ba chỉ bò...</li>
-              <li><strong>Thịt heo:</strong> thịt lợn, ba rọi, sườn non, giò heo, thịt xay...</li>
-              <li><strong>Thịt gà:</strong> ức gà, đùi gà, cánh gà, gà ta, má đùi gà...</li>
-            </ul>
-          </div>
-        </div>
-        <div class="card" style="border-left: 4px solid #ef4444;">
-          <div class="card-title" style="color: #fca5a5;"><span class="icon">⛔</span> Tập Luật Loại Trừ Phủ Định (Negative Excludes)</div>
-          <div class="grid-3" style="font-size: 0.9rem; color: #cbd5e1; margin-top: 6px;">
-            <div>🐟 Phân biệt <code>cá</code> với: <em>cà chua, cà tím, cà rốt</em></div>
-            <div>🥩 Phân biệt <code>thịt bò</code> với: <em>bơ tỏi, quả bơ, bơ lạt, bò húc</em></div>
-            <div>🍗 Phân biệt <code>thịt gà</code> với: <em>đậu gà, nấm đùi gà</em></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SLIDE 10: THUẬT TOÁN SO KHỚP VÀ CHẤM ĐIỂM ĐA TIÊU CHÍ -->
-    <div class="slide" data-slide="10">
-      <div class="slide-tag">Thuật toán lõi</div>
-      <h2 class="slide-title">THUẬT TOÁN CHẤM ĐIỂM & XẾP HẠNG ĐA TIÊU CHÍ</h2>
-      <div class="slide-content">
-        <div class="card" style="background: rgba(249, 115, 22, 0.08); border-color: rgba(249, 115, 22, 0.3);">
-          <div style="font-weight: 700; color: #fb923c; margin-bottom: 4px;">Công thức tính điểm ưu tiên ứng viên:</div>
-          <div style="font-family: var(--font-mono); font-size: 1.15rem; color: #fff; margin: 6px 0;">
-            Score = (N_matched × 100) + (Score_title × 50) + (Score_meat × 150)
-          </div>
-          <div style="font-size: 0.85rem; color: #cbd5e1;">Trong đó: N_matched là số lượng nguyên liệu khớp; Score_title là điểm thưởng khi tên món chứa từ khóa; Score_meat là điểm khớp loại đạm chủ đạo.</div>
-        </div>
-        <div class="grid-3">
-          <div class="card">
-            <div class="card-title"><span class="icon">🛡️</span> Ràng Buộc Protein Cứng</div>
-            <p style="font-size: 0.9rem; color: #cbd5e1;">Nếu người dùng chỉ nhập <code>thịt bò</code>, hệ thống lập tức loại bỏ 100% các món ăn đòi hỏi thịt heo, thịt gà hay tôm cá.</p>
-          </div>
-          <div class="card">
-            <div class="card-title"><span class="icon">🥗</span> Bảo Vệ Món Chay</div>
-            <p style="font-size: 0.9rem; color: #cbd5e1;">Nếu người dùng chỉ nhập rau củ, đậu hũ hay trứng, loại bỏ toàn bộ các món chứa thịt động vật khỏi danh sách gợi ý.</p>
-          </div>
-          <div class="card">
-            <div class="card-title"><span class="icon">⭐</span> Ưu Tiên Món Điển Hình</div>
-            <p style="font-size: 0.9rem; color: #cbd5e1;">Các món có tên gọi chứa trực tiếp nguyên liệu chính (như <em>Trứng sốt cà chua</em>, <em>Bò xào hành tây</em>) luôn được xếp ở vị trí Top 1.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SLIDE 11: CƠ CHẾ BẢO VỆ ĐỒNG NHẤT HÌNH ẢNH (COOKPAD) -->
-    <div class="slide" data-slide="11">
-      <div class="slide-tag">Xử lý hình ảnh</div>
-      <h2 class="slide-title">CƠ CHẾ BẢO VỆ ĐỒNG NHẤT HÌNH ẢNH MÓN ĂN</h2>
-      <div class="slide-content">
-        <div class="grid-2">
-          <div class="card" style="border-top: 4px solid var(--accent-blue);">
-            <div class="card-title"><span class="icon">🤖</span> Tầng 1: Bộ Lọc Tự Động (<code>isImageUrlConflicting</code>)</div>
-            <ul class="bullet-list" style="font-size: 0.9rem;">
-              <li>Giải mã slug đường link CDN Cookpad để kiểm tra chéo loại thịt.</li>
-              <li>Nếu món là <strong>Thịt bò</strong>, mà URL ảnh chứa chữ <strong>ga (gà)</strong> hoặc <strong>heo</strong> $\rightarrow$ Tự động loại bỏ ảnh ngay lập tức.</li>
-              <li>Điểm phạt $-100$ điểm cho các ảnh cơm hộp tạo hình Bento, đồ ăn dặm cho trẻ em, hoặc ảnh mâm cơm hỗn hợp nhiều món.</li>
-            </ul>
-          </div>
-          <div class="card" style="border-top: 4px solid var(--primary);">
-            <div class="card-title"><span class="icon">👨‍💼</span> Tầng 2: Quản Trị Viên Ghi Đè Ảnh Tại Dashboard</div>
-            <ul class="bullet-list" style="font-size: 0.9rem;">
-              <li>Admin có thể mở Modal sửa món ăn ngay trên trang quản trị.</li>
-              <li>Chủ động copy link ảnh chụp đẹp, sắc nét dán vào ô URL để cập nhật CSDL.</li>
-              <li>MySQL lưu vết và ghi đè ảnh cũ vĩnh viễn, khắc phục triệt để tình trạng ảnh sai lệch ngoài ý muốn.</li>
-            </ul>
-          </div>
-        </div>
-        <div class="card" style="border-left: 4px solid var(--accent-green);">
-          <strong style="color: #34d399;">Hiệu quả:</strong> Loại bỏ hoàn toàn tình trạng "râu ông nọ cắm cằm bà kia" (tên món là súp gà nhưng ảnh hiển thị lại là đĩa thịt luộc).
-        </div>
-      </div>
-    </div>
-
-    <!-- SLIDE 12: CƠ CHẾ DỰ PHÒNG CHỊU LỖI (FALLBACK) -->
-    <div class="slide" data-slide="12">
-      <div class="slide-tag">Độ sẵn sàng hệ thống</div>
-      <h2 class="slide-title">CƠ CHẾ DỰ PHÒNG CHỊU LỖI (FAULT-TOLERANT)</h2>
-      <div class="slide-content">
-        <div class="grid-2">
-          <div class="diagram-box" style="font-size: 0.78rem;">
-Yêu cầu Gợi ý Món ăn từ Client
-         │
-         ▼
-[Kiểm tra API Key & Kết nối Mạng]
-         │
-    ┌────┴─────────────────────────────┐
-    │ (Bình thường)                    │ (Mất mạng / Hết Quota)
-    ▼                                  ▼
-[Nhánh Chính: GEMINI AI]       [Nhánh Dự Phòng: MYSQL]
- • Grounded RAG 6-8 món         • Heuristic Matching
- • Suy luận Dinh dưỡng          • Phản hồi cực nhanh < 0.3s
-    │                                  │
-    └──────────────────┬───────────────┘
-                       ▼
-        [Client nhận kết quả liền mạch]
-          (Không bao giờ lỗi màn hình trắng)
-          </div>
-          <div class="card" style="display: flex; flex-direction: column; justify-content: center; gap: 12px;">
-            <div class="card-title" style="color: #38bdf8;"><span class="icon">⚡</span> Tính Sẵn Sàng 100%</div>
-            <p style="font-size: 0.92rem; color: #cbd5e1;">Trong môi trường vận hành thực tế, các dịch vụ Cloud AI của bên thứ ba có thể gặp sự cố mất mạng hoặc hết hạn mức Token (Quota Exhausted).</p>
-            <div style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 12px;">
-              <span style="color: #34d399; font-weight: 700;">Tốc độ chuyển mạch Fallback:</span><br>
-              Chỉ mất <strong style="color: #fff; font-size: 1.2rem;">0,21 giây</strong> để trả về 6-8 món ăn tối ưu từ CSDL nội bộ.
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SLIDE 13: ĐẶC TẢ USE CASE & PHÂN QUYỀN -->
-    <div class="slide" data-slide="13">
-      <div class="slide-tag">Thiết kế phần mềm</div>
-      <h2 class="slide-title">ĐẶC TẢ CA SỬ DỤNG (USE CASE) & PHÂN QUYỀN</h2>
-      <div class="slide-content">
-        <div class="grid-2">
-          <div class="card" style="border-left: 4px solid var(--accent-blue);">
-            <div class="card-title"><span class="icon">👤</span> Phân Hệ Người Dùng (Client Actor)</div>
-            <ul class="bullet-list" style="font-size: 0.9rem; margin-top: 8px;">
-              <li>Đăng ký, Đăng nhập bảo mật tài khoản (JWT).</li>
-              <li>Nhập nguyên liệu từ bàn phím hoặc nhấn chọn các tag màu có sẵn.</li>
-              <li>Nhận danh sách gợi ý 6-8 món ăn từ AI, chuyển trang mượt mà (3 món/trang).</li>
-              <li>Xem chi tiết công thức 4 bước và bảng dinh dưỡng 8 chỉ số.</li>
-              <li>Lưu món yêu thích & dùng lại tập nguyên liệu cũ từ Lịch sử tìm kiếm.</li>
-            </ul>
-          </div>
-          <div class="card" style="border-left: 4px solid var(--primary);">
-            <div class="card-title"><span class="icon">🛡️</span> Phân Hệ Quản Trị Viên (Admin Actor)</div>
-            <ul class="bullet-list" style="font-size: 0.9rem; margin-top: 8px;">
-              <li>Dashboard thống kê tổng quan: số người dùng, số món ăn, lượt AI Query.</li>
-              <li>Quản lý danh sách người dùng: khóa/mở khóa tài khoản, đổi mật khẩu an toàn.</li>
-              <li>Quản lý kho 552 món ăn: tìm kiếm, lọc danh mục, chỉnh sửa công thức.</li>
-              <li>Cập nhật URL hình ảnh CDN Cookpad trực tiếp trên giao diện web.</li>
-              <li>Chốt an toàn hệ thống: ngăn Admin tự khóa tài khoản của chính mình.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SLIDE 14: DEMO GIAO DIỆN CLIENT — GỢI Ý MÓN & PHÂN TRANG -->
-    <div class="slide" data-slide="14">
-      <div class="slide-tag">Trình diễn hệ thống</div>
-      <h2 class="slide-title">DEMO CLIENT: GỢI Ý 6-8 MÓN & PHÂN TRANG</h2>
-      <div class="slide-content">
-        <div class="grid-2">
-          <div class="card">
-            <div class="card-title"><span class="icon">⌨️</span> Nhập Liệu Động & 1-Click Tags</div>
-            <p style="font-size: 0.92rem; color: #cbd5e1; margin-top: 6px;">
-              Người dùng có thể gõ tự do các nguyên liệu (thịt bò, cà chua, trứng...) hoặc nhấn nhanh các tag màu phổ biến. Hệ thống hỗ trợ cả các combo gia đình chuẩn bị sẵn để thử nghiệm nhanh.
-            </p>
-            <div style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px;">
-              <span class="badge badge-orange">+ Thịt bò</span>
-              <span class="badge badge-orange">+ Thịt gà</span>
-              <span class="badge badge-orange">+ Trứng</span>
-              <span class="badge badge-blue">+ Cà chua</span>
-              <span class="badge badge-blue">+ Hành tây</span>
-              <span class="badge badge-green">+ Đậu phụ</span>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-title"><span class="icon">📑</span> Cơ Chế Phân Trang (3 Món / Trang)</div>
-            <p style="font-size: 0.92rem; color: #cbd5e1; margin-top: 6px;">
-              Khi AI gợi ý 6 đến 8 món ăn phong phú, màn hình không bị kéo dài vô tận. Hệ thống tự động phân chia <strong>3 món ăn mỗi trang</strong> kèm thanh điều hướng mượt mà:
-            </p>
-            <div style="background: rgba(15, 23, 42, 0.7); padding: 12px; border-radius: 8px; margin-top: 10px; text-align: center; font-family: var(--font-mono); color: var(--primary);">
-              « Trang trước &nbsp;|&nbsp; Trang 1 / 3 &nbsp;|&nbsp; Trang tiếp theo »
-            </div>
-          </div>
-        </div>
-        <div class="card" style="border-left: 4px solid var(--accent-green);">
-          <span style="color: #34d399; font-weight: 700;">Trải nghiệm người dùng:</span> Mỗi thẻ món ăn hiển thị rõ tên món, nguồn ảnh Cookpad CDN, độ khó, thời gian chế biến và số nguyên liệu cần chuẩn bị.
-        </div>
-      </div>
-    </div>
-
-    <!-- SLIDE 15: DEMO GIAO DIỆN CLIENT — CHI TIẾT & DINH DƯỠNG -->
-    <div class="slide" data-slide="15">
-      <div class="slide-tag">Trình diễn hệ thống</div>
-      <h2 class="slide-title">DEMO CLIENT: CÔNG THỨC 4 BƯỚC & DINH DƯỠNG</h2>
-      <div class="slide-content">
-        <div class="grid-3">
-          <div class="card">
-            <div class="card-title"><span class="icon">🥗</span> Tab 1: Nguyên Liệu</div>
-            <p style="font-size: 0.88rem; color: #cbd5e1; margin-top: 6px;">
-              Đánh dấu màu xanh các nguyên liệu người dùng đã có sẵn trong tủ lạnh; liệt kê chi tiết định lượng gram/muỗng và các gia vị bếp cần chuẩn bị thêm.
-            </p>
-          </div>
-          <div class="card">
-            <div class="card-title"><span class="icon">👨‍🍳</span> Tab 2: 4 Bước Nấu Chuẩn</div>
-            <p style="font-size: 0.88rem; color: #cbd5e1; margin-top: 6px;">
-              Quy trình chuẩn bếp gia đình: <strong>1. Sơ chế $\rightarrow$ 2. Tẩm ướp $\rightarrow$ 3. Chế biến $\rightarrow$ 4. Hoàn thiện</strong>, giúp ai cũng nấu ngon dễ dàng.
-            </p>
-          </div>
-          <div class="card">
-            <div class="card-title"><span class="icon">🩺</span> Tab 3: Bảng 8 Vi Chất</div>
-            <p style="font-size: 0.88rem; color: #cbd5e1; margin-top: 6px;">
-              Đo lường khoa học: Calo, Protein, Carbs, Fat, Chất xơ, Vitamin C, Canxi, Sắt kèm khối nhận xét <em>AI Chef Reasoning</em> chỉ dẫn mẹo giữ trọn dinh dưỡng.
-            </p>
-          </div>
-        </div>
-        <div class="card" style="border-left: 4px solid var(--primary);">
-          <strong style="color: #fb923c;">💡 Giá trị cốt lõi:</strong> Người dùng không chỉ biết nên nấu món gì, mà còn nắm trọn công thức chuẩn từng bước và kiểm soát hoàn hảo lượng calo nạp vào cơ thể.
-        </div>
-      </div>
-    </div>
-
-    <!-- SLIDE 16: DEMO GIAO DIỆN CLIENT — YÊU THÍCH & LỊCH SỬ -->
-    <div class="slide" data-slide="16">
-      <div class="slide-tag">Trình diễn hệ thống</div>
-      <h2 class="slide-title">DEMO CLIENT: SỔ TAY YÊU THÍCH & TÁI DÙNG LỊCH SỬ</h2>
-      <div class="slide-content">
-        <div class="grid-2">
-          <div class="card">
-            <div class="card-title"><span class="icon">❤️</span> Sổ Tay Món Ăn Yêu Thích</div>
-            <ul class="bullet-list" style="font-size: 0.9rem; margin-top: 8px;">
-              <li>Người dùng bấm biểu tượng Trái tim để lưu lại những món tâm đắc.</li>
-              <li>Dữ liệu đồng bộ trực tiếp vào bảng <code>favorite_recipes</code> trong CSDL MySQL theo tài khoản đăng nhập.</li>
-              <li>Dễ dàng xem lại bất cứ lúc nào mà không cần phải thực hiện tìm kiếm lại từ đầu.</li>
-            </ul>
-          </div>
-          <div class="card">
-            <div class="card-title"><span class="icon">🔄</span> Lịch Sử Tìm Kiếm & Nút 'Dùng Lại'</div>
-            <ul class="bullet-list" style="font-size: 0.9rem; margin-top: 8px;">
-              <li>Hệ thống tự động ghi nhật ký các phiên tìm kiếm nguyên liệu gần nhất.</li>
-              <li>Tích hợp nút hành động thông minh: <strong>"Dùng lại" (Re-use)</strong>.</li>
-              <li>Chỉ với <strong>1 cú nhấp chuột</strong>, toàn bộ danh sách nguyên liệu của phiên tìm kiếm cũ sẽ được tự động điền lại vào thanh tìm kiếm, tiết kiệm tối đa thời gian.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SLIDE 17: DEMO GIAO DIỆN ADMIN — QUẢN TRỊ KHO MÓN & ẢNH -->
-    <div class="slide" data-slide="17">
-      <div class="slide-tag">Trình diễn hệ thống</div>
-      <h2 class="slide-title">DEMO ADMIN: QUẢN TRỊ KHO MÓN & ĐỔI LINK ẢNH</h2>
-      <div class="slide-content">
-        <div class="grid-2">
-          <div class="card">
-            <div class="card-title"><span class="icon">📊</span> Dashboard Giám Sát Thời Gian Thực</div>
-            <p style="font-size: 0.9rem; color: #cbd5e1; margin-top: 6px;">
-              Quản trị viên theo dõi toàn bộ KPI hệ thống: Tổng người dùng đã đăng ký, kho lưu trữ 552 món ăn, các nguyên liệu đang được tìm kiếm nhiều nhất và nhật ký gọi AI theo thời gian thực.
-            </p>
-          </div>
-          <div class="card">
-            <div class="card-title"><span class="icon">🖼️</span> Đổi Trực Tiếp Link Ảnh Cookpad CDN</div>
-            <p style="font-size: 0.9rem; color: #cbd5e1; margin-top: 6px;">
-              Admin có thể tìm kiếm bất kỳ món nào trong kho, mở hộp thoại chỉnh sửa và tự tay copy link ảnh mới sắc nét dán vào URL. CSDL MySQL cập nhật ngay lập tức và đồng bộ toàn bộ hệ thống.
-            </p>
-          </div>
-        </div>
-        <div class="card" style="border-left: 4px solid var(--accent-blue);">
-          <strong style="color: #38bdf8;">Đảm bảo tính kiểm soát dữ liệu:</strong> Ngay cả khi dữ liệu nguồn Cookpad có ảnh chưa tối ưu, Quản trị viên hoàn toàn làm chủ việc chỉnh sửa và chuẩn hóa hình ảnh bằng công cụ trực quan trên giao diện.
-        </div>
-      </div>
-    </div>
-
-    <!-- SLIDE 18: KẾT QUẢ THỰC NGHIỆM ĐỊNH LƯỢNG -->
-    <div class="slide" data-slide="18">
-      <div class="slide-tag">Đánh giá thực nghiệm</div>
-      <h2 class="slide-title">KẾT QUẢ THỰC NGHIỆM ĐỊNH LƯỢNG (150 KỊCH BẢN)</h2>
-      <div class="slide-content">
-        <table class="slide-table">
-          <thead>
-            <tr>
-              <th>Tiêu chí đánh giá</th>
-              <th style="text-align: center; color: #fb923c;">Chế độ AI (Gemini Grounded RAG)</th>
-              <th style="text-align: center; color: #38bdf8;">Chế độ Fallback (MySQL Heuristic)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>Thời gian phản hồi trung bình</strong></td>
-              <td style="text-align: center; font-weight: 700;">3,42 giây</td>
-              <td style="text-align: center; font-weight: 700; color: #34d399;">0,21 giây</td>
-            </tr>
-            <tr>
-              <td><strong>Tỷ lệ phân tích cú pháp JSON hợp lệ</strong></td>
-              <td style="text-align: center; font-weight: 700; color: #34d399;">100%</td>
-              <td style="text-align: center; font-weight: 700; color: #34d399;">100%</td>
-            </tr>
-            <tr>
-              <td><strong>Tỷ lệ triệt tiêu ảo giác thịt cá lạ</strong></td>
-              <td style="text-align: center; font-weight: 700; color: #34d399;">100%</td>
-              <td style="text-align: center; font-weight: 700; color: #34d399;">100%</td>
-            </tr>
-            <tr>
-              <td><strong>Tỷ lệ bám sát nguyên liệu đầu vào</strong></td>
-              <td style="text-align: center; font-weight: 700; color: #34d399;">97,8%</td>
-              <td style="text-align: center; font-weight: 700;">94,5%</td>
-            </tr>
-            <tr>
-              <td><strong>Tỷ lệ đa dạng phương pháp chế biến</strong></td>
-              <td style="text-align: center; font-weight: 700; color: #34d399;">98,6%</td>
-              <td style="text-align: center; font-weight: 700;">84,2%</td>
-            </tr>
-            <tr>
-              <td><strong>Tỷ lệ gán hình ảnh chính xác</strong></td>
-              <td style="text-align: center; font-weight: 700;">94,6%</td>
-              <td style="text-align: center; font-weight: 700; color: #34d399;">98,2%</td>
-            </tr>
-            <tr>
-              <td><strong>Mức độ hài lòng người dùng (thang 5⭐)</strong></td>
-              <td style="text-align: center; font-weight: 800; color: #f59e0b;">4,8 / 5,0 ⭐</td>
-              <td style="text-align: center; font-weight: 800; color: #f59e0b;">4,2 / 5,0 ⭐</td>
-            </tr>
-          </tbody>
-        </table>
-        <div style="font-size: 0.85rem; color: #94a3b8; margin-top: 6px;">
-          * Nhận xét: Chế độ AI vượt trội về chiều sâu dinh dưỡng và sự đa dạng món; Chế độ Fallback áp đảo về tốc độ phản hồi và độ tin cậy khi mạng gặp sự cố.
-        </div>
-      </div>
-    </div>
-
-    <!-- SLIDE 19: KẾT LUẬN & HƯỚNG PHÁT TRIỂN -->
-    <div class="slide" data-slide="19">
-      <div class="slide-tag">Tổng kết & Định hướng</div>
-      <h2 class="slide-title">KẾT LUẬN & HƯỚNG PHÁT TRIỂN TƯƠNG LAI</h2>
-      <div class="slide-content">
-        <div class="grid-2">
-          <div class="card" style="border-top: 4px solid var(--accent-green);">
-            <div class="card-title"><span class="icon">✅</span> Kết Quả Đạt Được</div>
-            <ul class="bullet-list" style="font-size: 0.9rem; margin-top: 8px;">
-              <li>Hoàn thành xuất sắc toàn bộ mục tiêu nghiên cứu và triển khai sản phẩm.</li>
-              <li>Chứng minh tính hiệu quả của mô hình <strong>Grounded RAG</strong> trong việc loại bỏ ảo giác LLM cho bài toán ẩm thực Việt Nam.</li>
-              <li>Hệ thống vận hành thực tế ổn định trên môi trường đám mây Vercel và Render.</li>
-            </ul>
-          </div>
-          <div class="card" style="border-top: 4px solid var(--primary);">
-            <div class="card-title"><span class="icon">🚀</span> 4 Hướng Mở Rộng Tiềm Năng</div>
-            <ul class="bullet-list" style="font-size: 0.88rem; margin-top: 8px;">
-              <li><strong>1. Thị giác máy tính (Computer Vision):</strong> Tích hợp mô hình YOLOv8 để người dùng chỉ cần chụp ảnh tủ lạnh là hệ thống tự nhận diện thực phẩm.</li>
-              <li><strong>2. Kế hoạch bữa ăn tuần (Meal Planner):</strong> Tự động lên thực đơn 7 ngày cân đối calo theo thể trạng (Gym, Giảm cân, Tiểu đường).</li>
-              <li><strong>3. Ứng dụng Mobile:</strong> Phát triển app Flutter đa nền tảng kèm thông báo ngày hết hạn của đồ ăn.</li>
-              <li><strong>4. Mạng xã hội nấu ăn:</strong> Chia sẻ hình ảnh thành phẩm và đánh giá công thức do AI đề xuất.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SLIDE 20: LỜI CẢM ƠN & Q&A -->
-    <div class="slide" data-slide="20">
-      <div class="title-slide-container">
-        <div class="title-badge" style="background: rgba(16, 185, 129, 0.2); border-color: rgba(16, 185, 129, 0.4); color: #6ee7b7;">HOÀN THÀNH BÁO CÁO ĐỒ ÁN</div>
-        <h1 class="main-project-title" style="font-size: 2.5rem;">CHÂN THÀNH CẢM ƠN QUÝ THẦY CÔ VÀ HỘI ĐỒNG!</h1>
-        <p style="font-size: 1.15rem; color: #cbd5e1; max-width: 800px; line-height: 1.6;">
-          Nhóm xin gửi lời tri ân sâu sắc đến <strong>TS. Đỗ Phúc Hảo</strong> đã tận tâm định hướng khoa học, cùng quý Thầy Cô trong Hội đồng Khoa Công nghệ Thông tin đã lắng nghe bài báo cáo.
-        </p>
-
-        <div style="background: rgba(19, 28, 49, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; padding: 18px 28px; display: flex; gap: 32px; align-items: center; margin-top: 10px;">
+        <div class="grid grid-cols-2 gap-6 pt-6 border-t border-slate-200/80 bg-slate-50/60 -mx-12 -mb-12 p-8">
           <div>
-            <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--accent-blue); font-weight: 700;">Live Web Demo</div>
-            <a href="https://do-an-tri-tue-nhan-tao-nu.vercel.app" target="_blank" style="color: #fff; text-decoration: none; font-weight: 700; font-size: 0.95rem;">do-an-tri-tue-nhan-tao-nu.vercel.app ↗</a>
+            <p class="text-xs text-slate-500 font-semibold uppercase tracking-wider">Sinh viên thực hiện:</p>
+            <p class="font-bold text-slate-800 text-sm mt-0.5">Phạm Tấn Hào (2351220282) · Trần Quốc Trung (2351220096)</p>
+            <p class="text-xs text-slate-500 mt-0.5">Lớp: 23CT2 · Ngành Công nghệ Thông tin</p>
           </div>
-          <div style="width: 1px; height: 35px; background: rgba(255, 255, 255, 0.1);"></div>
-          <div>
-            <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--primary); font-weight: 700;">GitHub Repository</div>
-            <a href="https://github.com/T-glonk/DoAnTriTueNhanTao.git" target="_blank" style="color: #fff; text-decoration: none; font-weight: 700; font-size: 0.95rem;">github.com/T-glonk/DoAnTriTueNhanTao ↗</a>
+          <div class="text-right">
+            <p class="text-xs text-slate-500 font-semibold uppercase tracking-wider">Giảng viên hướng dẫn:</p>
+            <p class="font-bold text-blue-700 text-sm mt-0.5">TS. Đỗ Phúc Hảo</p>
+            <p class="text-xs text-slate-500 mt-0.5">Trường Đại học Kiến trúc Đà Nẵng · Năm học: 2025–2026</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 2: AGENDA -->
+      <div class="slide w-full h-full p-10 flex-col justify-between" data-notes="Bài thuyết trình của nhóm em gồm 5 phần chính: từ lý do chọn đề tài, cơ sở công nghệ, giải thuật cốt lõi giải quyết bài toán ảo giác của AI, kết quả thực nghiệm hệ thống và định hướng phát triển.">
+        <div>
+          <span class="text-xs font-bold text-orange-600 uppercase tracking-wider bg-orange-50 px-2.5 py-1 rounded-md">TỔNG QUAN</span>
+          <h2 class="text-2xl font-black text-slate-900 mt-2">Nội Dung Thuyết Trình</h2>
+          <p class="text-xs text-slate-500">Bố cục bài báo cáo được cấu trúc thành 5 phần mạch lạc</p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-3 my-auto">
+          <div class="flex items-center gap-4 p-3.5 bg-slate-50 border border-slate-200 rounded-xl hover:border-orange-300 transition">
+            <div class="w-8 h-8 rounded-lg bg-orange-600 text-white font-bold flex items-center justify-center text-sm shadow">1</div>
+            <div>
+              <h3 class="font-bold text-sm text-slate-900">Đặt Vấn Đề & Mục Tiêu Nghiên Cứu</h3>
+              <p class="text-xs text-slate-500">Thực trạng lãng phí thực phẩm, nỗi lo 'Hôm nay ăn gì?' và hiện tượng ảo giác của AI.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4 p-3.5 bg-slate-50 border border-slate-200 rounded-xl hover:border-orange-300 transition">
+            <div class="w-8 h-8 rounded-lg bg-blue-600 text-white font-bold flex items-center justify-center text-sm shadow">2</div>
+            <div>
+              <h3 class="font-bold text-sm text-slate-900">Cơ Sở Lý Thuyết & Công Nghệ (Tech Stack)</h3>
+              <p class="text-xs text-slate-500">Mô hình Google Gemini AI, kỹ thuật Grounded RAG, NLP tiếng Việt, React 18, Node.js, MySQL.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4 p-3.5 bg-slate-50 border border-slate-200 rounded-xl hover:border-orange-300 transition">
+            <div class="w-8 h-8 rounded-lg bg-amber-600 text-white font-bold flex items-center justify-center text-sm shadow">3</div>
+            <div>
+              <h3 class="font-bold text-sm text-slate-900">Phân Tích Thiết Kế & Giải Thuật Cốt Lõi</h3>
+              <p class="text-xs text-slate-500">Kiến trúc 3 tầng, luồng RAG 4 bước, ma trận từ điển loại trừ và lược đồ CSDL chuẩn 3NF.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4 p-3.5 bg-slate-50 border border-slate-200 rounded-xl hover:border-orange-300 transition">
+            <div class="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold flex items-center justify-center text-sm shadow">4</div>
+            <div>
+              <h3 class="font-bold text-sm text-slate-900">Hiện Thực Hóa, Thử Nghiệm & Đánh Giá</h3>
+              <p class="text-xs text-slate-500">Giao diện Client & Admin, tầng dự phòng Fallback, kết quả kiểm thử 6 ca và đánh giá định lượng.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4 p-3.5 bg-slate-50 border border-slate-200 rounded-xl hover:border-orange-300 transition">
+            <div class="w-8 h-8 rounded-lg bg-indigo-600 text-white font-bold flex items-center justify-center text-sm shadow">5</div>
+            <div>
+              <h3 class="font-bold text-sm text-slate-900">Kết Luận, Demo Thực Tế & Hướng Phát Triển</h3>
+              <p class="text-xs text-slate-500">Đóng góp của đồ án, kịch bản thực tế điển hình và kế hoạch tích hợp Computer Vision.</p>
+            </div>
           </div>
         </div>
 
-        <div style="margin-top: 15px; font-size: 1.25rem; font-weight: 800; color: #fb923c; letter-spacing: 0.05em;">
-          💬 KÍNH MỜI QUÝ THẦY CÔ ĐẶT CÂU HỎI VÀ ĐÓNG GÓP Ý KIẾN (Q&A)
+        <div class="flex justify-between items-center text-xs text-slate-400 border-t pt-3">
+          <span>FoodAI · AIP202</span>
+          <span>Slide 02/20</span>
         </div>
       </div>
-    </div>
 
-  </div>
+      <!-- SLIDE 3: PROBLEM -->
+      <div class="slide w-full h-full p-10 flex-col justify-between" data-notes="Xuất phát từ thực tế, người nội trợ hay sinh viên thường mở tủ lạnh và bối rối vì không biết những nguyên liệu còn lại có thể nấu được món gì. Các website tra cứu hiện nay đều đòi hỏi người dùng phải biết sẵn tên món mới tìm được, dẫn đến việc nguyên liệu thừa bị bỏ phí.">
+        <div>
+          <span class="text-xs font-bold text-orange-600 uppercase tracking-wider bg-orange-50 px-2.5 py-1 rounded-md">ĐẶT VẤN ĐỀ</span>
+          <h2 class="text-2xl font-black text-slate-900 mt-2">Bối Cảnh Thực Tế & Nhu Cầu Người Dùng</h2>
+          <p class="text-xs text-slate-500">Nỗi băn khoăn mỗi ngày của người nội trợ và bài toán lãng phí thực phẩm</p>
+        </div>
 
-  <!-- SPEAKER NOTES POPUP MODAL -->
-  <div id="notes-modal">
-    <div class="notes-header">
-      <div class="notes-title">
-        <span>🎙️</span>
-        <span id="notes-slide-num">Lời thoại Slide 1</span>
+        <div class="grid grid-cols-2 gap-6 my-auto">
+          <div class="bg-red-50/60 border border-red-200 p-6 rounded-2xl flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-xl bg-red-500 text-white flex items-center justify-center font-bold text-lg mb-3">⚠️</div>
+              <h3 class="text-base font-bold text-red-900">Thực Trạng Đời Sống Hằng Ngày</h3>
+              <ul class="text-xs text-slate-700 mt-3 space-y-2.5">
+                <li class="flex items-start gap-2"><span class="text-red-500 font-bold">•</span>Câu hỏi thường trực: <i>"Hôm nay ăn gì?"</i>, <i>"Tủ lạnh còn những gì để nấu?"</i>.</li>
+                <li class="flex items-start gap-2"><span class="text-red-500 font-bold">•</span>Người nội trợ, sinh viên, người độc thân bối rối khi tủ lạnh còn lại các nguyên liệu rải rác.</li>
+                <li class="flex items-start gap-2"><span class="text-red-500 font-bold">•</span>Hàng tuần có lượng lớn rau củ, thịt cá tươi sống bị bỏ phí do không biết kết hợp chế biến, gây lãng phí kinh tế.</li>
+              </ul>
+            </div>
+            <div class="mt-4 p-2.5 bg-red-100/70 rounded-lg text-red-800 text-[11px] font-semibold">
+              ⚡ Hơn 30% thực phẩm gia đình bị quá hạn chỉ vì thiếu giải pháp kết hợp công thức.
+            </div>
+          </div>
+
+          <div class="bg-slate-50 border border-slate-200 p-6 rounded-2xl flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-xl bg-slate-700 text-white flex items-center justify-center font-bold text-lg mb-3">🔍</div>
+              <h3 class="text-base font-bold text-slate-900">Hạn Chế Của Các Ứng Dụng Hiện Nay</h3>
+              <ul class="text-xs text-slate-700 mt-3 space-y-2.5">
+                <li class="flex items-start gap-2"><span class="text-slate-400 font-bold">•</span><b>Buộc phải biết trước tên món:</b> Phải gõ rõ 'Thịt kho tàu' mới ra công thức, không tra được từ nguyên liệu ngẫu nhiên.</li>
+                <li class="flex items-start gap-2"><span class="text-slate-400 font-bold">•</span><b>Tìm kiếm từ khóa máy móc:</b> Chỉ cần sai khác từ vựng hoặc phương ngữ là hệ thống trả về kết quả rỗng.</li>
+                <li class="flex items-start gap-2"><span class="text-slate-400 font-bold">•</span><b>Thiếu phân tích dinh dưỡng:</b> Không cung cấp định lượng calo, vi chất phục vụ nhu cầu sức khỏe và ăn kiêng.</li>
+              </ul>
+            </div>
+            <div class="mt-4 p-2.5 bg-slate-200/80 rounded-lg text-slate-800 text-[11px] font-semibold">
+              🎯 Cần một trợ lý thông minh: Nhập nguyên liệu có sẵn ➔ Nhận ngay món ngon chuẩn vị.
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-slate-400 border-t pt-3">
+          <span>FoodAI · Đặt vấn đề</span>
+          <span>Slide 03/20</span>
+        </div>
       </div>
-      <button class="notes-close" id="btn-close-notes" title="Đóng lời thoại">✕</button>
-    </div>
-    <div class="notes-body" id="notes-content">
-      "Kính thưa quý Thầy Cô trong Hội đồng chấm đồ án tốt nghiệp và các bạn sinh viên..."
-    </div>
-  </div>
 
-  <!-- OVERVIEW THUMBNAILS MODAL -->
-  <div id="overview-modal">
-    <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto 24px auto;">
-      <h2 style="font-size: 1.5rem; font-weight: 800; color: #fff;">DANH SÁCH 20 SLIDE BÁO CÁO</h2>
-      <button class="btn-ctrl" id="btn-close-overview">Đóng tổng quan (Esc)</button>
-    </div>
-    <div class="overview-grid" id="overview-container">
-      <!-- Generated dynamically by JS -->
-    </div>
-  </div>
+      <!-- SLIDE 4: LLM CHALLENGE & RAG SOLUTION -->
+      <div class="slide w-full h-full p-10 flex-col justify-between" data-notes="Nếu chỉ dùng AI thuần túy, AI sẽ thường xuyên bị 'ảo giác' - tự bịa thêm thịt bò, tôm đắt tiền mà người dùng không hề có. Giải pháp của nhóm em là khóa chặt AI bằng kỹ thuật Grounded RAG: CSDL nội bộ lọc ra món thật trước, AI chỉ tính toán dinh dưỡng và thời gian nấu.">
+        <div>
+          <span class="text-xs font-bold text-orange-600 uppercase tracking-wider bg-orange-50 px-2.5 py-1 rounded-md">GIẢI PHÁP ĐỀ XUẤT</span>
+          <h2 class="text-2xl font-black text-slate-900 mt-2">Thách Thức Của AI Thuần Túy & Ý Tưởng Đột Phá</h2>
+          <p class="text-xs text-slate-500">Khắc phục triệt để hiện tượng ảo giác (Hallucination) của Mô hình Ngôn ngữ Lớn</p>
+        </div>
 
-  <!-- BOTTOM CONTROLS BAR -->
-  <div id="bottom-bar">
-    <div class="brand-section">
-      <div class="brand-logo">FoodAI</div>
-      <div>Đồ án Trí Tuệ Nhân Tạo — Khoa CNTT (ĐH Kiến Trúc Đà Nẵng)</div>
-    </div>
+        <div class="grid grid-cols-2 gap-6 my-auto">
+          <div class="bg-amber-50/70 border border-amber-200 p-6 rounded-2xl">
+            <span class="px-2 py-0.5 bg-amber-200 text-amber-900 rounded font-bold text-xs uppercase">Thách Thức</span>
+            <h3 class="text-base font-bold text-amber-900 mt-2">Ảo Giác Của LLM Thuần Túy</h3>
+            <p class="text-xs text-slate-600 mt-2">Các mô hình ngôn ngữ lớn (Gemini, ChatGPT) có sức sáng tạo phong phú nhưng dễ bị ảo giác tự do:</p>
+            <div class="bg-white p-3 rounded-xl border border-amber-200 mt-3 text-xs space-y-1.5">
+              <p class="text-slate-500 font-mono">User: Có sẵn [Trứng, Cà chua]</p>
+              <p class="text-red-600 font-mono font-semibold">AI thuần túy: Gợi ý 'Thịt bò xào cà chua' (!)</p>
+              <p class="text-slate-500 text-[11px]">➔ Tự ý thêm thịt bò đắt tiền mà người dùng không hề có!</p>
+            </div>
+            <p class="text-xs text-slate-600 mt-3 font-medium">Hậu quả: Món ăn xa rời thực tế, làm người dùng mất lòng tin.</p>
+          </div>
 
-    <div class="controls-center">
-      <button class="btn-ctrl" id="btn-prev" title="Slide trước (Phím ← hoặc Mũi tên trái)">
-        <span>◀</span> Trước
-      </button>
+          <div class="bg-emerald-50/70 border border-emerald-200 p-6 rounded-2xl">
+            <span class="px-2 py-0.5 bg-emerald-200 text-emerald-900 rounded font-bold text-xs uppercase">Đột Phá Kỹ Thuật</span>
+            <h3 class="text-base font-bold text-emerald-900 mt-2">Mô Hình Grounded RAG (FoodAI)</h3>
+            <p class="text-xs text-slate-600 mt-2">Kết hợp Tăng cường tạo sinh bằng truy xuất (RAG) với CSDL ẩm thực nội bộ:</p>
+            <div class="bg-white p-3 rounded-xl border border-emerald-200 mt-3 text-xs space-y-1.5">
+              <p class="text-emerald-700 font-semibold">1. CSDL MySQL lọc trước các món thật từ Cookpad</p>
+              <p class="text-emerald-700 font-semibold">2. Ép Gemini AI CHỈ ĐƯỢC tính toán trên danh sách CSDL</p>
+              <p class="text-slate-700 font-semibold">3. AI tính dinh dưỡng, calo & định lượng gram chuẩn xác</p>
+            </div>
+            <p class="text-xs text-emerald-800 font-bold mt-3">✅ Triệt tiêu 100% hiện tượng tự bịa món và tự thêm thịt cá lạ!</p>
+          </div>
+        </div>
 
-      <div class="slide-counter">
-        <span id="current-slide-num" style="color: var(--primary);">01</span> / <span id="total-slides-num">20</span>
+        <div class="flex justify-between items-center text-xs text-slate-400 border-t pt-3">
+          <span>FoodAI · Grounded RAG</span>
+          <span>Slide 04/20</span>
+        </div>
       </div>
 
-      <button class="btn-ctrl btn-primary" id="btn-next" title="Slide tiếp theo (Phím → hoặc Phím cách)">
-        Tiếp <span>▶</span>
-      </button>
-    </div>
+      <!-- SLIDE 5: GOALS & SCOPE -->
+      <div class="slide w-full h-full p-10 flex-col justify-between" data-notes="Đề tài đặt ra 4 mục tiêu cụ thể: xây dựng kho dữ liệu 552 món Cookpad, tích hợp Gemini AI phân tích dinh dưỡng khoa học, xử lý triệt để bất đồng ngữ nghĩa tiếng Việt và xây dựng cơ chế Fallback đảm bảo hệ thống luôn sẵn sàng 100%.">
+        <div>
+          <span class="text-xs font-bold text-orange-600 uppercase tracking-wider bg-orange-50 px-2.5 py-1 rounded-md">MỤC TIÊU & PHẠM VI</span>
+          <h2 class="text-2xl font-black text-slate-900 mt-2">Mục Tiêu Nghiên Cứu & Phạm Vi Đề Tài</h2>
+          <p class="text-xs text-slate-500">Xây dựng hệ thống ứng dụng Web hoàn chỉnh phục vụ nhu cầu ẩm thực gia đình</p>
+        </div>
 
-    <div class="controls-right">
-      <button class="btn-ctrl" id="btn-toggle-notes" title="Bật/Tắt Lời thoại thuyết trình (Phím S)">
-        🎙️ Lời thoại <span class="shortcut-hint">[S]</span>
-      </button>
-      <button class="btn-ctrl" id="btn-toggle-overview" title="Xem tổng quan 20 slide (Phím O)">
-        📑 Mục lục <span class="shortcut-hint">[O]</span>
-      </button>
-      <button class="btn-ctrl" id="btn-fullscreen" title="Toàn màn hình trình chiếu (Phím F hoặc F11)">
-        ⛶ Toàn màn hình <span class="shortcut-hint">[F]</span>
-      </button>
-    </div>
-  </div>
+        <div class="grid grid-cols-2 gap-4 my-auto">
+          <div class="p-4 bg-slate-50 border-l-4 border-orange-500 rounded-r-xl border-t border-b border-r border-slate-200">
+            <h3 class="font-bold text-sm text-slate-900">1. Kho Tri Thức Ẩm Thực Thực Tế</h3>
+            <p class="text-xs text-slate-600 mt-1">Chuẩn hóa hơn <b>550 món ăn Việt Nam</b> từ Cookpad kèm hơn <b>2.000 hình ảnh CDN</b> chất lượng cao 1200x630.</p>
+          </div>
+          <div class="p-4 bg-slate-50 border-l-4 border-blue-500 rounded-r-xl border-t border-b border-r border-slate-200">
+            <h3 class="font-bold text-sm text-slate-900">2. Đầu Bếp & Chuyên Gia Dinh Dưỡng AI</h3>
+            <p class="text-xs text-slate-600 mt-1">Ứng dụng <b>Google Gemini AI</b> tính toán 8 chỉ số dinh dưỡng (calo, protein, carbs, fat, fiber, ca, fe, vit C) và hướng dẫn 4 bước.</p>
+          </div>
+          <div class="p-4 bg-slate-50 border-l-4 border-emerald-500 rounded-r-xl border-t border-b border-r border-slate-200">
+            <h3 class="font-bold text-sm text-slate-900">3. Xử Lý Ngôn Ngữ Tự Nhiên Tiếng Việt</h3>
+            <p class="text-xs text-slate-600 mt-1">Chuẩn hóa Unicode NFD, ranh giới từ nguyên vẹn và ma trận loại trừ dính chữ (<i>cà chua</i> $\ne$ <i>cá</i>, <i>bơ tỏi</i> $\ne$ <i>bò</i>).</p>
+          </div>
+          <div class="p-4 bg-slate-50 border-l-4 border-purple-500 rounded-r-xl border-t border-b border-r border-slate-200">
+            <h3 class="font-bold text-sm text-slate-900">4. Ứng Dụng Web & Chế Độ Dự Phòng</h3>
+            <p class="text-xs text-slate-600 mt-1">Web SPA responsive (React/Node.js/MySQL), phân quyền JWT và cơ chế <b>Fallback nội bộ tức thì dưới 300ms</b>.</p>
+          </div>
+        </div>
 
-  <!-- JAVASCRIPT SLIDE CONTROLLER -->
+        <div class="p-3 bg-slate-100 rounded-xl text-xs text-slate-600 flex items-center justify-between">
+          <span><b>Phạm vi:</b> Món ăn gia đình Việt Nam, giao diện tiếng Việt, truy cập đa thiết bị (Desktop/Mobile).</span>
+          <span class="text-orange-600 font-semibold">Tối đa 15 nguyên liệu / phiên tìm kiếm</span>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-slate-400 border-t pt-3">
+          <span>FoodAI · Mục tiêu & Phạm vi</span>
+          <span>Slide 05/20</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 6: TECH STACK -->
+      <div class="slide w-full h-full p-10 flex-col justify-between" data-notes="Về mặt công nghệ, hệ thống áp dụng toàn diện hệ sinh thái JavaScript/TypeScript hiện đại với React 18 ở Frontend, Node.js Express ở Backend, CSDL quan hệ MySQL và Google Gemini AI làm động cơ trí tuệ nhân tạo.">
+        <div>
+          <span class="text-xs font-bold text-orange-600 uppercase tracking-wider bg-orange-50 px-2.5 py-1 rounded-md">CÔNG NGHỆ</span>
+          <h2 class="text-2xl font-black text-slate-900 mt-2">Hệ Thống Công Nghệ Sử Dụng (Tech Stack)</h2>
+          <p class="text-xs text-slate-500">Nền tảng công nghệ full-stack JavaScript/TypeScript hiện đại và bảo mật cao</p>
+        </div>
+
+        <div class="grid grid-cols-3 gap-5 my-auto">
+          <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200">
+            <div class="w-8 h-8 rounded-lg bg-orange-600 text-white font-bold flex items-center justify-center text-xs mb-3">FE</div>
+            <h3 class="font-bold text-sm text-slate-900">Frontend (Client)</h3>
+            <ul class="text-xs text-slate-600 mt-2.5 space-y-2">
+              <li><b>React 18 & Vite:</b> Render nhanh, Single Page App.</li>
+              <li><b>TypeScript 5.4:</b> Kiểm soát kiểu tĩnh, giảm lỗi runtime.</li>
+              <li><b>Tailwind CSS 3.4:</b> Giao diện linh hoạt, responsive.</li>
+              <li><b>Recharts & Lucide:</b> Biểu đồ thống kê và bộ icon trực quan.</li>
+            </ul>
+          </div>
+
+          <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200">
+            <div class="w-8 h-8 rounded-lg bg-blue-600 text-white font-bold flex items-center justify-center text-xs mb-3">BE</div>
+            <h3 class="font-bold text-sm text-slate-900">Backend (Server)</h3>
+            <ul class="text-xs text-slate-600 mt-2.5 space-y-2">
+              <li><b>Node.js & Express:</b> Xử lý bất đồng bộ I/O non-blocking.</li>
+              <li><b>TypeScript:</b> Đồng bộ kiểu dữ liệu chặt chẽ từ BE sang FE.</li>
+              <li><b>JWT & BCrypt:</b> Bảo mật xác thực và băm mật khẩu 1 chiều.</li>
+              <li><b>Rate Limiting:</b> Kiểm soát tần suất 20 req/phút chặn DDoS.</li>
+            </ul>
+          </div>
+
+          <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200">
+            <div class="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold flex items-center justify-center text-xs mb-3">AI</div>
+            <h3 class="font-bold text-sm text-slate-900">AI & Cơ Sở Dữ Liệu</h3>
+            <ul class="text-xs text-slate-600 mt-2.5 space-y-2">
+              <li><b>Google Gemini AI:</b> SDK <code>@google/generative-ai</code>.</li>
+              <li><b>MySQL 8.0:</b> Lưu trữ quan hệ chuẩn hóa 3NF.</li>
+              <li><b>TiDB Cloud:</b> Khả năng mở rộng phân tán trên đám mây.</li>
+              <li><b>Cookpad CDN:</b> Cung cấp kho ảnh ẩm thực thực tế Việt Nam.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-slate-400 border-t pt-3">
+          <span>FoodAI · Tech Stack</span>
+          <span>Slide 06/20</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 7: ARCHITECTURE -->
+      <div class="slide w-full h-full p-10 flex-col justify-between" data-notes="Kiến trúc hệ thống được phân lớp nghiêm ngặt thành 3 tầng rõ ràng. Tầng ứng dụng bóc tách các Service độc lập, giúp mã nguồn đạt tính gắn kết cao, dễ bảo trì, mở rộng và kiểm thử đơn vị.">
+        <div>
+          <span class="text-xs font-bold text-orange-600 uppercase tracking-wider bg-orange-50 px-2.5 py-1 rounded-md">KIẾN TRÚC HỆ THỐNG</span>
+          <h2 class="text-2xl font-black text-slate-900 mt-2">Mô Hình Kiến Trúc 3 Tầng (Three-Tier Architecture)</h2>
+          <p class="text-xs text-slate-500">Phân tách trách nhiệm (Separation of Concerns) rõ ràng giữa Giao diện, Xử lý và Dữ liệu</p>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4 my-auto">
+          <div class="bg-white p-4 rounded-xl border-2 border-orange-200 shadow-sm">
+            <div class="text-xs font-bold text-orange-600 uppercase tracking-wider">Tầng Giao Diện (Client)</div>
+            <div class="mt-2 text-xs space-y-2 text-slate-700">
+              <div class="p-2 bg-orange-50 rounded font-semibold text-slate-800">User Dashboard (Home / Modal / Fav)</div>
+              <div class="p-2 bg-orange-50 rounded font-semibold text-slate-800">Admin Panel (CRUD / Logs / Stats)</div>
+              <div class="p-2 bg-slate-100 rounded text-slate-600">Axios Interceptors tự gắn Bearer JWT</div>
+            </div>
+          </div>
+
+          <div class="bg-white p-4 rounded-xl border-2 border-blue-200 shadow-sm">
+            <div class="text-xs font-bold text-blue-600 uppercase tracking-wider">Tầng Ứng Dụng (Server)</div>
+            <div class="mt-2 text-xs space-y-1.5 text-slate-700">
+              <div class="p-1.5 bg-blue-50 rounded font-medium">Auth Middleware (JWT, is_active check)</div>
+              <div class="p-1.5 bg-blue-50 rounded font-medium">Rate Limiting (Chặn Spam API)</div>
+              <div class="p-1.5 bg-blue-50 rounded font-semibold text-blue-900">Gemini Service (Prompt & JSON Schema)</div>
+              <div class="p-1.5 bg-blue-50 rounded font-semibold text-blue-900">Recipe Service (Heuristic Matching)</div>
+              <div class="p-1.5 bg-blue-50 rounded font-semibold text-blue-900">Image Service (Slug Check & Scoring)</div>
+            </div>
+          </div>
+
+          <div class="bg-white p-4 rounded-xl border-2 border-emerald-200 shadow-sm">
+            <div class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Tầng Dữ Liệu & AI Cloud</div>
+            <div class="mt-2 text-xs space-y-2 text-slate-700">
+              <div class="p-2 bg-emerald-50 rounded font-semibold text-slate-800">MySQL Database (9 Bảng Quan Hệ 3NF)</div>
+              <div class="p-2 bg-emerald-50 rounded font-semibold text-slate-800">Google Gemini API (Cloud LLM)</div>
+              <div class="p-2 bg-emerald-50 rounded font-semibold text-slate-800">Cookpad CDN (Kho Ảnh Món Thật)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-2.5 bg-slate-100 rounded-lg text-xs text-slate-600 text-center font-medium">
+          🔒 Tất cả giao tiếp qua giao thức HTTPS bảo mật, xác thực phi trạng thái (Stateless Authentication) qua JWT Token.
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-slate-400 border-t pt-3">
+          <span>FoodAI · Kiến trúc hệ thống</span>
+          <span>Slide 07/20</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 8: GROUNDED RAG FLOW -->
+      <div class="slide w-full h-full p-10 flex-col justify-between" data-notes="Đây là trọng tâm kỹ thuật của đồ án: Luồng Grounded RAG 4 bước. Thay vì để AI tự do sáng tạo tên món, CSDL đóng vai trò mỏ neo định hướng danh sách món thật, AI chỉ tính toán dinh dưỡng và định lượng, sau đó dữ liệu được cập nhật ngược về CSDL.">
+        <div>
+          <span class="text-xs font-bold text-orange-600 uppercase tracking-wider bg-orange-50 px-2.5 py-1 rounded-md">QUY TRÌNH CỐT LÕI</span>
+          <h2 class="text-2xl font-black text-slate-900 mt-2">Luồng Gợi Ý Món Ăn Grounded RAG (Lõi Trí Tuệ Nhân Tạo)</h2>
+          <p class="text-xs text-slate-500">Quy trình 4 bước kiểm soát tuyệt đối dữ liệu đầu vào và đầu ra của mô hình AI</p>
+        </div>
+
+        <div class="grid grid-cols-4 gap-3.5 my-auto">
+          <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex flex-col justify-between">
+            <div>
+              <div class="w-7 h-7 rounded-lg bg-orange-600 text-white font-bold flex items-center justify-center text-xs mb-2">B1</div>
+              <h3 class="font-bold text-xs text-slate-900">Truy Vấn Ứng Viên CSDL</h3>
+              <p class="text-[11px] text-slate-600 mt-1.5 leading-relaxed">
+                Backend tiếp nhận nguyên liệu, truy vấn MySQL lấy 6-8 món thật khớp từ khóa và có sẵn ảnh Cookpad.
+              </p>
+            </div>
+            <span class="text-[10px] bg-orange-100 text-orange-800 font-bold px-2 py-0.5 rounded mt-3 text-center">Hard Filter</span>
+          </div>
+
+          <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex flex-col justify-between">
+            <div>
+              <div class="w-7 h-7 rounded-lg bg-blue-600 text-white font-bold flex items-center justify-center text-xs mb-2">B2</div>
+              <h3 class="font-bold text-xs text-slate-900">Truyền Ngữ Cảnh Cho AI</h3>
+              <p class="text-[11px] text-slate-600 mt-1.5 leading-relaxed">
+                Đưa danh sách món từ CSDL vào Prompt của Gemini AI, áp lệnh cấm: <i>Giữ nguyên Tên & ID từ CSDL, không bịa món mới</i>.
+              </p>
+            </div>
+            <span class="text-[10px] bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded mt-3 text-center">Prompt Persona</span>
+          </div>
+
+          <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex flex-col justify-between">
+            <div>
+              <div class="w-7 h-7 rounded-lg bg-amber-600 text-white font-bold flex items-center justify-center text-xs mb-2">B3</div>
+              <h3 class="font-bold text-xs text-slate-900">AI Enrichment</h3>
+              <p class="text-[11px] text-slate-600 mt-1.5 leading-relaxed">
+                Gemini AI tính toán 8 chỉ số dinh dưỡng, thời gian nấu, định lượng khẩu phần và viết mẹo ẩm thực <code>ai_reasoning</code>.
+              </p>
+            </div>
+            <span class="text-[10px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded mt-3 text-center">JSON Schema</span>
+          </div>
+
+          <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex flex-col justify-between">
+            <div>
+              <div class="w-7 h-7 rounded-lg bg-emerald-600 text-white font-bold flex items-center justify-center text-xs mb-2">B4</div>
+              <h3 class="font-bold text-xs text-slate-900">Đồng Bộ Ngược CSDL</h3>
+              <p class="text-[11px] text-slate-600 mt-1.5 leading-relaxed">
+                Tự động lưu công thức, dinh dưỡng do AI phân tích vào MySQL. Lần tìm kiếm sau có ngay dữ liệu không cần tốn token AI.
+              </p>
+            </div>
+            <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded mt-3 text-center">Auto Sync</span>
+          </div>
+        </div>
+
+        <div class="p-2.5 bg-emerald-50 border border-emerald-200 rounded-lg text-xs text-emerald-800 font-semibold text-center">
+          ✨ Cơ chế RAG biến kho CSDL ngày càng phong phú và thông minh hơn sau mỗi lượt người dùng tra cứu.
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-slate-400 border-t pt-3">
+          <span>FoodAI · Luồng Grounded RAG</span>
+          <span>Slide 08/20</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 9: VIETNAMESE NLP -->
+      <div class="slide w-full h-full p-10 flex-col justify-between" data-notes="Xử lý tiếng Việt là bài toán cực kỳ dễ sai lệch nếu chỉ so chuỗi đơn thuần. Ví dụ người dùng gõ 'cà chua', nếu không có bộ lọc loại trừ, thuật toán sẽ nhầm thành nguyên liệu 'cá'. Nhóm đã cài đặt ma trận từ điển đồng nghĩa và danh sách Negative Excludes để loại trừ triệt để lỗi này.">
+        <div>
+          <span class="text-xs font-bold text-orange-600 uppercase tracking-wider bg-orange-50 px-2.5 py-1 rounded-md">XỬ LÝ NGÔN NGỮ TỰ NHIÊN</span>
+          <h2 class="text-2xl font-black text-slate-900 mt-2">Xử Lý Tiếng Việt & Ngăn Chặn Nhầm Lẫn Ngữ Nghĩa</h2>
+          <p class="text-xs text-slate-500">Giải quyết bài toán từ ghép, đồng nghĩa và hiện tượng dính chữ trong ẩm thực</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6 my-auto">
+          <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl">
+            <h3 class="font-bold text-sm text-red-600">⚠️ Hiện Tượng Dính Chữ Kinh Điển</h3>
+            <div class="mt-3 text-xs space-y-2 text-slate-700">
+              <div class="p-2 bg-white rounded border border-slate-200">
+                <span class="font-bold text-red-500">Cà chua:</span> Chứa chuỗi <code>"cá"</code> ➔ Dễ nhầm người dùng có nguyên liệu Cá!
+              </div>
+              <div class="p-2 bg-white rounded border border-slate-200">
+                <span class="font-bold text-red-500">Mắm tôm:</span> Chứa chuỗi <code>"tôm"</code> ➔ Dễ gợi ý món Tôm chiên xù!
+              </div>
+              <div class="p-2 bg-white rounded border border-slate-200">
+                <span class="font-bold text-red-500">Bơ tỏi:</span> Chứa chuỗi <code>"bò"</code> ➔ Dễ gợi ý món Bò xào hành tây!
+              </div>
+              <div class="p-2 bg-white rounded border border-slate-200">
+                <span class="font-bold text-red-500">Đậu gà / Nấm đùi gà:</span> Dễ nhầm thành Thịt gà!
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl">
+            <h3 class="font-bold text-sm text-emerald-600">✅ Giải Pháp Thuật Toán Của FoodAI</h3>
+            <div class="mt-3 text-xs space-y-2 text-slate-700">
+              <div class="p-2 bg-white rounded border border-slate-200">
+                <p class="font-bold text-slate-800">1. Chuẩn hóa NFD Unicode:</p>
+                <p class="text-slate-500 text-[11px]">Tách dấu thanh, chuyển về chữ thường chuẩn: <code>RegexReplace(s, [\u0300-\u036f], '')</code>.</p>
+              </div>
+              <div class="p-2 bg-white rounded border border-slate-200">
+                <p class="font-bold text-slate-800">2. Ranh giới từ nguyên vẹn (Whole-word Boundary):</p>
+                <p class="text-slate-500 text-[11px]">Kiểm tra <code>(^|[^a-z0-9])target([^a-z0-9]|$)</code> tránh dính từ.</p>
+              </div>
+              <div class="p-2 bg-white rounded border border-slate-200">
+                <p class="font-bold text-slate-800">3. Danh sách loại trừ (Negative Excludes):</p>
+                <p class="text-slate-500 text-[11px]">Bảng từ điển tách biệt dứt khoát 100% các từ ghép gây nhầm lẫn.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-slate-400 border-t pt-3">
+          <span>FoodAI · NLP Tiếng Việt</span>
+          <span>Slide 09/20</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 10: RANKING ALGORITHM -->
+      <div class="slide w-full h-full p-10 flex-col justify-between" data-notes="Hệ thống áp dụng công thức chấm điểm đa tiêu chí: ưu tiên món khớp nhiều nguyên liệu nhất, tên món chứa từ khóa chính và đúng loại đạm. Các món phụ chỉ khớp 1 nguyên liệu sẽ bị điểm thấp và tự động bị đẩy xuống hoặc loại bỏ.">
+        <div>
+          <span class="text-xs font-bold text-orange-600 uppercase tracking-wider bg-orange-50 px-2.5 py-1 rounded-md">THUẬT TOÁN GỢI Ý</span>
+          <h2 class="text-2xl font-black text-slate-900 mt-2">Thuật Toán Lọc Ràng Buộc & Chấm Điểm Đa Tiêu Chí</h2>
+          <p class="text-xs text-slate-500">Đảm bảo món ăn được gợi ý bám sát tối đa nguyên liệu người dùng có</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6 my-auto">
+          <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl flex flex-col justify-between">
+            <div>
+              <h3 class="font-bold text-sm text-slate-900 mb-3">🛡️ Bộ Lọc Loại Trừ Cứng (Hard Constraints)</h3>
+              <ul class="text-xs text-slate-700 space-y-3">
+                <li class="flex items-start gap-2">
+                  <span class="text-orange-500 font-bold">•</span>
+                  <span><b>Bảo vệ Protein:</b> Nếu người dùng chỉ có [Trứng, Rau củ] ➔ Loại bỏ 100% các món chứa thịt heo, bò, gà, cá, tôm.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-orange-500 font-bold">•</span>
+                  <span><b>Bảo vệ nguyên liệu đơn lẻ:</b> Nếu người dùng chỉ có [Thịt bò] ➔ Loại trừ món đòi hỏi cả thịt heo (thịt băm), tôm, mực.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-orange-500 font-bold">•</span>
+                  <span><b>Bảo vệ xung đột ảnh:</b> Loại trừ ngay nếu URL ảnh chứa slug mâu thuẫn tên món.</span>
+                </li>
+              </ul>
+            </div>
+            <div class="p-2.5 bg-orange-100/60 rounded-lg text-[11px] font-semibold text-orange-800">
+              Không bao giờ gợi ý món thiếu nguyên liệu cốt lõi!
+            </div>
+          </div>
+
+          <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl flex flex-col justify-between">
+            <div>
+              <h3 class="font-bold text-sm text-blue-900 mb-3">⭐ Công Thức Chấm Điểm Ưu Tiên (Ranking)</h3>
+              <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl text-center">
+                <code class="text-xs font-bold text-blue-800">
+                  Score = (Số NL khớp × 100) + (Tên món chứa NL × 50) + (Khớp đúng đạm × 150)
+                </code>
+              </div>
+              <ul class="text-xs text-slate-700 space-y-2 mt-3">
+                <li>• <b>Tỷ lệ khớp nguyên liệu:</b> $M(U, R) = \min(100, \text{round}(|U \cap R| / \min(|U|, 3) \times 100))$.</li>
+                <li>• Món khớp nhiều nguyên liệu nhất và tên món chứa trực tiếp từ khóa luôn xếp Top 1 (VD: <i>Trứng sốt cà chua</i>, <i>Bò lúc lắc</i>).</li>
+                <li>• Các món phụ chỉ khớp 1 nguyên liệu sẽ bị điểm thấp và tự động bị đẩy xuống cuối hoặc cắt bỏ.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-slate-400 border-t pt-3">
+          <span>FoodAI · Thuật toán gợi ý</span>
+          <span>Slide 10/20</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 11: DATABASE DESIGN -->
+      <div class="slide w-full h-full p-10 flex-col justify-between" data-notes="Cơ sở dữ liệu được thiết kế chuẩn hóa 3NF với 9 bảng. Đặc biệt hệ thống có tính năng Auto-Seed: bất kỳ ai tải dự án về chỉ cần tạo CSDL rỗng, khi backend chạy sẽ tự động nạp toàn bộ 552 món và ảnh vào MySQL.">
+        <div>
+          <span class="text-xs font-bold text-orange-600 uppercase tracking-wider bg-orange-50 px-2.5 py-1 rounded-md">CƠ SỞ DỮ LIỆU</span>
+          <h2 class="text-2xl font-black text-slate-900 mt-2">Thiết Kế Cơ Sở Dữ Liệu Chuẩn 3NF (MySQL)</h2>
+          <p class="text-xs text-slate-500">Quản lý 9 bảng dữ liệu quan hệ và cơ chế tự động nạp dữ liệu (Auto-Seed)</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6 my-auto">
+          <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl">
+            <h3 class="font-bold text-sm text-slate-900 mb-2">📊 9 Bảng Dữ Liệu Quan Hệ Chuẩn Hóa</h3>
+            <ul class="text-xs text-slate-600 space-y-1.5 code-font">
+              <li>• <b>users:</b> id, username, email, password (BCrypt), role, is_active</li>
+              <li>• <b>recipes:</b> id, name (INDEX), desc, image_url, cooking_time, servings</li>
+              <li>• <b>recipe_ingredients:</b> recipe_id, ingredient_name, quantity, is_main</li>
+              <li>• <b>recipe_steps:</b> recipe_id, step_number, instruction</li>
+              <li>• <b>recipe_nutrition:</b> calories, protein, carbs, fat, fiber, vit_c...</li>
+              <li>• <b>favorite_recipes & search_history:</b> Sổ tay yêu thích và lịch sử</li>
+              <li>• <b>cookpad_dish_images:</b> query_key, image_url, recipe_title</li>
+            </ul>
+          </div>
+
+          <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl flex flex-col justify-between">
+            <div>
+              <h3 class="font-bold text-sm text-slate-900 mb-2">⚡ Cơ Chế Tự Động Hóa (Auto-Seed)</h3>
+              <ul class="text-xs text-slate-600 space-y-2.5">
+                <li>• <b>Không cần import SQL thủ công:</b> Backend tự động tạo đủ bảng khi chạy lần đầu.</li>
+                <li>• <b>Auto-Seed 552 món:</b> Tự nạp dữ liệu Cookpad vào MySQL nếu CSDL chưa đủ 500 món.</li>
+                <li>• <b>Tạo sẵn 2 tài khoản test:</b> <code>admin@foodsystem.com</code> và <code>user@foodsystem.com</code>.</li>
+                <li>• <b>Hỗ trợ đa nền tảng CSDL:</b> Chạy mượt mà trên cả MySQL Localhost và Cloud TiDB Serverless.</li>
+              </ul>
+            </div>
+            <div class="p-2.5 bg-blue-100/60 rounded-lg text-[11px] font-semibold text-blue-900">
+              Bất kỳ ai tải dự án về chỉ cần tạo CSDL rỗng là chạy ngay trong 1 phút!
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-slate-400 border-t pt-3">
+          <span>FoodAI · Cơ sở dữ liệu</span>
+          <span>Slide 11/20</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 12: IMAGE QUALITY CONTROL -->
+      <div class="slide w-full h-full p-10 flex-col justify-between" data-notes="Để giải quyết triệt để vấn đề hình ảnh không khớp với món ăn, nhóm xây dựng bộ lọc tự động kiểm tra slug của URL ảnh, và đồng thời cung cấp giao diện Admin cho phép thay thế link ảnh thủ công mọi lúc.">
+        <div>
+          <span class="text-xs font-bold text-orange-600 uppercase tracking-wider bg-orange-50 px-2.5 py-1 rounded-md">KIỂM SOÁT HÌNH ẢNH</span>
+          <h2 class="text-2xl font-black text-slate-900 mt-2">Kiểm Soát Hình Ảnh Thực Tế & Chống Sai Lệch</h2>
+          <p class="text-xs text-slate-500">Đảm bảo hình ảnh thành phẩm 100% khớp đúng món ăn và thẩm mỹ cao</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6 my-auto">
+          <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl">
+            <span class="text-xs font-bold text-blue-600 uppercase">Lớp 1 · Tự Động Bằng Thuật Toán</span>
+            <h3 class="font-bold text-sm text-slate-900 mt-1 mb-2">Hàm isImageUrlConflicting</h3>
+            <ul class="text-xs text-slate-600 space-y-2">
+              <li>• Giải mã slug trực tiếp từ URL ảnh Cookpad CDN (<code>thit-bo-xao-hanh-tay-recipe-main-photo.jpg</code>).</li>
+              <li>• Nếu tên món là <b>Thịt bò</b> nhưng URL ảnh chứa slug <code>ga</code> hay <code>heo</code> ➔ <b>LOẠI BỎ NGAY LẬP TỨC</b>.</li>
+              <li>• Tự động phạt điểm (-100) và loại bỏ các ảnh cơm hộp bento tạo hình trẻ em, thức ăn dặm hoặc ảnh mâm cơm hỗn hợp nhiều món.</li>
+            </ul>
+          </div>
+
+          <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl">
+            <span class="text-xs font-bold text-orange-600 uppercase">Lớp 2 · Can Thiệp Thủ Công</span>
+            <h3 class="font-bold text-sm text-slate-900 mt-1 mb-2">Dashboard Quản Trị Viên</h3>
+            <ul class="text-xs text-slate-600 space-y-2">
+              <li>• Trang Admin Kho Món Ăn tích hợp nút Chỉnh sửa (cây bút) cho từng món.</li>
+              <li>• Quản trị viên có thể tự dán link ảnh mới ưng ý nhất từ Google hoặc ảnh tự chụp.</li>
+              <li>• Hệ thống cập nhật trực tiếp vào MySQL và bảng <code>cookpad_dish_images</code> để hiển thị vĩnh viễn cho người dùng.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="p-2.5 bg-orange-50 border border-orange-200 rounded-lg text-xs text-orange-900 font-semibold text-center">
+          📸 Hơn 95% ảnh trong CSDL khớp chuẩn 1:1 theo slug tên món của chính tác giả nấu ăn đăng tải trên Cookpad.
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-slate-400 border-t pt-3">
+          <span>FoodAI · Kiểm soát hình ảnh</span>
+          <span>Slide 12/20</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 13: CLIENT UI -->
+      <div class="slide w-full h-full p-10 flex-col justify-between" data-notes="Giao diện người dùng được thiết kế hiện đại, thân thiện. Điểm nhấn là Modal chi tiết 3 Tab vừa hiển thị công thức, vừa định lượng gram nguyên liệu và hiển thị biểu đồ dinh dưỡng khoa học.">
+        <div>
+          <span class="text-xs font-bold text-orange-600 uppercase tracking-wider bg-orange-50 px-2.5 py-1 rounded-md">GIAO DIỆN NGƯỜI DÙNG</span>
+          <h2 class="text-2xl font-black text-slate-900 mt-2">Trải Nghiệm Giao Diện Người Dùng (Client Web Application)</h2>
+          <p class="text-xs text-slate-500">Thiết kế hiện đại, tối ưu trải nghiệm tương tác với phong cách màu sắc ấm áp</p>
+        </div>
+
+        <div class="grid grid-cols-4 gap-4 my-auto">
+          <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+            <div class="w-8 h-8 rounded-lg bg-orange-500 text-white flex items-center justify-center font-bold text-sm mb-2">🏷️</div>
+            <h3 class="font-bold text-xs text-slate-900">Tag Màu & Combo Nhanh</h3>
+            <p class="text-[11px] text-slate-600 mt-1">Nhập nguyên liệu dạng tag màu động, hỗ trợ 1-click chọn nhanh combo phổ biến: thịt bò, gà, trứng, tôm...</p>
+          </div>
+          <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+            <div class="w-8 h-8 rounded-lg bg-blue-500 text-white flex items-center justify-center font-bold text-sm mb-2">📑</div>
+            <h3 class="font-bold text-xs text-slate-900">Phân Trang 3 Món/Trang</h3>
+            <p class="text-[11px] text-slate-600 mt-1">Gợi ý tối đa 8 món ăn tối ưu nhất, chia làm 3 món/trang với thanh chuyển trang cuộn mượt mà.</p>
+          </div>
+          <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+            <div class="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center font-bold text-sm mb-2">📊</div>
+            <h3 class="font-bold text-xs text-slate-900">Modal Chi Tiết 3 Tab</h3>
+            <p class="text-[11px] text-slate-600 mt-1">Tab 1: Cách làm 4 bước. Tab 2: Định lượng nguyên liệu gram/thìa. Tab 3: Bảng 8 chỉ số dinh dưỡng & mẹo AI Chef.</p>
+          </div>
+          <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+            <div class="w-8 h-8 rounded-lg bg-purple-500 text-white flex items-center justify-center font-bold text-sm mb-2">❤️</div>
+            <h3 class="font-bold text-xs text-slate-900">Yêu Thích & Lịch Sử</h3>
+            <p class="text-[11px] text-slate-600 mt-1">Lưu món ăn yêu thích một chạm (Trái tim), lưu lịch sử tìm kiếm và nút 'Dùng lại' tiện lợi.</p>
+          </div>
+        </div>
+
+        <div class="p-2.5 bg-slate-100 rounded-lg text-xs text-slate-600 text-center font-medium">
+          🌟 Tối ưu Responsive 100% trên cả máy tính bàn (Desktop), máy tính bảng (Tablet) và điện thoại di động (Mobile).
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-slate-400 border-t pt-3">
+          <span>FoodAI · Giao diện Client</span>
+          <span>Slide 13/20</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 14: ADMIN UI -->
+      <div class="slide w-full h-full p-10 flex-col justify-between" data-notes="Phân hệ Admin Panel cung cấp đầy đủ công cụ quản trị dữ liệu, giám sát hoạt động của Gemini AI và cho phép quản lý vòng đời tài khoản người dùng an toàn.">
+        <div>
+          <span class="text-xs font-bold text-orange-600 uppercase tracking-wider bg-orange-50 px-2.5 py-1 rounded-md">GIAO DIỆN QUẢN TRỊ</span>
+          <h2 class="text-2xl font-black text-slate-900 mt-2">Phân Hệ Quản Trị Hệ Thống (Admin Dashboard)</h2>
+          <p class="text-xs text-slate-500">Bảng điều khiển toàn diện phục vụ giám sát vận hành và quản lý dữ liệu thực tế</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-5 my-auto">
+          <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+            <h3 class="font-bold text-xs text-slate-900 flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+              Tổng Quan & Biểu Đồ KPI Thời Gian Thực
+            </h3>
+            <p class="text-[11px] text-slate-600 mt-1.5 leading-relaxed">
+              Thống kê tổng người dùng, tổng số món trong kho, số lượt truy vấn và biểu đồ cột Top 10 nguyên liệu được tìm kiếm nhiều nhất.
+            </p>
+          </div>
+
+          <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+            <h3 class="font-bold text-xs text-slate-900 flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-orange-500"></span>
+              Quản Lý Kho Món Ăn & Ảnh Cookpad (MySQL)
+            </h3>
+            <p class="text-[11px] text-slate-600 mt-1.5 leading-relaxed">
+              Bộ lọc theo 7 danh mục ẩm thực, tìm kiếm món ăn, chỉnh sửa công thức và tự tay cập nhật link ảnh Cookpad trực tiếp vào CSDL.
+            </p>
+          </div>
+
+          <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+            <h3 class="font-bold text-xs text-slate-900 flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              Quản Lý Người Dùng & Phân Quyền An Toàn
+            </h3>
+            <p class="text-[11px] text-slate-600 mt-1.5 leading-relaxed">
+              Danh sách tài khoản có phân trang, tìm kiếm, kích hoạt/khóa tài khoản kèm chốt an toàn ngăn Admin tự khóa chính mình.
+            </p>
+          </div>
+
+          <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+            <h3 class="font-bold text-xs text-slate-900 flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+              Giám Sát AI Query Logs & Trạng Thái Server
+            </h3>
+            <p class="text-[11px] text-slate-600 mt-1.5 leading-relaxed">
+              Theo dõi nhật ký tìm kiếm của người dùng theo thời gian thực và công cụ kiểm tra tức thì trạng thái kết nối Google Gemini API.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-slate-400 border-t pt-3">
+          <span>FoodAI · Giao diện Admin</span>
+          <span>Slide 14/20</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 15: FALLBACK LAYER -->
+      <div class="slide w-full h-full p-10 flex-col justify-between" data-notes="Hệ thống được thiết kế theo tư duy chịu lỗi công nghiệp: nếu Google Gemini gặp sự cố mạng hoặc hết hạn mức, tầng Fallback nội bộ sẽ tự động phản hồi chỉ trong 0,21 giây từ CSDL MySQL, trải nghiệm người dùng không bao giờ bị gián đoạn.">
+        <div>
+          <span class="text-xs font-bold text-orange-600 uppercase tracking-wider bg-orange-50 px-2.5 py-1 rounded-md">TÍNH SẴN SÀNG CAO</span>
+          <h2 class="text-2xl font-black text-slate-900 mt-2">Cơ Chế Dự Phòng Chịu Lỗi Bền Vững (Fallback Layer)</h2>
+          <p class="text-xs text-slate-500">Đảm bảo hệ thống hoạt động liên tục ngay cả khi mất kết nối mạng hoặc lỗi API</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6 my-auto">
+          <div class="bg-red-50/60 border border-red-200 p-5 rounded-2xl flex flex-col justify-between">
+            <div>
+              <span class="text-xs font-bold text-red-600 uppercase">Nguy Cơ Môi Trường Thực Tế</span>
+              <h3 class="font-bold text-sm text-red-900 mt-1 mb-2">Sự Cố Bên Thứ Ba (Third-Party)</h3>
+              <ul class="text-xs text-slate-700 space-y-2">
+                <li>• Mất kết nối Internet hoặc sự cố mạng tới máy chủ Google Gemini.</li>
+                <li>• Quá hạn mức định ngạch miễn phí (Rate Limit / Quota Exceeded).</li>
+                <li>• Thời gian phản hồi của LLM bị trễ (Network Timeout).</li>
+              </ul>
+            </div>
+            <div class="p-2 bg-red-100 rounded text-[11px] text-red-800 font-semibold mt-3">
+              Nếu không có dự phòng ➔ Người dùng gặp lỗi hoặc màn hình trắng.
+            </div>
+          </div>
+
+          <div class="bg-emerald-50/60 border border-emerald-200 p-5 rounded-2xl flex flex-col justify-between">
+            <div>
+              <span class="text-xs font-bold text-emerald-600 uppercase">Giải Pháp Của FoodAI</span>
+              <h3 class="font-bold text-sm text-emerald-900 mt-1 mb-2">Chuyển Mạch Tự Động (Auto Fallback)</h3>
+              <ul class="text-xs text-slate-700 space-y-2">
+                <li>• Khối <code>try-catch</code> tại backend bắt lỗi mạng tức thì mà không gây crash server.</li>
+                <li>• Tự động kích hoạt hàm <code>suggestRecipesFromDatabase()</code> tra cứu trực tiếp từ kho 552 món Cookpad MySQL.</li>
+                <li>• <b>Tốc độ phản hồi cực nhanh: 0,21 giây (< 300ms)</b>, người dùng luôn nhận được kết quả gợi ý chuẩn xác.</li>
+              </ul>
+            </div>
+            <div class="p-2 bg-emerald-100 rounded text-[11px] text-emerald-900 font-bold mt-3">
+              ✅ Độ sẵn sàng hệ thống đạt 99,9%, trải nghiệm không bao giờ đứt quãng!
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-slate-400 border-t pt-3">
+          <span>FoodAI · Dự phòng Fallback</span>
+          <span>Slide 15/20</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 16: TESTING -->
+      <div class="slide w-full h-full p-10 flex-col justify-between" data-notes="Toàn bộ 6 kịch bản kiểm thử trọng yếu từ bảo mật, xử lý ngoại lệ đến tính toàn vẹn dữ liệu đều đạt tỷ lệ Pass 100%, khẳng định độ hoàn thiện cao của phần mềm.">
+        <div>
+          <span class="text-xs font-bold text-orange-600 uppercase tracking-wider bg-orange-50 px-2.5 py-1 rounded-md">KIỂM THỬ HỆ THỐNG</span>
+          <h2 class="text-2xl font-black text-slate-900 mt-2">Kết Quả Kiểm Thử Chức Năng & Ngoại Lệ (Testing)</h2>
+          <p class="text-xs text-slate-500">Kiểm thử toàn diện 6 ca thử nghiệm cốt lõi đạt tỷ lệ thành công 100%</p>
+        </div>
+
+        <div class="my-auto overflow-hidden border border-slate-200 rounded-xl">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead class="bg-slate-800 text-white font-semibold">
+              <tr>
+                <th class="p-2.5">Mã Ca</th>
+                <th class="p-2.5">Kịch Bản Kiểm Thử Đầu Vào</th>
+                <th class="p-2.5">Kết Quả Kỳ Vọng</th>
+                <th class="p-2.5 text-center">Trạng Thái</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 bg-white">
+              <tr class="hover:bg-slate-50">
+                <td class="p-2.5 font-bold font-mono text-slate-700">TC-01</td>
+                <td class="p-2.5">Email, mật khẩu hợp lệ</td>
+                <td class="p-2.5">Đăng nhập thành công, cấp phát token JWT an toàn</td>
+                <td class="p-2.5 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold">ĐẠT (Pass)</span></td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-2.5 font-bold font-mono text-slate-700">TC-02</td>
+                <td class="p-2.5">Nguyên liệu: [Thịt bò, Cà chua, Hành tây]</td>
+                <td class="p-2.5">Gợi ý 6-8 món bò chuẩn vị, tính dinh dưỡng</td>
+                <td class="p-2.5 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold">ĐẠT (Pass)</span></td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-2.5 font-bold font-mono text-slate-700">TC-03</td>
+                <td class="p-2.5">Nguyên liệu chay: [Trứng, Đậu phụ, Nấm]</td>
+                <td class="p-2.5">100% món không có thịt cá lạ, không ảo giác</td>
+                <td class="p-2.5 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold">ĐẠT (Pass)</span></td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-2.5 font-bold font-mono text-slate-700">TC-04</td>
+                <td class="p-2.5">Tắt mạng Internet / Khóa API Key</td>
+                <td class="p-2.5">Tự động Fallback sang CSDL MySQL nội bộ (< 300ms)</td>
+                <td class="p-2.5 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold">ĐẠT (Pass)</span></td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-2.5 font-bold font-mono text-slate-700">TC-05</td>
+                <td class="p-2.5">Người dùng thường truy cập /admin</td>
+                <td class="p-2.5">Bị chặn và phản hồi mã lỗi HTTP 403 Forbidden</td>
+                <td class="p-2.5 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold">ĐẠT (Pass)</span></td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-2.5 font-bold font-mono text-slate-700">TC-06</td>
+                <td class="p-2.5">Nhập chuỗi rỗng / Ký tự đặc biệt</td>
+                <td class="p-2.5">Bắt lỗi validation, thông báo tiếng Việt thân thiện</td>
+                <td class="p-2.5 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold">ĐẠT (Pass)</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-slate-400 border-t pt-3">
+          <span>FoodAI · Kết quả kiểm thử</span>
+          <span>Slide 16/20</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 17: PERFORMANCE EVALUATION -->
+      <div class="slide w-full h-full p-10 flex-col justify-between" data-notes="Kết quả định lượng cho thấy sự kết hợp hoàn hảo giữa 2 chế độ: Chế độ AI vượt trội về tính sáng tạo (4,8 sao) và tỷ lệ bám sát nguyên liệu (97,8%), trong khi chế độ Fallback tối ưu về tốc độ (0,21 giây) và độ chuẩn xác hình ảnh (98,2%).">
+        <div>
+          <span class="text-xs font-bold text-orange-600 uppercase tracking-wider bg-orange-50 px-2.5 py-1 rounded-md">ĐÁNH GIÁ ĐỊNH LƯỢNG</span>
+          <h2 class="text-2xl font-black text-slate-900 mt-2">Đánh Giá Hiệu Năng Thực Nghiệm Giữa Hai Chế Độ</h2>
+          <p class="text-xs text-slate-500">Khảo sát và đo đạc trên 150 kịch bản tìm kiếm ngẫu nhiên đa dạng nguyên liệu</p>
+        </div>
+
+        <div class="my-auto overflow-hidden border border-slate-200 rounded-xl">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead class="bg-blue-900 text-white font-semibold">
+              <tr>
+                <th class="p-2">Tiêu Chí Đánh Giá</th>
+                <th class="p-2 text-center text-orange-300">Chế Độ AI (Gemini)</th>
+                <th class="p-2 text-center text-emerald-300">Chế Độ Fallback (MySQL)</th>
+                <th class="p-2">Nhận Xét / So Sánh</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 bg-white">
+              <tr class="hover:bg-slate-50">
+                <td class="p-2 font-medium">Thời gian phản hồi trung bình</td>
+                <td class="p-2 text-center font-bold text-orange-600">3,42 giây</td>
+                <td class="p-2 text-center font-bold text-emerald-600">0,21 giây</td>
+                <td class="p-2 text-[11px] text-slate-500">Fallback nhanh gấp 16 lần</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-2 font-medium">Tỷ lệ phân tích JSON hợp lệ</td>
+                <td class="p-2 text-center font-bold text-emerald-600">100%</td>
+                <td class="p-2 text-center font-bold text-emerald-600">100%</td>
+                <td class="p-2 text-[11px] text-slate-500">Cú pháp kiên cố, không lỗi</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-2 font-medium">Tỷ lệ đa dạng phương pháp chế biến</td>
+                <td class="p-2 text-center font-bold text-orange-600">98,6%</td>
+                <td class="p-2 text-center">84,2%</td>
+                <td class="p-2 text-[11px] text-slate-500">AI sáng tạo món phong phú hơn</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-2 font-medium">Tỷ lệ bám sát nguyên liệu có sẵn</td>
+                <td class="p-2 text-center font-bold text-orange-600">97,8%</td>
+                <td class="p-2 text-center">94,5%</td>
+                <td class="p-2 text-[11px] text-slate-500">Bám sát tuyệt đối nguyên liệu</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-2 font-medium">Tỷ lệ triệt tiêu ảo giác thịt cá lạ</td>
+                <td class="p-2 text-center font-bold text-emerald-600">100%</td>
+                <td class="p-2 text-center font-bold text-emerald-600">100%</td>
+                <td class="p-2 text-[11px] text-slate-500">Triệt tiêu hoàn toàn ảo giác</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-2 font-medium">Tỷ lệ gán hình ảnh chính xác</td>
+                <td class="p-2 text-center">94,6%</td>
+                <td class="p-2 text-center font-bold text-emerald-600">98,2%</td>
+                <td class="p-2 text-[11px] text-slate-500">Kho ảnh Cookpad khớp chuẩn</td>
+              </tr>
+              <tr class="hover:bg-slate-50 bg-orange-50/50">
+                <td class="p-2 font-bold text-slate-900">Mức độ hài lòng của người dùng</td>
+                <td class="p-2 text-center font-black text-orange-600">4,8 / 5,0 ⭐</td>
+                <td class="p-2 text-center font-bold text-slate-700">4,2 / 5,0 ⭐</td>
+                <td class="p-2 text-[11px] font-semibold text-orange-700">Người dùng đánh giá rất cao</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-slate-400 border-t pt-3">
+          <span>FoodAI · Đánh giá định lượng</span>
+          <span>Slide 17/20</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 18: REAL-LIFE DEMOS -->
+      <div class="slide w-full h-full p-10 flex-col justify-between" data-notes="Trên màn hình là hai kịch bản điển hình: Dù người dùng chỉ có trứng cà chua hay có thịt bò, hệ thống đều đưa ra các món ăn thân thuộc, chuẩn vị Việt Nam, đúng định lượng và hình ảnh chân thực 100%.">
+        <div>
+          <span class="text-xs font-bold text-orange-600 uppercase tracking-wider bg-orange-50 px-2.5 py-1 rounded-md">KỊCH BẢN THỰC TẾ</span>
+          <h2 class="text-2xl font-black text-slate-900 mt-2">Minh Họa Kịch Bản Kiểm Thử Thực Tế Điển Hình</h2>
+          <p class="text-xs text-slate-500">Chứng minh tính chính xác, thực tế và loại trừ hoàn toàn món không liên quan</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6 my-auto">
+          <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-orange-600 uppercase">Kịch Bản 1</span>
+                <span class="text-[11px] bg-slate-200 px-2 py-0.5 rounded font-mono font-semibold">[Trứng, Cà chua, Hành lá]</span>
+              </div>
+              <h3 class="font-bold text-sm text-slate-900">Món Dân Dã / Không Thịt Cá</h3>
+              <ul class="text-xs text-slate-600 mt-3 space-y-2">
+                <li>• <b>Gợi ý chính xác:</b> <i>Trứng sốt cà chua</i>, <i>Canh cà chua trứng</i>, <i>Trứng chiên hành lá</i>, <i>Cơm chiên trứng</i>.</li>
+                <li>• <b>Cam kết loại trừ:</b> 100% không xuất hiện thịt bò, heo, gà hay cá lạ.</li>
+                <li>• <b>Dinh dưỡng:</b> Tính toán mức calo chuẩn (~220 kcal), hiển thị ảnh thành phẩm chuẩn mực.</li>
+              </ul>
+            </div>
+            <div class="p-2.5 bg-emerald-100/70 rounded-lg text-emerald-900 text-xs font-semibold mt-3">
+              ✅ Khớp 100% nguyên liệu, không bịa đặt đạm lạ!
+            </div>
+          </div>
+
+          <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-blue-600 uppercase">Kịch Bản 2</span>
+                <span class="text-[11px] bg-slate-200 px-2 py-0.5 rounded font-mono font-semibold">[Thịt bò]</span>
+              </div>
+              <h3 class="font-bold text-sm text-slate-900">Món Đạm Bò Chuyên Biệt</h3>
+              <ul class="text-xs text-slate-600 mt-3 space-y-2">
+                <li>• <b>Gợi ý đa dạng:</b> <i>Thịt bò xào hành tây</i>, <i>Thịt bò áp chảo</i>, <i>Bò lúc lắc</i>, <i>Canh dưa chua bắp bò</i>, <i>Măng tây xào bò</i>...</li>
+                <li>• <b>Đầy đủ số lượng:</b> Trả về đủ 8 món tối ưu nhất trong kho 67 món chuyên về bò.</li>
+                <li>• <b>Phân trang mượt mà:</b> Chia làm 3 trang trực quan (Trang 1: 3 món, Trang 2: 3 món, Trang 3: 2 món).</li>
+              </ul>
+            </div>
+            <div class="p-2.5 bg-blue-100/70 rounded-lg text-blue-900 text-xs font-semibold mt-3">
+              ✅ Đầy đủ 8 món ngon, hỗ trợ phân trang 3 món/trang!
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-slate-400 border-t pt-3">
+          <span>FoodAI · Kịch bản thực tế</span>
+          <span>Slide 18/20</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 19: CONCLUSION & FUTURE WORK -->
+      <div class="slide w-full h-full p-10 flex-col justify-between" data-notes="Đề tài đã hoàn thành xuất sắc các mục tiêu đề ra. Trong tương lai, nhóm sẽ mở rộng thêm tính năng nhận diện thực phẩm qua camera AI và lập thực đơn dinh dưỡng theo tuần cho gia đình.">
+        <div>
+          <span class="text-xs font-bold text-orange-600 uppercase tracking-wider bg-orange-50 px-2.5 py-1 rounded-md">TỔNG KẾT</span>
+          <h2 class="text-2xl font-black text-slate-900 mt-2">Kết Luận & Hướng Phát Triển Tương Lai</h2>
+          <p class="text-xs text-slate-500">Đóng góp chính của đề tài và lộ trình nâng cấp sản phẩm ứng dụng thực tiễn</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6 my-auto">
+          <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl">
+            <h3 class="font-bold text-sm text-emerald-700 flex items-center gap-2 mb-3">
+              <span>🏆</span> Đóng Góp Chính Của Đồ Án
+            </h3>
+            <ul class="text-xs text-slate-700 space-y-2.5">
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-500 font-bold">✓</span>
+                <span>Đề xuất thành công kiến trúc <b>Grounded RAG</b> giải quyết triệt để bài toán ảo giác nguyên liệu của LLM.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-500 font-bold">✓</span>
+                <span>Ứng dụng Web hoàn chỉnh 2 phân hệ (Client & Admin) với giao diện trực quan, responsive.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-500 font-bold">✓</span>
+                <span>Kho dữ liệu thực tế <b>552 món ăn và hơn 2.000 hình ảnh Cookpad</b> Việt Nam.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-emerald-500 font-bold">✓</span>
+                <span>Đã triển khai thực tế trên Cloud (Vercel & Render) với tên miền hoạt động ổn định.</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl">
+            <h3 class="font-bold text-sm text-blue-700 flex items-center gap-2 mb-3">
+              <span>🚀</span> Hướng Phát Triển Tương Lai
+            </h3>
+            <ul class="text-xs text-slate-700 space-y-2.5">
+              <li class="flex items-start gap-2">
+                <span class="text-blue-500 font-bold">➔</span>
+                <span><b>Thị giác máy tính (Computer Vision):</b> Tích hợp mô hình YOLOv8 chụp ảnh khay tủ lạnh tự nhận diện nguyên liệu.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-blue-500 font-bold">➔</span>
+                <span><b>Thực đơn tuần thông minh (Weekly Planner):</b> Tự động cân đối calo 7 ngày theo thể trạng (giảm cân, Keto, tiểu đường).</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-blue-500 font-bold">➔</span>
+                <span><b>Ứng dụng di động (Mobile App):</b> Xây dựng app React Native và mạng xã hội chia sẻ công thức ẩm thực.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-slate-400 border-t pt-3">
+          <span>FoodAI · Kết luận & Phát triển</span>
+          <span>Slide 19/20</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 20: CLOSING -->
+      <div class="slide w-full h-full p-12 flex-col justify-between bg-gradient-to-br from-white via-orange-50/20 to-blue-50/30 relative text-center" data-notes="Em xin chân thành cảm ơn quý Thầy Cô trong Hội đồng đã chú ý lắng nghe bài báo cáo của nhóm. Chúng em rất mong nhận được những lời nhận xét, góp ý quý báu của quý Thầy Cô để hoàn thiện đề tài hơn nữa. Nhóm chúng em xin sẵn sàng trả lời các câu hỏi của Hội đồng ạ!">
+        <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-orange-500 via-amber-500 to-blue-600"></div>
+
+        <div>
+          <span class="text-xs font-bold text-orange-600 uppercase tracking-wider bg-orange-100 px-3 py-1 rounded-full">KẾT THÚC BÁO CÁO</span>
+        </div>
+
+        <div class="my-auto">
+          <h2 class="text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">
+            CHÂN THÀNH CẢM ƠN QUÝ THẦY CÔ VÀ CÁC BẠN ĐÃ LẮNG NGHE!
+          </h2>
+          <p class="text-sm font-semibold text-slate-600 mt-3">
+            HỆ THỐNG AI GỢI Ý MÓN ĂN THEO NGUYÊN LIỆU (FoodAI)
+          </p>
+          <p class="text-xs text-slate-500 italic mt-1 max-w-xl mx-auto">
+            Nhóm xin trân trọng cảm ơn TS. Đỗ Phúc Hảo đã tận tình hướng dẫn khoa học trong suốt quá trình thực hiện đồ án.
+          </p>
+
+          <div class="my-6 inline-block p-4 bg-blue-50 border border-blue-200 rounded-2xl shadow-sm">
+            <p class="text-sm font-bold text-blue-900 uppercase tracking-wider">
+              KÍNH MỜI QUÝ THẦY CÔ TRONG HỘI ĐỒNG ĐẶT CÂU HỎI (Q&A)
+            </p>
+          </div>
+
+          <div class="flex items-center justify-center gap-6 text-xs text-slate-500">
+            <span class="flex items-center gap-1.5 font-medium">
+              🌐 Live Web: <a href="https://do-an-tri-tue-nhan-tao-nu.vercel.app" target="_blank" class="text-orange-600 underline">do-an-tri-tue-nhan-tao-nu.vercel.app</a>
+            </span>
+            <span class="flex items-center gap-1.5 font-medium">
+              💻 GitHub: <a href="https://github.com/T-glonk/DoAnTriTueNhanTao.git" target="_blank" class="text-blue-600 underline">T-glonk/DoAnTriTueNhanTao</a>
+            </span>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-slate-400 border-t pt-3">
+          <span>Trường Đại học Kiến trúc Đà Nẵng · Khoa Công nghệ Thông tin</span>
+          <span>Slide 20/20</span>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- SPEAKER NOTES DRAWER (TOGGLEABLE) -->
+  <footer id="notesDrawer" class="hidden bg-slate-900 border-t border-slate-800 text-slate-300 px-8 py-3.5 flex items-start gap-4 z-40 transition-all max-h-36 overflow-y-auto">
+    <div class="px-2 py-0.5 bg-orange-600 text-white rounded text-xs font-bold whitespace-nowrap mt-0.5">🎙️ Lời Thoại</div>
+    <div id="notesText" class="text-xs leading-relaxed text-slate-200 font-medium">
+      <!-- Notes text injected by JS -->
+    </div>
+  </footer>
+
   <script>
-    const speakerNotes = [
-      /* Slide 1 */ "Kính thưa quý Thầy Cô trong Hội đồng chấm đồ án và các bạn sinh viên. Em tên là Trần Quốc Trung, cùng bạn Phạm Tấn Hào đại diện cho nhóm nghiên cứu lớp 23CT2. Hôm nay, chúng em rất vinh dự được trình bày báo cáo đồ án Trí tuệ Nhân tạo với đề tài: 'Hệ thống AI gợi ý món ăn theo nguyên liệu (FoodAI)', dưới sự hướng dẫn khoa học tận tình của Thầy TS. Đỗ Phúc Hảo. Sau đây, em xin phép được bắt đầu phần báo cáo.",
-      /* Slide 2 */ "Bài thuyết trình của chúng em hôm nay được cô đọng thành 5 phần mạch lạc: Bắt đầu từ bài toán thực tế quản lý thực phẩm hàng ngày, kế tiếp là giải pháp kiến trúc Grounded RAG kết hợp Google Gemini AI, các thuật toán xử lý ngôn ngữ tiếng Việt loại bỏ sai lệch nguyên liệu, phần trình diễn trực tiếp hệ thống và cuối cùng là kết quả thực nghiệm cùng phương hướng phát triển.",
-      /* Slide 3 */ "Xuất phát từ thực tế đời sống, hầu hết mỗi chúng ta khi mở tủ lạnh đều thấy một vài quả trứng, nửa quả cà chua, một ít hành lá hay mẩu thịt bò, nhưng lại lúng túng không biết nấu món gì. Sự thiếu hụt một công cụ tư vấn thông minh dẫn đến lãng phí thực phẩm và tốn kém chi phí sinh hoạt. Đây chính là động lực thôi thúc nhóm nghiên cứu xây dựng giải pháp FoodAI.",
-      /* Slide 4 */ "Nếu dùng các web nấu ăn cũ, ta bắt buộc phải gõ đúng tên 'Thịt kho tàu' hay 'Canh chua cá' mới tìm được. Ngược lại, nếu thả nổi cho các Chatbot AI sinh tự do, AI sẽ mắc bệnh 'ảo giác'—người dùng chỉ có trứng và cà chua nhưng AI lại tự tiện gợi ý món thịt bò xào hay tôm rim. Đó là lý do hệ thống cần một kiến trúc lai ghép đặc thù.",
-      /* Slide 5 */ "Đồ án không dừng lại ở mức thử nghiệm mô hình lý thuyết, mà đặt ra mục tiêu xây dựng một sản phẩm hoàn chỉnh phục vụ người dùng thực tế: gợi ý chuẩn xác 6-8 món, có hình ảnh thật từ Cookpad, tính đúng calo dinh dưỡng và có sẵn trang quản trị điều hành dữ liệu.",
-      /* Slide 6 */ "Hệ thống được thiết kế theo mô hình 3 tầng hiện đại, phân tách trách nhiệm rạch ròi. Tầng ứng dụng bóc tách độc lập các Service cho AI, nghiệp vụ so khớp và xử lý hình ảnh, giúp hệ thống đạt độ gắn kết cao, giảm phụ thuộc và dễ dàng mở rộng, kiểm thử.",
-      /* Slide 7 */ "Đây là đóng góp kỹ thuật trọng tâm nhất của đồ án. Thay vì để Gemini tự do nghĩ ra món ăn, hệ thống áp dụng cơ chế RAG định hướng CSDL: Món ăn và ảnh chụp được neo chặt từ kho Cookpad thật 100%. AI chỉ làm nhiệm vụ tính toán vi chất và hoàn thiện các bước nấu. Nhờ đó, triệt tiêu hoàn toàn hiện tượng ảo giác.",
-      /* Slide 8 */ "Cơ sở dữ liệu của hệ thống được chuẩn hóa theo dạng chuẩn 3NF, lưu trữ hơn 550 món ăn Việt Nam truyền thống. Việc kết hợp SDK chính thức của Google Gemini với chế độ ép kiểu JSON Schema giúp việc trao đổi dữ liệu giữa AI và Backend diễn ra trơn tru mà không bao giờ bị lỗi cú pháp parse.",
-      /* Slide 9 */ "Tiếng Việt có độ phức tạp ngữ âm rất lớn. Nếu chỉ dùng hàm so sánh chuỗi thông thường, khi người dùng nhập 'cá', máy tính sẽ nhầm sang 'cà chua', hoặc nhập 'bò' sẽ nhầm sang 'bơ tỏi'. Hệ thống đã giải quyết dứt điểm vấn đề này bằng ma trận đồng nghĩa và bộ lọc loại trừ phủ định đặc thù cho ẩm thực Việt.",
-      /* Slide 10 */ "Thuật toán xếp hạng đa tiêu chí bảo đảm món ăn nào tận dụng được nhiều nguyên liệu nhất và có tên gọi khớp nhất với từ khóa sẽ đứng đầu bảng. Đồng thời, các điều kiện lọc cứng hoạt động như một bức tường lửa, ngăn không cho các món đòi hỏi nguyên liệu người dùng không có lọt vào kết quả.",
-      /* Slide 11 */ "Một vấn đề rất dễ gặp khi làm web gợi ý món ăn là 'râu ông này cắm cằm bà kia'—tên món là súp gà nhưng ảnh lại là đĩa thịt luộc. Hệ thống FoodAI đã xây dựng bộ phân tích giải mã slug ảnh tự động để triệt tiêu lỗi này, đồng thời trao toàn quyền cho Admin chỉnh sửa link ảnh ngay trên giao diện.",
-      /* Slide 12 */ "Trong môi trường triển khai thực tế, không có gì đảm bảo kết nối ra ngoài Internet luôn thông suốt 100%. Vì vậy, nhóm đã thiết kế cơ chế chuyển mạch Fallback: Nếu Gemini gặp sự cố mạng hoặc vượt hạn mức, hệ thống tự động chuyển sang chế độ Heuristic CSDL nội bộ chỉ trong 0,21 giây, người dùng không hề gặp lỗi màn hình trắng.",
-      /* Slide 13 */ "Hệ thống phân quyền bảo mật hai cấp độ. Khách hàng thông thường được bảo vệ dữ liệu riêng tư qua mã token JWT. Còn Quản trị viên nắm giữ Dashboard đặc quyền để theo dõi toàn bộ hoạt động, với chốt an toàn ngăn Admin tự khóa tài khoản của chính mình.",
-      /* Slide 14 */ "Trên màn hình là giao diện trang chủ của FoodAI. Người dùng có thể nhập nguyên liệu bằng bàn phím hoặc nhấn chọn các tag màu có sẵn. Sau khi nhấn 'Gợi ý món ăn AI', hệ thống sẽ đưa ra danh sách 6 đến 8 món ăn. Để giao diện không bị dài và rối mắt, chúng em thiết kế bộ phân trang 3 món mỗi trang với hiệu ứng cuộn mượt mà.",
-      /* Slide 15 */ "Khi người dùng nhấn vào bất kỳ món ăn nào, cửa sổ chi tiết sẽ mở ra với 3 tab khoa học: Tab nguyên liệu đánh dấu xanh rõ ràng cái gì đã có và cái gì cần mua thêm; Tab hướng dẫn nấu 4 bước chi tiết; và Tab dinh dưỡng hiển thị đầy đủ calo cùng lời khuyên của Bếp trưởng AI.",
-      /* Slide 16 */ "Hai tính năng cá nhân hóa quan trọng là Sổ tay món ăn yêu thích và Lịch sử tìm kiếm. Người dùng có thể bấm lưu những món ngon để nấu lại sau này. Đặc biệt, nút 'Dùng lại' trong lịch sử cho phép tải lại tập nguyên liệu cũ chỉ với 1 cú nhấp chuột.",
-      /* Slide 17 */ "Tại trang quản trị, Admin có cái nhìn toàn cảnh về tình trạng hệ thống. Đặc biệt, theo đúng yêu cầu kiểm soát chất lượng, Admin có thể tìm kiếm bất kỳ món nào trong kho 552 món và tự tay dán link hình ảnh chất lượng cao để cập nhật trực tiếp vào MySQL.",
-      /* Slide 18 */ "Nhóm đã tiến hành kiểm thử thực nghiệm trên 150 kịch bản nguyên liệu khác nhau. Kết quả cho thấy cả hai chế độ đều đạt tỷ lệ 100% triệt tiêu ảo giác thịt cá lạ. Chế độ AI đạt điểm hài lòng 4.8/5 sao nhờ sự đa dạng, trong khi chế độ Fallback phản hồi cực nhanh chỉ 0,21 giây.",
-      /* Slide 19 */ "Đồ án đã khẳng định tính khả thi và ứng dụng thực tiễn cao của Trí tuệ Nhân tạo trong đời sống. Trong tương lai, nhóm dự kiến sẽ tích hợp thêm mô hình thị giác máy tính YOLOv8 để người dùng chỉ cần chụp ảnh tủ lạnh là hệ thống tự nhận diện, cũng như phát triển ứng dụng di động hoàn chỉnh.",
-      /* Slide 20 */ "Phần trình bày của nhóm chúng em đến đây là kết thúc. Chúng em xin chân thành cảm ơn quý Thầy Cô trong Hội đồng đã dành thời gian lắng nghe. Nhóm chúng em rất mong nhận được những ý kiến nhận xét và đóng góp quý báu từ quý Thầy Cô để đồ án ngày càng hoàn thiện hơn. Em xin trân trọng cảm ơn!"
-    ];
-
-    let currentSlide = 1;
-    const totalSlides = 20;
-
     const slides = document.querySelectorAll('.slide');
-    const progressBar = document.getElementById('progress-bar');
-    const currentSlideNumEl = document.getElementById('current-slide-num');
-    const totalSlidesNumEl = document.getElementById('total-slides-num');
-    const notesModal = document.getElementById('notes-modal');
-    const notesContent = document.getElementById('notes-content');
-    const notesSlideNum = document.getElementById('notes-slide-num');
-    const overviewModal = document.getElementById('overview-modal');
-    const overviewContainer = document.getElementById('overview-container');
+    const totalSlides = slides.length;
+    let currentSlide = 0;
 
-    totalSlidesNumEl.innerText = totalSlides.toString().padStart(2, '0');
+    const slideSelect = document.getElementById('slideSelect');
+    const slideCounter = document.getElementById('slideCounter');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const toggleNotesBtn = document.getElementById('toggleNotesBtn');
+    const notesDrawer = document.getElementById('notesDrawer');
+    const notesText = document.getElementById('notesText');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
 
-    function updateSlide(index) {
-      if (index < 1) index = 1;
-      if (index > totalSlides) index = totalSlides;
+    // Populate dropdown
+    slides.forEach((s, idx) => {
+      const opt = document.createElement('option');
+      opt.value = idx;
+      let label = `Slide ${idx + 1}`;
+      const h = s.querySelector('h1, h2, h3');
+      if (h) label += `: ${h.innerText.replace(/\n/g, ' ').slice(0, 35)}...`;
+      opt.innerText = label;
+      slideSelect.appendChild(opt);
+    });
+
+    function showSlide(index) {
+      if (index < 0) index = 0;
+      if (index >= totalSlides) index = totalSlides - 1;
       currentSlide = index;
 
-      slides.forEach(s => s.classList.remove('active'));
-      const activeSlide = document.querySelector(`.slide[data-slide="${currentSlide}"]`);
-      if (activeSlide) {
-        activeSlide.classList.add('active');
-        activeSlide.scrollTop = 0;
-      }
+      slides.forEach((s, idx) => {
+        if (idx === currentSlide) {
+          s.classList.add('active');
+        } else {
+          s.classList.remove('active');
+        }
+      });
 
-      // Progress bar & Counter
-      const pct = (currentSlide / totalSlides) * 100;
-      progressBar.style.width = pct + '%';
-      currentSlideNumEl.innerText = currentSlide.toString().padStart(2, '0');
+      slideSelect.value = currentSlide;
+      slideCounter.innerText = `${currentSlide + 1} / ${totalSlides}`;
 
       // Update speaker notes
-      notesSlideNum.innerText = `Lời thoại thuyết trình — Slide ${currentSlide}`;
-      notesContent.innerText = speakerNotes[currentSlide - 1] || "Không có lời thoại cho slide này.";
-
-      // Update overview items active state
-      document.querySelectorAll('.overview-item').forEach((item, idx) => {
-        if (idx + 1 === currentSlide) {
-          item.classList.add('active');
-        } else {
-          item.classList.remove('active');
-        }
-      });
+      const activeSlide = slides[currentSlide];
+      const notes = activeSlide.getAttribute('data-notes') || 'Không có ghi chú cho slide này.';
+      notesText.innerText = notes;
     }
 
-    function nextSlide() {
-      if (currentSlide < totalSlides) {
-        updateSlide(currentSlide + 1);
-      }
-    }
+    // Event listeners
+    prevBtn.addEventListener('click', () => showSlide(currentSlide - 1));
+    nextBtn.addEventListener('click', () => showSlide(currentSlide + 1));
+    slideSelect.addEventListener('change', (e) => showSlide(parseInt(e.target.value)));
 
-    function prevSlide() {
-      if (currentSlide > 1) {
-        updateSlide(currentSlide - 1);
-      }
-    }
+    toggleNotesBtn.addEventListener('click', () => {
+      notesDrawer.classList.toggle('hidden');
+    });
 
-    function toggleNotes() {
-      notesModal.classList.toggle('show');
-    }
-
-    function toggleOverview() {
-      overviewModal.classList.toggle('show');
-    }
-
-    function toggleFullscreen() {
+    fullscreenBtn.addEventListener('click', () => {
       if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(err => {
-          console.warn(`Fullscreen error: ${err.message}`);
-        });
+        document.documentElement.requestFullscreen().catch(() => {});
       } else {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        }
+        document.exitFullscreen().catch(() => {});
       }
-    }
-
-    // Build overview cards
-    slides.forEach((s, idx) => {
-      const slideNum = idx + 1;
-      const titleEl = s.querySelector('.slide-title') || s.querySelector('.main-project-title');
-      const titleText = titleEl ? titleEl.innerText.replace(/\n/g, ' ') : `Slide ${slideNum}`;
-      
-      const item = document.createElement('div');
-      item.className = 'overview-item' + (slideNum === 1 ? ' active' : '');
-      item.innerHTML = `
-        <div class="overview-num">SLIDE ${slideNum}</div>
-        <div class="overview-title">${titleText}</div>
-      `;
-      item.addEventListener('click', () => {
-        updateSlide(slideNum);
-        overviewModal.classList.remove('show');
-      });
-      overviewContainer.appendChild(item);
     });
 
-    // Event Listeners for UI Buttons
-    document.getElementById('btn-next').addEventListener('click', nextSlide);
-    document.getElementById('btn-prev').addEventListener('click', prevSlide);
-    document.getElementById('btn-toggle-notes').addEventListener('click', toggleNotes);
-    document.getElementById('btn-close-notes').addEventListener('click', () => notesModal.classList.remove('show'));
-    document.getElementById('btn-toggle-overview').addEventListener('click', toggleOverview);
-    document.getElementById('btn-close-overview').addEventListener('click', () => overviewModal.classList.remove('show'));
-    document.getElementById('btn-fullscreen').addEventListener('click', toggleFullscreen);
-
-    // Keyboard Shortcuts
+    // Keyboard navigation
     window.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
-        e.preventDefault();
-        nextSlide();
-      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
-        e.preventDefault();
-        prevSlide();
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        showSlide(currentSlide + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        showSlide(currentSlide - 1);
+      } else if (e.key.toLowerCase() === 's') {
+        notesDrawer.classList.toggle('hidden');
+      } else if (e.key.toLowerCase() === 'f') {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+          document.exitFullscreen().catch(() => {});
+        }
       } else if (e.key === 'Home') {
-        e.preventDefault();
-        updateSlide(1);
+        showSlide(0);
       } else if (e.key === 'End') {
-        e.preventDefault();
-        updateSlide(totalSlides);
-      } else if (e.key === 's' || e.key === 'S' || e.key === 'n' || e.key === 'N') {
-        toggleNotes();
-      } else if (e.key === 'o' || e.key === 'O') {
-        toggleOverview();
-      } else if (e.key === 'f' || e.key === 'F') {
-        toggleFullscreen();
-      } else if (e.key === 'Escape') {
-        notesModal.classList.remove('show');
-        overviewModal.classList.remove('show');
+        showSlide(totalSlides - 1);
       }
     });
 
-    // Initialize first slide
-    updateSlide(1);
+    // Initialize
+    showSlide(0);
   </script>
 </body>
 </html>
