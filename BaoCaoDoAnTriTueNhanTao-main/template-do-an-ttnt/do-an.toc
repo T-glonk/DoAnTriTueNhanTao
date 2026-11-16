@@ -56,7 +56,3 @@
 \contentsline {section}{\numberline {6.2}Bài học rút ra}{53}{section.6.2}%
 \contentsline {section}{\numberline {6.3}Hướng phát triển}{53}{section.6.3}%
 \contentsline {chapter}{Tài liệu tham khảo}{54}{section*.35}%
-\contentsline {chapter}{Phụ lục}{56}{chapter*.37}%
-\contentsline {section}{A. Hướng dẫn cài đặt và chạy chương trình}{56}{section*.38}%
-\contentsline {section}{B. Bảng tự kiểm trước khi nộp đồ án}{57}{section*.39}%
-\contentsline {section}{C. Nhận xét của giảng viên hướng dẫn}{58}{section*.40}%
