@@ -1,11 +1,11 @@
 % ---------------------------------------------------------------------
-%  CHƯƠNG 5 — CÀI ĐẶT VÀ THỬ NGHIỆM
+%  CHƯƠNG 5 — HIỆN THỰC HOÁ VÀ CÀI ĐẶT HỆ THỐNG
 % ---------------------------------------------------------------------
-\chapter{Cài đặt và thử nghiệm}
+\chapter{Hiện thực hoá và cài đặt hệ thống}
 \label{ch:caidat}
 
 \begin{muctieu}
-Chương này mô tả chi tiết môi trường phát triển, hiện thực hóa các mô-đun mã nguồn cốt lõi ở Backend và Frontend, trình bày thiết kế giao diện thực tế cùng các kịch bản kiểm thử toàn diện hệ thống.
+Chương này mô tả chi tiết môi trường phát triển, hiện thực hóa các mô-đun mã nguồn cốt lõi ở Backend và Frontend, đồng thời trình bày thiết kế giao diện thực tế của hệ thống FoodAI cho cả hai phân hệ Khách hàng và Quản trị viên.
 \end{muctieu}
 
 \section{Môi trường triển khai}
@@ -279,29 +279,3 @@ Phân hệ Quản trị viên dành riêng cho vai trò Admin (\code{role = 'adm
 \noindent\textbf{Mô tả:} Hình~\ref{fig:ui_admin_settings} thể hiện trang Cấu hình \& Giám sát Hệ thống, chia làm 3 khối thông tin: Trạng thái mô hình AI Gemini (kèm nút kiểm tra kết nối trực tiếp), Trạng thái cơ sở dữ liệu MySQL (số lượng bản ghi món ăn, nguyên liệu) và Thông số môi trường máy chủ Node.js (phiên bản, hệ điều hành, uptime, dung lượng RAM sử dụng).
 
 \noindent\textbf{Diễn giải:} Trang này cung cấp công cụ chẩn đoán nhanh toàn bộ hạ tầng kỹ thuật của FoodAI. Quản trị viên có thể kiểm tra tức thì trạng thái sẵn sàng của Google Gemini API chỉ với một cú nhấp chuột, nắm bắt chính xác mức tiêu thụ bộ nhớ RAM và thời gian hoạt động liên tục của máy chủ để chủ động bảo trì hạ tầng.
-
-\section{Kiểm thử hệ thống}
-
-Quá trình kiểm thử được tiến hành có hệ thống trên nhiều nhóm kịch bản nghiệp vụ (Bảng~\ref{tab:kiemthu}).
-
-\begin{table}[H]
-\centering
-\caption{Bảng tổng hợp các ca kiểm thử chức năng và ngoại lệ hệ thống.}
-\label{tab:kiemthu}
-\begin{tabularx}{\textwidth}{@{}>{\bfseries\color{daunavy}}p{1.4cm} >{\color{daumaroon}\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X >{\centering\arraybackslash\color{forestgreen}\bfseries}p{2.2cm}@{}}
-\toprule
-\rowcolor{gray100}\bfseries\color{daunavy}Mã ca & \bfseries\color{daumaroon}Dữ liệu đầu vào & \bfseries\color{daunavy}Kết quả kỳ vọng & \bfseries\color{forestgreen}Trạng thái \\
-\midrule
-TC-01 & Email, mật khẩu hợp lệ & Đăng nhập thành công, cấp JWT token & Đạt (Pass) \\
-TC-02 & Nguyên liệu: [thịt bò, cà chua, hành tây] & Gợi ý 4--6 món chuẩn vị bò, có dinh dưỡng & Đạt (Pass) \\
-TC-03 & Nguyên liệu chay: [trứng, đậu phụ, nấm] & 100\% món không có thịt/cá, không ảo giác & Đạt (Pass) \\
-TC-04 & Tắt kết nối Internet / API Key trống & Tự động Fallback sang kho Cookpad MySQL & Đạt (Pass) \\
-TC-05 & User thường truy cập route \code{/admin} & Bị chặn và chuyển hướng về \code{/dashboard} & Đạt (Pass) \\
-TC-06 & Nhập chuỗi rỗng / ký tự đặc biệt & Thông báo lỗi tiếng Việt thân thiện & Đạt (Pass) \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-\noindent\textbf{Mô tả:} Bảng~\ref{tab:kiemthu} tổng hợp kết quả thực thi 6 ca kiểm thử tiêu biểu (TC-01 đến TC-06) trên các kịch bản chức năng chính và xử lý ngoại lệ: xác thực tài khoản, gợi ý món thịt, kiểm soát món chay không ảo giác đạm lạ, cơ chế dự phòng Fallback khi mất mạng, bảo mật phân quyền đường dẫn quản trị và kiểm tra tính hợp lệ của chuỗi nhập liệu.
-
-\noindent\textbf{Diễn giải:} Kết quả 100\% ca kiểm thử đều đạt trạng thái Đạt (Pass) chứng minh chất lượng phần mềm đạt độ tin cậy và sự hoàn thiện cao. Hệ thống hoạt động chính xác theo đúng các ràng buộc thiết kế: đáp ứng tốt yêu cầu nghiệp vụ thông thường, đồng thời tự động kích hoạt các chốt chặn phòng thủ khi gặp dữ liệu xấu, tấn công vượt quyền hoặc sự cố đứt kết nối dịch vụ AI bên ngoài.

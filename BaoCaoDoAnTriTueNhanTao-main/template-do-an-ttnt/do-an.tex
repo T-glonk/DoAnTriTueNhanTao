@@ -3,6 +3,22 @@
 \input{styles/settings}
 
 % =====================================================================
+%  CẤU HÌNH ĐÁNH SỐ TRANG BẰNG CHỮ SỐ Ả RẬP (1, 2, 3...)
+% =====================================================================
+\makeatletter
+\renewcommand\frontmatter{%
+  \cleardoublepage
+  \@mainmatterfalse
+  \pagenumbering{arabic}%
+}
+\renewcommand\mainmatter{%
+  \cleardoublepage
+  \@mainmattertrue
+  % Giữ số trang tăng liên tục, không reset về 1
+}
+\makeatother
+
+% =====================================================================
 %  THÔNG TIN ĐỒ ÁN
 % =====================================================================
 \crname{BÁO CÁO ĐỒ ÁN TRÍ TUỆ NHÂN TẠO}
@@ -38,17 +54,18 @@
 \listofalgorithms
 
 % ---------------------------------------------------------------------
-%  THÂN BÁO CÁO
+%  THÂN BÁO CÁO (CHUẨN 7 CHƯƠNG)
 % ---------------------------------------------------------------------
 \mainmatter
 \dauPageStyle
 
 \input{chuong/01-mo-dau}
 \input{chuong/02-co-so-ly-thuyet}
-\input{chuong/03-phan-tich-thiet-ke}
-\input{chuong/04-cai-dat}
-\input{chuong/05-ket-qua-danh-gia}
-\input{chuong/06-ket-luan}
+\input{chuong/03-phan-tich-yeu-cau}
+\input{chuong/04-thiet-ke-he-thong}
+\input{chuong/05-cai-dat}
+\input{chuong/06-thu-nghiem-danh-gia}
+\input{chuong/07-ket-luan}
 
 % ---------------------------------------------------------------------
 %  TÀI LIỆU THAM KHẢO

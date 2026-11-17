@@ -1,19 +1,45 @@
 % ---------------------------------------------------------------------
-%  CHƯƠNG 6 — KẾT QUẢ VÀ ĐÁNH GIÁ
+%  CHƯƠNG 6 — THỬ NGHIỆM VÀ ĐÁNH GIÁ KẾT QUẢ
 % ---------------------------------------------------------------------
-\chapter{Kết quả và đánh giá}
-\label{ch:ketqua}
+\chapter{Thử nghiệm và đánh giá kết quả}
+\label{ch:danhgia}
 
 \begin{muctieu}
-Chương này đánh giá toàn diện các kết quả thực nghiệm đạt được của hệ thống FoodAI, đối chiếu mức độ hoàn thành với các mục tiêu ban đầu, phân tích các chỉ số đo lường định lượng và thảo luận về những ưu điểm cùng hạn chế còn tồn tại.
+Chương này trình bày toàn bộ kết quả kiểm thử chức năng và trường hợp biên của hệ thống FoodAI, đánh giá định lượng hiệu năng trên 150 kịch bản thực nghiệm, đối chiếu với các mục tiêu đề ra ban đầu, đồng thời bàn luận về những ưu điểm nổi bật và các mặt hạn chế còn tồn đọng.
 \end{muctieu}
+
+\section{Kiểm thử hệ thống}
+
+Quá trình kiểm thử được tiến hành có hệ thống trên nhiều nhóm kịch bản nghiệp vụ (Bảng~\ref{tab:kiemthu}).
+
+\begin{table}[H]
+\centering
+\caption{Bảng tổng hợp các ca kiểm thử chức năng và ngoại lệ hệ thống.}
+\label{tab:kiemthu}
+\begin{tabularx}{\textwidth}{@{}>{\bfseries\color{daunavy}}p{1.4cm} >{\color{daumaroon}\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X >{\centering\arraybackslash\color{forestgreen}\bfseries}p{2.2cm}@{}}
+\toprule
+\rowcolor{gray100}\bfseries\color{daunavy}Mã ca & \bfseries\color{daumaroon}Dữ liệu đầu vào & \bfseries\color{daunavy}Kết quả kỳ vọng & \bfseries\color{forestgreen}Trạng thái \\
+\midrule
+TC-01 & Email, mật khẩu hợp lệ & Đăng nhập thành công, cấp JWT token & Đạt (Pass) \\
+TC-02 & Nguyên liệu: [thịt bò, cà chua, hành tây] & Gợi ý 4--6 món chuẩn vị bò, có dinh dưỡng & Đạt (Pass) \\
+TC-03 & Nguyên liệu chay: [trứng, đậu phụ, nấm] & 100\% món không có thịt/cá, không ảo giác & Đạt (Pass) \\
+TC-04 & Tắt kết nối Internet / API Key trống & Tự động Fallback sang kho Cookpad MySQL & Đạt (Pass) \\
+TC-05 & User thường truy cập route \code{/admin} & Bị chặn và chuyển hướng về \code{/dashboard} & Đạt (Pass) \\
+TC-06 & Nhập chuỗi rỗng / ký tự đặc biệt & Thông báo lỗi tiếng Việt thân thiện & Đạt (Pass) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\noindent\textbf{Mô tả:} Bảng~\ref{tab:kiemthu} tổng hợp kết quả thực thi 6 ca kiểm thử tiêu biểu (TC-01 đến TC-06) trên các kịch bản chức năng chính và xử lý ngoại lệ: xác thực tài khoản, gợi ý món thịt, kiểm soát món chay không ảo giác đạm lạ, cơ chế dự phòng Fallback khi mất mạng, bảo mật phân quyền đường dẫn quản trị và kiểm tra tính hợp lệ của chuỗi nhập liệu.
+
+\noindent\textbf{Diễn giải:} Kết quả 100\% ca kiểm thử đều đạt trạng thái Đạt (Pass) chứng minh chất lượng phần mềm đạt độ tin cậy và sự hoàn thiện cao. Hệ thống hoạt động chính xác theo đúng các ràng buộc thiết kế: đáp ứng tốt yêu cầu nghiệp vụ thông thường, đồng thời tự động kích hoạt các chốt chặn phòng thủ khi gặp dữ liệu xấu, tấn công vượt quyền hoặc sự cố đứt kết nối dịch vụ AI bên ngoài.
 
 \section{Kết quả đạt được}
 
 Qua quá trình triển khai và thử nghiệm thực tế, hệ thống đã hoàn thành trọn vẹn tất cả các mục tiêu kỹ thuật đề ra ở Chương~\ref{ch:modau}:
 \begin{enumerate}[leftmargin=1.6em, itemsep=2pt]
   \item \textbf{Cơ sở tri thức và Dữ liệu ẩm thực:} Đã xây dựng bộ công cụ tự động thu thập và chuẩn hóa hơn 550 món ăn truyền thống Việt Nam từ nền tảng Cookpad, lưu trữ trong cơ sở dữ liệu MySQL làm kho tri thức nội bộ và kho ảnh phong phú.
-  \item \textbf{Tạo sinh công thức thông minh (AI Chef):} Tích hợp thành công mô hình Google Gemini AI (\code{gemini-3.6-flash}), gợi ý từ 6 đến 8 món ăn hấp dẫn cho mỗi lượt tìm kiếm với cấu trúc JSON chuẩn 100\%, bao gồm lời khuyên ẩm thực, công thức chế biến và phân loại độ khó.
+  \item \textbf{Tạo sinh công thức thông minh (AI Chef):} Tích hợp thành công mô hình Google Gemini AI (\code{gemini-1.5-flash}), gợi ý từ 6 đến 8 món ăn hấp dẫn cho mỗi lượt tìm kiếm với cấu trúc JSON chuẩn 100\%, bao gồm lời khuyên ẩm thực, công thức chế biến và phân loại độ khó.
   \item \textbf{Khử ảo giác và Kiểm soát ràng buộc nguyên liệu:} Thuật toán lọc ngữ nghĩa tiếng Việt hoạt động chính xác tuyệt đối, loại bỏ hoàn toàn hiện tượng tự bịa thành phần đạm chính (thịt/cá lạ) khi người dùng không cung cấp.
   \item \textbf{Ước tính dinh dưỡng khoa học:} Tự động phân tích và cung cấp đầy đủ 8 chỉ số dinh dưỡng (calo, protein, carbs, chất béo, chất xơ, vitamin C, canxi, sắt) cho từng món ăn.
   \item \textbf{Pipeline hình ảnh đa tầng:} Tự động truy xuất và gắn ảnh chân thực, chất lượng cao, đảm bảo tính độc nhất giữa các món trong cùng một kết quả tìm kiếm.
