@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Hệ thống AI Gợi Ý Món Ăn Theo Nguyên Liệu (FoodAI)
-Bộ Slide Thuyết Trình 20 Trang Chuẩn Khoa Học & Trực Quan
+Bộ Slide Thuyết Trình 20 Trang Chuẩn Khoa Học & Trực Quan (Không sử dụng sơ đồ tuần tự)
 Đồ án Trí Tuệ Nhân Tạo (AIP202) - ĐH Kiến trúc Đà Nẵng
 """
 import sys
@@ -76,16 +76,15 @@ def create_presentation():
     AMBER = RGBColor(217, 119, 6)        # #D97706
     PURPLE = RGBColor(126, 34, 206)      # #7E22CE
 
-    # Đường dẫn tài nguyên ảnh
+    # Đường dẫn tài nguyên ảnh (TUYỆT ĐỐI KHÔNG DÙNG SƠ ĐỒ TUẦN TỰ)
     IMG_LOGO = "BaoCaoDoAnTriTueNhanTao-main/template-do-an-ttnt/assets/dau-logo.png"
-    FIG_RAG_FLOW = "BaoCaoDoAnTriTueNhanTao-main/template-do-an-ttnt/figs/seq_goi_y_mon_an.png"
-    FIG_SEQ_FAV = "BaoCaoDoAnTriTueNhanTao-main/template-do-an-ttnt/figs/seq_quan_ly_yeu_thich.png"
     FIG_UI_DASHBOARD = "BaoCaoDoAnTriTueNhanTao-main/template-do-an-ttnt/figs/ui_trang_chu_dashboard.jpg"
     FIG_UI_MODAL = "BaoCaoDoAnTriTueNhanTao-main/template-do-an-ttnt/figs/ui_modal_chi_tiet_mon.jpg"
     FIG_UI_ADMIN_OVERVIEW = "BaoCaoDoAnTriTueNhanTao-main/template-do-an-ttnt/figs/ui_admin_tong_quan.jpg"
     FIG_UI_ADMIN_USERS = "BaoCaoDoAnTriTueNhanTao-main/template-do-an-ttnt/figs/ui_admin_quan_ly_nguoi_dung.jpg"
     FIG_UI_ADMIN_RECIPES = "BaoCaoDoAnTriTueNhanTao-main/template-do-an-ttnt/figs/ui_admin_kho_mon_an.jpg"
     FIG_UI_FAVORITES = "BaoCaoDoAnTriTueNhanTao-main/template-do-an-ttnt/figs/ui_mon_an_yeu_thich.jpg"
+    FIG_UI_SEARCH_HISTORY = "BaoCaoDoAnTriTueNhanTao-main/template-do-an-ttnt/figs/ui_lich_su_tim_kiem.jpg"
     FIG_UI_ADMIN_SETTINGS = "BaoCaoDoAnTriTueNhanTao-main/template-do-an-ttnt/figs/ui_admin_cai_dat_he_thong.jpg"
 
     slides_data = [
@@ -129,8 +128,8 @@ def create_presentation():
             "title": "Bối Cảnh Thực Tế & Nỗi Băn Khoăn Nội Trợ",
             "subtitle": "Bài toán tối ưu hóa nguyên liệu tồn đọng trong tủ lạnh và giảm thiểu lãng phí thực phẩm",
             "cards": [
-                ("Câu hỏi thường trực", "Người nội trợ, sinh viên bối rối mỗi ngày: 'Hôm nay ăn gì?', 'Tủ lạnh còn những gì nấu được món gì ngon?'."),
-                ("Lãng phí thực phẩm", "Lượng lớn rau củ, thịt cá tươi sống bị bỏ phí hằng tuần do thiếu kỹ năng kết hợp nguyên liệu sẵn có."),
+                ("Câu hỏi thường trực mỗi ngày", "Người nội trợ, sinh viên bối rối: 'Hôm nay ăn gì?', 'Tủ lạnh còn những gì nấu được món gì ngon?'."),
+                ("Vấn nạn lãng phí thực phẩm", "Lượng lớn rau củ, thịt cá tươi sống bị bỏ phí hằng tuần do thiếu kỹ năng kết hợp nguyên liệu sẵn có."),
                 ("Hạn chế tra cứu truyền thống", "Buộc người dùng phải biết trước tên món ăn (ví dụ: 'thịt kho tàu') mới tìm được; tra cứu từ khóa máy móc và thiếu định lượng dinh dưỡng.")
             ],
             "img_path": FIG_UI_DASHBOARD,
@@ -139,20 +138,31 @@ def create_presentation():
         },
 
         # ==========================================
-        # SLIDE 4: THÁCH THỨC LLM & GROUNDED RAG
+        # SLIDE 4: THÁCH THỨC LLM & SO SÁNH GIẢI PHÁP
         # ==========================================
         {
-            "type": "split_text_image",
+            "type": "comparison_columns",
             "badge": "GIẢI PHÁP ĐỀ XUẤT",
             "title": "Thách Thức Ảo Giác Của LLM & Đột Phá Grounded RAG",
-            "subtitle": "Khắc phục triệt để hiện tượng bịa đặt nguyên liệu đắt tiền của các mô hình ngôn ngữ lớn",
-            "cards": [
-                ("Ảo giác của LLM thuần túy (Hallucination)", "Khi người dùng chỉ có [Trứng, Cà chua], LLM tự ý thêm thịt bò phi-lê, tôm sú, nấm đắt tiền để món ăn hấp dẫn hơn -> Gợi ý phi thực tế, gây thất vọng."),
-                ("Giải pháp Grounded RAG của FoodAI", "Khóa chặt AI vào kho tri thức CSDL ẩm thực Việt Nam có sẵn làm mỏ neo ngữ cảnh vững chắc. CSDL lọc món thật trước, AI tuyệt đối không được tự bịa món mới."),
-                ("Phân vai AI Chef & Chuyên gia dinh dưỡng", "Gemini AI chỉ tập trung tính toán định lượng gram, 8 chỉ số dinh dưỡng (calo, đạm, béo, xơ...) và viết mẹo ẩm thực.")
+            "subtitle": "So sánh trực quan giữa Mô hình AI thuần túy và Hệ thống FoodAI kết hợp Grounded RAG",
+            "col1_title": "Mô Hình AI Thuần Túy (Không RAG)",
+            "col1_badge": "⚠️ NGUY CƠ ẢO GIÁC (HALLUCINATION)",
+            "col1_color": RED,
+            "col1_bg": RGBColor(254, 242, 242),
+            "col1_items": [
+                ("Tự ý bịa đặt nguyên liệu đắt tiền", "Khi người dùng chỉ nhập [Trứng, Cà chua], AI tự động thêm thịt bò Úc, tôm hùm, nấm đắt đỏ để món ăn thêm phần hấp dẫn."),
+                ("Xa rời hoàn cảnh thực tế", "Gợi ý những món ăn bất khả thi với nguyên liệu sẵn có trong gian bếp gia đình."),
+                ("Mất niềm tin người dùng", "Người nội trợ cảm thấy thất vọng và nhanh chóng rời bỏ ứng dụng vì kết quả phi thực tế.")
             ],
-            "img_path": FIG_RAG_FLOW,
-            "img_caption": "Sơ đồ kiến trúc Grounded RAG - Khóa chặt dữ liệu đầu ra của Gemini AI",
+            "col2_title": "Hệ Thống FoodAI (Grounded RAG)",
+            "col2_badge": "🛡️ KIỂM SOÁT DỮ LIỆU CHÍNH XÁC 100%",
+            "col2_color": GREEN,
+            "col2_bg": RGBColor(240, 253, 244),
+            "col2_items": [
+                ("Khóa chặt vào kho 552 món thật", "CSDL Cookpad Việt Nam làm mỏ neo ngữ cảnh vững chắc. AI tuyệt đối bị cấm sáng tạo thêm tên món mới ngoài kho tri thức."),
+                ("Phân vai AI Chef & Chuyên gia dinh dưỡng", "Gemini AI chỉ tập trung tính toán định lượng gram, thời gian nấu và 8 chỉ số dinh dưỡng (calo, đạm, béo, xơ, vitamin...)."),
+                ("Tỷ lệ bám sát nguyên liệu 97,8%", "Món ăn đề xuất thân thuộc, chuẩn vị Việt Nam và có thể chế biến ngay lập tức.")
+            ],
             "notes": "Nếu chỉ dùng AI thuần túy, AI sẽ thường xuyên bị 'ảo giác' - tự bịa thêm thịt bò, tôm đắt tiền mà người dùng không hề có. Giải pháp của nhóm em là khóa chặt AI bằng kỹ thuật Grounded RAG: CSDL nội bộ lọc ra món thật trước, AI chỉ tính toán dinh dưỡng và thời gian nấu."
         },
 
@@ -202,20 +212,45 @@ def create_presentation():
         },
 
         # ==========================================
-        # SLIDE 7: KIẾN TRÚC HỆ THỐNG 3 TẦNG
+        # SLIDE 7: KIẾN TRÚC HỆ THỐNG 3 TẦNG (THREE-TIER)
         # ==========================================
         {
-            "type": "split_text_image",
+            "type": "three_tiers",
             "badge": "KIẾN TRÚC HỆ THỐNG",
             "title": "Kiến Trúc Hệ Thống 3 Tầng (Three-Tier Architecture)",
-            "subtitle": "Phân tách trách nhiệm độc lập giữa Giao diện, Xử lý nghiệp vụ và Tầng dữ liệu",
-            "cards": [
-                ("Tầng Giao Diện (Presentation Layer)", "React SPA đa phân hệ: User Dashboard (nhập nguyên liệu tag màu, xem chi tiết món) & Admin Panel (quản lý user, kho món, log AI)."),
-                ("Tầng Ứng Dụng (Application Layer)", "Node.js Express Controller & Services: bóc tách độc lập GeminiService, RecipeService, ImageService và AuthService."),
-                ("Tầng Dữ Liệu & AI (Data & AI Layer)", "Hệ thống CSDL MySQL 8.0 lưu trữ quan hệ 3NF kết hợp dịch vụ đám mây Google Gemini AI Cloud.")
+            "subtitle": "Phân tách trách nhiệm độc lập giữa Giao diện, Xử lý nghiệp vụ ứng dụng và Tầng dữ liệu & AI",
+            "tiers": [
+                {
+                    "name": "TẦNG 1: GIAO DIỆN NGƯỜI DÙNG (PRESENTATION LAYER - CLIENT SPA)",
+                    "color": BRAND_ORANGE,
+                    "bg": RGBColor(255, 247, 237),
+                    "tech": "React 18 • TypeScript • Tailwind CSS • Vite • Lucide Icons • Recharts",
+                    "components": [
+                        "User Dashboard: Nhập nguyên liệu tag màu động, phân trang 3 món, Modal chi tiết 3 tab, lưu sổ tay yêu thích.",
+                        "Admin Dashboard: Bảng điều khiển KPI, quản lý người dùng, kho 552 món ăn, giám sát nhật ký AI Query Logs."
+                    ]
+                },
+                {
+                    "name": "TẦNG 2: XỬ LÝ NGHIỆP VỤ ỨNG DỤNG (APPLICATION & BUSINESS LAYER - SERVER)",
+                    "color": BRAND_BLUE,
+                    "bg": RGBColor(239, 246, 255),
+                    "tech": "Node.js • Express.js • TypeScript • JWT Auth • Bcrypt • Express Rate Limit",
+                    "components": [
+                        "Dịch vụ độc lập: GeminiService (Prompt Engineering), RecipeService (Lọc Heuristic), ImageService (Kiểm soát ảnh).",
+                        "Middleware an ninh: Kiểm tra Bearer Token JWT, phân quyền Admin/User, kiểm soát định ngạch và chặn lỗi XSS."
+                    ]
+                },
+                {
+                    "name": "TẦNG 3: DỮ LIỆU & TRÍ TUỆ NHÂN TẠO (DATA & AI LAYER)",
+                    "color": GREEN,
+                    "bg": RGBColor(240, 253, 244),
+                    "tech": "MySQL 8.0 (Chuẩn 3NF) • Google Gemini Cloud AI • Cookpad CDN Storage",
+                    "components": [
+                        "Cơ sở dữ liệu MySQL: 9 bảng quan hệ chặt chẽ, cơ chế Auto-Migration và Auto-Seed 552 món ăn mẫu.",
+                        "Google Gemini AI & Cookpad CDN: Động cơ AI phân tích dinh dưỡng vi chất và kho hơn 2.000 link ảnh chất lượng cao."
+                    ]
+                }
             ],
-            "img_path": FIG_SEQ_FAV,
-            "img_caption": "Sơ đồ tương tác luồng dữ liệu chuẩn hóa qua các tầng kiến trúc",
             "notes": "Kiến trúc hệ thống được phân lớp nghiêm ngặt thành 3 tầng rõ ràng. Tầng ứng dụng bóc tách các Service độc lập, giúp mã nguồn đạt tính gắn kết cao, dễ bảo trì, mở rộng và kiểm thử đơn vị."
         },
 
@@ -233,8 +268,8 @@ def create_presentation():
                 ("Bước 3: AI Enrichment (Làm Giàu Dữ Liệu)", "Gemini AI tính toán 8 chỉ số dinh dưỡng, thời gian nấu, định lượng khẩu phần và viết mẹo ẩm thực ai_reasoning."),
                 ("Bước 4: Đồng Bộ Ngược CSDL", "Tự động cập nhật công thức và kết quả phân tích AI vào MySQL để tái sử dụng lâu dài.")
             ],
-            "img_path": FIG_RAG_FLOW,
-            "img_caption": "Biểu đồ tuần tự (Sequence Diagram) chi tiết luồng Gợi ý Món ăn Grounded RAG",
+            "img_path": FIG_UI_MODAL,
+            "img_caption": "Kết quả thực tế sau khi xử lý Grounded RAG: Đầy đủ định lượng nguyên liệu và 8 chỉ số dinh dưỡng",
             "notes": "Đây là trọng tâm kỹ thuật của đồ án: Luồng Grounded RAG 4 bước. Thay vì để AI tự do sáng tạo tên món, CSDL đóng vai trò mỏ neo định hướng danh sách món thật, AI chỉ tính toán dinh dưỡng và định lượng, sau đó dữ liệu được cập nhật ngược về CSDL."
         },
 
@@ -419,8 +454,8 @@ def create_presentation():
                 ("Kịch Bản 1: [Trứng, Cà chua, Hành lá]", "• Đề xuất chính xác: Trứng sốt cà chua, Canh cà chua trứng, Trứng chiên hành lá, Cơm chiên trứng.\n• Cam kết: 100% không xuất hiện thịt bò, heo, gà hay cá lạ.\n• Dinh dưỡng: Năng lượng chuẩn (~220 kcal), ảnh Cookpad sắc nét."),
                 ("Kịch Bản 2: [Thịt bò]", "• Đề xuất phong phú: Thịt bò xào hành tây, Bò lúc lắc, Canh dưa chua bắp bò, Măng tây xào thịt bò...\n• Đủ số lượng: Gợi ý đủ 8 món ngon nhất trong kho 67 món bò.\n• Trải nghiệm: Phân trang 3 trang mượt mà (3 món - 3 món - 2 món).")
             ],
-            "img_path": FIG_UI_FAVORITES,
-            "img_caption": "Món ăn sau khi gợi ý có thể lưu vào sổ tay Yêu thích với 1 lần chạm",
+            "img_path": FIG_UI_SEARCH_HISTORY,
+            "img_caption": "Lịch sử tìm kiếm lưu trữ chính xác các lần tra cứu thực tế của người dùng",
             "notes": "Trên màn hình là hai kịch bản điển hình: Dù người dùng chỉ có trứng cà chua hay có thịt bò, hệ thống đều đưa ra các món ăn thân thuộc, chuẩn vị Việt Nam, đúng định lượng và hình ảnh chân thực 100%."
         },
 
@@ -483,24 +518,20 @@ def create_presentation():
         # RENDER TỪNG LOẠI SLIDE
         # ==========================================
         if data["type"] == "title":
-            # Thanh trang trí trên cùng
             top_bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(13.333), Inches(0.2))
             top_bar.fill.solid()
             top_bar.fill.fore_color.rgb = BRAND_ORANGE
             top_bar.line.fill.background()
 
-            # Thẻ trung tâm chính
             card = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.2), Inches(0.7), Inches(10.933), Inches(6.1))
             card.fill.solid()
             card.fill.fore_color.rgb = WHITE
             card.line.color.rgb = CARD_BORDER
             card.line.width = Pt(1.5)
 
-            # Logo trường ĐH Kiến trúc Đà Nẵng
             if os.path.exists(IMG_LOGO):
                 slide.shapes.add_picture(IMG_LOGO, Inches(1.6), Inches(1.0), Inches(1.0), Inches(1.0))
 
-            # Header trường & khoa
             txSchool = slide.shapes.add_textbox(Inches(2.8), Inches(1.0), Inches(8.8), Inches(0.9))
             tf = txSchool.text_frame
             tf.word_wrap = True
@@ -516,13 +547,11 @@ def create_presentation():
             p_badge.font.bold = True
             p_badge.font.color.rgb = BRAND_ORANGE
 
-            # Đường phân cách
             line = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(1.6), Inches(2.1), Inches(10.1), Inches(0.04))
             line.fill.solid()
             line.fill.fore_color.rgb = CARD_BORDER
             line.line.fill.background()
 
-            # Tên đề tài nổi bật
             txTitle = slide.shapes.add_textbox(Inches(1.6), Inches(2.3), Inches(10.1), Inches(1.5))
             tf = txTitle.text_frame
             tf.word_wrap = True
@@ -540,7 +569,6 @@ def create_presentation():
             p_sub.alignment = PP_ALIGN.CENTER
             p_sub.space_before = Pt(8)
 
-            # Khối thông tin sinh viên & giảng viên
             info_card = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.8), Inches(4.3), Inches(9.7), Inches(2.1))
             info_card.fill.solid()
             info_card.fill.fore_color.rgb = RGBColor(248, 250, 252)
@@ -616,7 +644,6 @@ def create_presentation():
             p.font.color.rgb = SLATE
             p.alignment = PP_ALIGN.CENTER
 
-            # Khối Q&A nổi bật
             qa_box = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(2.5), Inches(4.3), Inches(8.333), Inches(0.85))
             qa_box.fill.solid()
             qa_box.fill.fore_color.rgb = RGBColor(238, 242, 255)
@@ -640,15 +667,12 @@ def create_presentation():
             p.alignment = PP_ALIGN.CENTER
 
         else:
-            # ==========================================
             # TIÊU ĐỀ CHUNG CHO CÁC SLIDE NỘI DUNG (3-19)
-            # ==========================================
             top_bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(13.333), Inches(0.08))
             top_bar.fill.solid()
             top_bar.fill.fore_color.rgb = BRAND_ORANGE
             top_bar.line.fill.background()
 
-            # Huy hiệu chuyên mục (Badge)
             badge = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(0.32), Inches(3.0), Inches(0.35))
             badge.fill.solid()
             badge.fill.fore_color.rgb = RGBColor(254, 237, 232)
@@ -661,7 +685,6 @@ def create_presentation():
             p.font.color.rgb = BRAND_ORANGE
             p.alignment = PP_ALIGN.CENTER
 
-            # Tiêu đề & phụ đề slide
             txHead = slide.shapes.add_textbox(Inches(0.8), Inches(0.7), Inches(11.0), Inches(0.8))
             tf = txHead.text_frame
             tf.word_wrap = True
@@ -676,7 +699,6 @@ def create_presentation():
             p_sub.font.size = Pt(11.5)
             p_sub.font.color.rgb = SLATE
 
-            # Số trang slide
             numBox = slide.shapes.add_textbox(Inches(11.8), Inches(0.35), Inches(0.9), Inches(0.4))
             tf = numBox.text_frame
             p = tf.paragraphs[0]
@@ -727,6 +749,189 @@ def create_presentation():
                     y += 1.02
 
             # ==========================================
+            # LAYOUT: COMPARISON COLUMNS (SO SÁNH 2 CỘT TƯƠNG PHẢN)
+            # ==========================================
+            elif data["type"] == "comparison_columns":
+                w = Inches(5.7)
+                h = Inches(5.3)
+
+                # Cột 1: Vấn đề / Nguy cơ (Red/Amber)
+                card1 = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.6), w, h)
+                card1.fill.solid()
+                card1.fill.fore_color.rgb = WHITE
+                card1.line.color.rgb = data["col1_color"]
+                card1.line.width = Pt(1.5)
+
+                top_bar1 = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.6), w, Inches(0.65))
+                top_bar1.fill.solid()
+                top_bar1.fill.fore_color.rgb = data["col1_color"]
+                top_bar1.line.fill.background()
+                tf1 = top_bar1.text_frame
+                p = tf1.paragraphs[0]
+                p.text = data["col1_title"]
+                p.font.size = Pt(14)
+                p.font.bold = True
+                p.font.color.rgb = WHITE
+                p.alignment = PP_ALIGN.CENTER
+
+                badge1 = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.1), Inches(2.38), w - Inches(0.6), Inches(0.38))
+                badge1.fill.solid()
+                badge1.fill.fore_color.rgb = data["col1_bg"]
+                badge1.line.color.rgb = data["col1_color"]
+                badge1.line.width = Pt(1)
+                tf_b1 = badge1.text_frame
+                p = tf_b1.paragraphs[0]
+                p.text = data["col1_badge"]
+                p.font.size = Pt(11)
+                p.font.bold = True
+                p.font.color.rgb = data["col1_color"]
+                p.alignment = PP_ALIGN.CENTER
+
+                cur_y1 = Inches(2.9)
+                for item_head, item_desc in data["col1_items"]:
+                    box = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.1), cur_y1, w - Inches(0.6), Inches(1.18))
+                    box.fill.solid()
+                    box.fill.fore_color.rgb = RGBColor(254, 242, 242)
+                    box.line.color.rgb = RGBColor(254, 202, 202)
+                    box.line.width = Pt(1)
+
+                    tx = slide.shapes.add_textbox(Inches(1.25), cur_y1 + Inches(0.06), w - Inches(0.9), Inches(1.05))
+                    tf = tx.text_frame
+                    tf.word_wrap = True
+                    p1 = tf.paragraphs[0]
+                    p1.text = "✗ " + item_head
+                    p1.font.size = Pt(12)
+                    p1.font.bold = True
+                    p1.font.color.rgb = data["col1_color"]
+
+                    p2 = tf.add_paragraph()
+                    p2.text = item_desc
+                    p2.font.size = Pt(10.5)
+                    p2.font.color.rgb = NAVY
+                    p2.space_before = Pt(3)
+
+                    cur_y1 += Inches(1.28)
+
+                # Cột 2: Giải pháp FoodAI Grounded RAG (Green/Blue)
+                card2 = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(6.8), Inches(1.6), w, h)
+                card2.fill.solid()
+                card2.fill.fore_color.rgb = WHITE
+                card2.line.color.rgb = data["col2_color"]
+                card2.line.width = Pt(1.5)
+
+                top_bar2 = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(6.8), Inches(1.6), w, Inches(0.65))
+                top_bar2.fill.solid()
+                top_bar2.fill.fore_color.rgb = data["col2_color"]
+                top_bar2.line.fill.background()
+                tf2 = top_bar2.text_frame
+                p = tf2.paragraphs[0]
+                p.text = data["col2_title"]
+                p.font.size = Pt(14)
+                p.font.bold = True
+                p.font.color.rgb = WHITE
+                p.alignment = PP_ALIGN.CENTER
+
+                badge2 = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(7.1), Inches(2.38), w - Inches(0.6), Inches(0.38))
+                badge2.fill.solid()
+                badge2.fill.fore_color.rgb = data["col2_bg"]
+                badge2.line.color.rgb = data["col2_color"]
+                badge2.line.width = Pt(1)
+                tf_b2 = badge2.text_frame
+                p = tf_b2.paragraphs[0]
+                p.text = data["col2_badge"]
+                p.font.size = Pt(11)
+                p.font.bold = True
+                p.font.color.rgb = data["col2_color"]
+                p.alignment = PP_ALIGN.CENTER
+
+                cur_y2 = Inches(2.9)
+                for item_head, item_desc in data["col2_items"]:
+                    box = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(7.1), cur_y2, w - Inches(0.6), Inches(1.18))
+                    box.fill.solid()
+                    box.fill.fore_color.rgb = RGBColor(240, 253, 244)
+                    box.line.color.rgb = RGBColor(187, 247, 208)
+                    box.line.width = Pt(1)
+
+                    tx = slide.shapes.add_textbox(Inches(7.25), cur_y2 + Inches(0.06), w - Inches(0.9), Inches(1.05))
+                    tf = tx.text_frame
+                    tf.word_wrap = True
+                    p1 = tf.paragraphs[0]
+                    p1.text = "✓ " + item_head
+                    p1.font.size = Pt(12)
+                    p1.font.bold = True
+                    p1.font.color.rgb = data["col2_color"]
+
+                    p2 = tf.add_paragraph()
+                    p2.text = item_desc
+                    p2.font.size = Pt(10.5)
+                    p2.font.color.rgb = NAVY
+                    p2.space_before = Pt(3)
+
+                    cur_y2 += Inches(1.28)
+
+            # ==========================================
+            # LAYOUT: THREE TIERS (KIẾN TRÚC 3 TẦNG XẾP LỚP TRỰC QUAN)
+            # ==========================================
+            elif data["type"] == "three_tiers":
+                w = Inches(11.733)
+                tier_h = Inches(1.5)
+                y_positions = [Inches(1.6), Inches(3.45), Inches(5.3)]
+
+                for t_idx, tier in enumerate(data["tiers"]):
+                    y = y_positions[t_idx]
+                    card = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), y, w, tier_h)
+                    card.fill.solid()
+                    card.fill.fore_color.rgb = WHITE
+                    card.line.color.rgb = tier["color"]
+                    card.line.width = Pt(1.5)
+
+                    # Top-left badge của tầng
+                    bar = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), y, w, Inches(0.42))
+                    bar.fill.solid()
+                    bar.fill.fore_color.rgb = tier["color"]
+                    bar.line.fill.background()
+                    tf = bar.text_frame
+                    p = tf.paragraphs[0]
+                    p.text = tier["name"]
+                    p.font.size = Pt(12)
+                    p.font.bold = True
+                    p.font.color.rgb = WHITE
+                    p.alignment = PP_ALIGN.LEFT
+                    p.space_before = Pt(1)
+
+                    tx = slide.shapes.add_textbox(Inches(1.0), y + Inches(0.44), w - Inches(0.4), tier_h - Inches(0.48))
+                    tf = tx.text_frame
+                    tf.word_wrap = True
+
+                    p_tech = tf.paragraphs[0]
+                    p_tech.text = "Công nghệ: " + tier["tech"]
+                    p_tech.font.size = Pt(11)
+                    p_tech.font.bold = True
+                    p_tech.font.color.rgb = BRAND_BLUE
+
+                    for comp in tier["components"]:
+                        p = tf.add_paragraph()
+                        p.text = "• " + comp
+                        p.font.size = Pt(10.5)
+                        p.font.color.rgb = NAVY
+                        p.space_before = Pt(2)
+
+                    # Dấu kết nối luồng giữa các tầng
+                    if t_idx < 2:
+                        arrow_bar = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(5.2), y + tier_h + Inches(0.04), Inches(2.9), Inches(0.26))
+                        arrow_bar.fill.solid()
+                        arrow_bar.fill.fore_color.rgb = RGBColor(241, 245, 249)
+                        arrow_bar.line.color.rgb = CARD_BORDER
+                        arrow_bar.line.width = Pt(1)
+                        tf_a = arrow_bar.text_frame
+                        p_a = tf_a.paragraphs[0]
+                        p_a.text = "↕ RESTful API (JSON / Axios)" if t_idx == 0 else "↕ SQL Queries / Gemini SDK"
+                        p_a.font.size = Pt(9.5)
+                        p_a.font.bold = True
+                        p_a.font.color.rgb = SLATE
+                        p_a.alignment = PP_ALIGN.CENTER
+
+            # ==========================================
             # LAYOUT: SPLIT TEXT & IMAGE (CHỮ TRÁI - ẢNH PHẢI)
             # ==========================================
             elif data["type"] == "split_text_image":
@@ -734,7 +939,6 @@ def create_presentation():
                 img_w = Inches(5.9)
                 content_h = Inches(5.3)
 
-                # Cột trái: Các thẻ điểm nhấn súc tích
                 cards = data.get("cards", [])
                 card_h = (content_h - Inches(0.18 * (len(cards) - 1))) / len(cards)
                 cur_y = Inches(1.6)
@@ -746,7 +950,6 @@ def create_presentation():
                     c_shape.line.color.rgb = CARD_BORDER
                     c_shape.line.width = Pt(1)
 
-                    # Accent bar
                     acc_colors = [BRAND_ORANGE, BRAND_BLUE, GREEN, PURPLE]
                     acc = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), cur_y, Inches(0.12), card_h)
                     acc.fill.solid()
@@ -770,7 +973,7 @@ def create_presentation():
 
                     cur_y += card_h + Inches(0.18)
 
-                # Cột phải: Hình ảnh minh họa chất lượng cao có khung và chú thích
+                # Cột phải: Hình ảnh chụp thực tế chất lượng cao có khung và chú thích
                 add_fitted_picture(slide, data["img_path"], Inches(6.6), Inches(1.6), img_w, content_h, bg_card=True, caption=data.get("img_caption"))
 
             # ==========================================
@@ -778,7 +981,6 @@ def create_presentation():
             # ==========================================
             elif data["type"] == "two_images":
                 w = Inches(5.7)
-                h = Inches(5.3)
 
                 # Khối ảnh 1 (Trái)
                 add_fitted_picture(slide, data["img1_path"], Inches(0.8), Inches(1.6), w, Inches(3.6), bg_card=True)
@@ -881,7 +1083,6 @@ def create_presentation():
                     card.line.color.rgb = CARD_BORDER
                     card.line.width = Pt(1)
 
-                    # Top accent bar của cột
                     bar = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, x, Inches(1.6), w, Inches(0.5))
                     bar.fill.solid()
                     bar.fill.fore_color.rgb = col_color
@@ -993,13 +1194,11 @@ def create_presentation():
                 table_shape = slide.shapes.add_table(rows, cols, Inches(0.8), Inches(1.6), Inches(11.733), Inches(5.1))
                 table = table_shape.table
 
-                # Độ rộng từng cột
                 table.columns[0].width = Inches(1.4)
                 table.columns[1].width = Inches(3.8)
                 table.columns[2].width = Inches(4.7)
                 table.columns[3].width = Inches(1.833)
 
-                # Header row
                 for c_idx, head_text in enumerate(data["headers"]):
                     cell = table.cell(0, c_idx)
                     cell.text = head_text
@@ -1011,7 +1210,6 @@ def create_presentation():
                         p.font.color.rgb = WHITE
                         p.alignment = PP_ALIGN.CENTER
 
-                # Data rows
                 for r_idx, row_data in enumerate(data["rows"]):
                     for c_idx, val in enumerate(row_data):
                         cell = table.cell(r_idx + 1, c_idx)
@@ -1033,7 +1231,6 @@ def create_presentation():
             # LAYOUT: KPI METRICS + TABLE (ĐÁNH GIÁ ĐỊNH LƯỢNG)
             # ==========================================
             elif data["type"] == "kpi_metrics_table":
-                # 3 Thẻ KPI số liệu ở trên
                 kpi_w = Inches(3.7)
                 kpi_h = Inches(1.3)
                 kpi_xs = [Inches(0.8), Inches(4.82), Inches(8.84)]
@@ -1045,7 +1242,6 @@ def create_presentation():
                     k_card.line.color.rgb = CARD_BORDER
                     k_card.line.width = Pt(1)
 
-                    # Top accent bar
                     k_bar = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, kx, Inches(1.6), kpi_w, Inches(0.08))
                     k_bar.fill.solid()
                     k_bar.fill.fore_color.rgb = k_col
@@ -1074,7 +1270,6 @@ def create_presentation():
                     p_d.font.color.rgb = SLATE
                     p_d.alignment = PP_ALIGN.CENTER
 
-                # Bảng chi tiết so sánh ở dưới
                 rows = len(data["rows"]) + 1
                 cols = len(data["headers"])
                 table_shape = slide.shapes.add_table(rows, cols, Inches(0.8), Inches(3.1), Inches(11.733), Inches(3.8))
@@ -1113,7 +1308,7 @@ def create_presentation():
 
     output_path = "FoodAI_Slide_Thuyet_Trinh_20_Slides.pptx"
     prs.save(output_path)
-    print(f"✅ Đã tạo thành công file PowerPoint 20 slides chất lượng cao: {output_path}")
+    print(f"✅ Đã tạo thành công file PowerPoint 20 slides chất lượng cao (Không có sơ đồ tuần tự): {output_path}")
 
 if __name__ == "__main__":
     create_presentation()
