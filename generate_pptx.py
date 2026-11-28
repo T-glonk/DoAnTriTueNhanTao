@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 """
 Hệ thống AI Gợi Ý Món Ăn Theo Nguyên Liệu (FoodAI)
-Bộ Slide Thuyết Trình 20 Trang Chuẩn Khoa Học & Trực Quan (Không sử dụng sơ đồ tuần tự)
+Bộ Slide Thuyết Trình 20 Trang Chuẩn Khoa Học & Trực Quan
+- Font chữ: Times New Roman toàn diện (100% slide và speaker notes)
+- Lời thoại thuyết trình: 1-2 câu súc tích, tự nhiên, thay vì đọc slide
+- Không sử dụng sơ đồ tuần tự
 Đồ án Trí Tuệ Nhân Tạo (AIP202) - ĐH Kiến trúc Đà Nẵng
 """
 import sys
@@ -13,6 +16,24 @@ from pptx.dml.color import RGBColor
 from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
 from pptx.enum.shapes import MSO_SHAPE
 
+FONT_FAMILY = "Times New Roman"
+
+def set_font(paragraph, size=None, bold=None, italic=None, color=None, alignment=None, space_before=None):
+    """Cài đặt thông số font chữ Times New Roman đồng bộ cho paragraph."""
+    paragraph.font.name = FONT_FAMILY
+    if size is not None:
+        paragraph.font.size = size
+    if bold is not None:
+        paragraph.font.bold = bold
+    if italic is not None:
+        paragraph.font.italic = italic
+    if color is not None:
+        paragraph.font.color.rgb = color
+    if alignment is not None:
+        paragraph.alignment = alignment
+    if space_before is not None:
+        paragraph.space_before = space_before
+
 def add_fitted_picture(slide, img_path, left, top, max_w, max_h, bg_card=True, caption=None):
     """Thêm hình ảnh vào slide với tỷ lệ chuẩn không méo, kèm khung card bo góc viền tinh tế."""
     if not os.path.exists(img_path):
@@ -23,7 +44,6 @@ def add_fitted_picture(slide, img_path, left, top, max_w, max_h, bg_card=True, c
         img_w, img_h = im.size
     aspect = img_w / img_h
 
-    # Dành chỗ cho caption nếu có
     avail_h = max_h - (Inches(0.4) if caption else Inches(0))
     target_w = max_w
     target_h = target_w / aspect
@@ -50,12 +70,32 @@ def add_fitted_picture(slide, img_path, left, top, max_w, max_h, bg_card=True, c
         tf.word_wrap = True
         p = tf.paragraphs[0]
         p.text = caption
-        p.font.size = Pt(10.5)
-        p.font.italic = True
-        p.font.color.rgb = RGBColor(100, 116, 139)
-        p.alignment = PP_ALIGN.CENTER
+        set_font(p, size=Pt(11), italic=True, color=RGBColor(100, 116, 139), alignment=PP_ALIGN.CENTER)
 
     return pic
+
+def apply_font_to_presentation(prs, font_name=FONT_FAMILY):
+    """Duyệt đệ quy toàn bộ shape, textbox, table, cell, paragraph, run để ép font Times New Roman."""
+    for slide in prs.slides:
+        for shape in slide.shapes:
+            if shape.has_text_frame:
+                for p in shape.text_frame.paragraphs:
+                    p.font.name = font_name
+                    for r in p.runs:
+                        r.font.name = font_name
+            if shape.has_table:
+                for row in shape.table.rows:
+                    for cell in row.cells:
+                        for p in cell.text_frame.paragraphs:
+                            p.font.name = font_name
+                            for r in p.runs:
+                                r.font.name = font_name
+        if slide.has_notes_slide:
+            notes_tf = slide.notes_slide.notes_text_frame
+            for p in notes_tf.paragraphs:
+                p.font.name = font_name
+                for r in p.runs:
+                    r.font.name = font_name
 
 def create_presentation():
     prs = Presentation()
@@ -63,7 +103,7 @@ def create_presentation():
     prs.slide_height = Inches(7.5)
     blank_layout = prs.slide_layouts[6]
 
-    # Bảng màu nhận diện giao diện FoodAI
+    # Bảng màu giao diện FoodAI
     NAVY = RGBColor(15, 23, 42)          # #0F172A
     BRAND_ORANGE = RGBColor(234, 88, 12) # #EA580C
     BRAND_BLUE = RGBColor(30, 58, 138)   # #1E3A8A
@@ -76,7 +116,7 @@ def create_presentation():
     AMBER = RGBColor(217, 119, 6)        # #D97706
     PURPLE = RGBColor(126, 34, 206)      # #7E22CE
 
-    # Đường dẫn tài nguyên ảnh (TUYỆT ĐỐI KHÔNG DÙNG SƠ ĐỒ TUẦN TỰ)
+    # Tài nguyên ảnh
     IMG_LOGO = "BaoCaoDoAnTriTueNhanTao-main/template-do-an-ttnt/assets/dau-logo.png"
     FIG_UI_DASHBOARD = "BaoCaoDoAnTriTueNhanTao-main/template-do-an-ttnt/figs/ui_trang_chu_dashboard.jpg"
     FIG_UI_MODAL = "BaoCaoDoAnTriTueNhanTao-main/template-do-an-ttnt/figs/ui_modal_chi_tiet_mon.jpg"
@@ -98,7 +138,7 @@ def create_presentation():
             "students": "Sinh viên thực hiện: Phạm Tấn Hào (2351220282) — Trần Quốc Trung (2351220096)",
             "advisor": "Giảng viên hướng dẫn: TS. Đỗ Phúc Hảo",
             "dept": "Trường Đại học Kiến trúc Đà Nẵng — Khoa Công nghệ Thông tin — Lớp: 23CT2 (Năm học: 2025 – 2026)",
-            "notes": "Kính thưa quý Thầy Cô trong Hội đồng chấm đồ án và các bạn sinh viên. Hôm nay, nhóm chúng em gồm Phạm Tấn Hào và Trần Quốc Trung, dưới sự hướng dẫn của TS. Đỗ Phúc Hảo, xin được báo cáo đồ án Trí tuệ Nhân tạo với đề tài: 'Hệ thống AI gợi ý món ăn theo nguyên liệu - FoodAI'."
+            "notes": "Kính thưa quý Thầy Cô trong Hội đồng, hôm nay nhóm chúng em xin được báo cáo đề tài 'Hệ thống AI gợi ý món ăn theo nguyên liệu - FoodAI' dưới sự hướng dẫn của TS. Đỗ Phúc Hảo. Đề tài tập trung giải quyết bài toán gợi ý món ăn thực tế từ nguyên liệu sẵn có bằng cách kết hợp Google Gemini AI và kiến trúc Grounded RAG."
         },
 
         # ==========================================
@@ -116,7 +156,7 @@ def create_presentation():
                 ("4. Cài Đặt Thực Nghiệm & Đánh Giá Định Lượng", "Giao diện Client/Admin, kết quả kiểm thử chức năng và đo đạc hiệu năng thực tế."),
                 ("5. Kết Luận & Hướng Phát Triển Tương Lai", "Tổng kết đóng góp, bài học rút ra và kế hoạch mở rộng thị giác máy tính YOLOv8.")
             ],
-            "notes": "Bài thuyết trình của nhóm em gồm 5 phần chính: từ lý do chọn đề tài, cơ sở công nghệ, giải thuật cốt lõi giải quyết bài toán ảo giác của AI, kết quả thực nghiệm hệ thống và định hướng phát triển."
+            "notes": "Báo cáo của nhóm gồm 5 phần chính, đi từ bài toán thực tế, cơ sở công nghệ, giải thuật cốt lõi chống ảo giác cho AI, cho đến kết quả thực nghiệm hệ thống và hướng phát triển tương lai."
         },
 
         # ==========================================
@@ -130,11 +170,11 @@ def create_presentation():
             "cards": [
                 ("Câu hỏi thường trực mỗi ngày", "Người nội trợ, sinh viên bối rối: 'Hôm nay ăn gì?', 'Tủ lạnh còn những gì nấu được món gì ngon?'."),
                 ("Vấn nạn lãng phí thực phẩm", "Lượng lớn rau củ, thịt cá tươi sống bị bỏ phí hằng tuần do thiếu kỹ năng kết hợp nguyên liệu sẵn có."),
-                ("Hạn chế tra cứu truyền thống", "Buộc người dùng phải biết trước tên món ăn (ví dụ: 'thịt kho tàu') mới tìm được; tra cứu từ khóa máy móc và thiếu định lượng dinh dưỡng.")
+                ("Hạn chế tra cứu truyền thống", "Buộc người dùng phải biết trước tên món ăn mới tìm được; tra cứu từ khóa máy móc và thiếu định lượng dinh dưỡng.")
             ],
             "img_path": FIG_UI_DASHBOARD,
             "img_caption": "Giao diện gợi ý thông minh của FoodAI - Giải pháp nấu ăn theo nguyên liệu có sẵn",
-            "notes": "Xuất phát từ thực tế đời sống, người nội trợ hay sinh viên thường mở tủ lạnh và bối rối vì không biết những nguyên liệu còn lại có thể nấu được món gì. Các website tra cứu hiện nay đều đòi hỏi người dùng phải biết sẵn tên món mới tìm được, dẫn đến việc nguyên liệu thừa bị bỏ phí."
+            "notes": "Xuất phát từ thực tế người nội trợ mỗi ngày đều bối rối với câu hỏi 'Hôm nay ăn gì' khi tủ lạnh còn nguyên liệu rải rác, dẫn đến lãng phí thực phẩm rất lớn. Các ứng dụng hiện nay đều bắt buộc phải biết trước tên món mới tìm được, hoàn toàn chưa hỗ trợ nấu ăn linh hoạt theo những gì đang có sẵn."
         },
 
         # ==========================================
@@ -163,7 +203,7 @@ def create_presentation():
                 ("Phân vai AI Chef & Chuyên gia dinh dưỡng", "Gemini AI chỉ tập trung tính toán định lượng gram, thời gian nấu và 8 chỉ số dinh dưỡng (calo, đạm, béo, xơ, vitamin...)."),
                 ("Tỷ lệ bám sát nguyên liệu 97,8%", "Món ăn đề xuất thân thuộc, chuẩn vị Việt Nam và có thể chế biến ngay lập tức.")
             ],
-            "notes": "Nếu chỉ dùng AI thuần túy, AI sẽ thường xuyên bị 'ảo giác' - tự bịa thêm thịt bò, tôm đắt tiền mà người dùng không hề có. Giải pháp của nhóm em là khóa chặt AI bằng kỹ thuật Grounded RAG: CSDL nội bộ lọc ra món thật trước, AI chỉ tính toán dinh dưỡng và thời gian nấu."
+            "notes": "Nếu chỉ dùng AI thuần túy, mô hình rất dễ bị 'ảo giác' tự bịa thêm các nguyên liệu đắt tiền như thịt bò hay tôm hùm dù người dùng chỉ có trứng và cà chua. Đột phá của đề tài là ứng dụng Grounded RAG, khóa chặt AI vào kho món ăn Việt Nam có thật làm mỏ neo, triệt tiêu hoàn toàn hiện tượng bịa đặt này."
         },
 
         # ==========================================
@@ -180,7 +220,7 @@ def create_presentation():
                 ("Xử Lý Ngôn Ngữ Tự Nhiên (NLP)", "Xây dựng thuật toán NLP tiếng Việt khử triệt để hiện tượng dính chữ (cà chua != cá, mắm tôm != tôm, bơ tỏi != bò).", GREEN),
                 ("Kiến Trúc Web & Fallback Chịu Lỗi", "Hoàn thiện Web SPA full-stack, phân quyền JWT và cơ chế dự phòng tự động phản hồi tức thì < 300ms khi mất kết nối AI.", PURPLE)
             ],
-            "notes": "Đề tài đặt ra 4 mục tiêu cụ thể: xây dựng kho dữ liệu 552 món Cookpad, tích hợp Gemini AI phân tích dinh dưỡng khoa học, xử lý triệt để bất đồng ngữ nghĩa tiếng Việt và xây dựng cơ chế Fallback đảm bảo hệ thống luôn sẵn sàng 100%."
+            "notes": "Mục tiêu cốt lõi của nhóm là xây dựng kho 552 món ăn Việt Nam chuẩn hóa, tích hợp Gemini AI phân tích chính xác 8 chỉ số dinh dưỡng, và hoàn thiện một ứng dụng Web có cơ chế dự phòng hoạt động bền bỉ."
         },
 
         # ==========================================
@@ -208,7 +248,7 @@ def create_presentation():
                     ("Cookpad CDN Image", "Kho ảnh món ăn thực tế sắc nét, độ phân giải cao 1200x630.")
                 ])
             ],
-            "notes": "Về mặt công nghệ, hệ thống áp dụng toàn diện hệ sinh thái JavaScript/TypeScript hiện đại với React 18 ở Frontend, Node.js Express ở Backend, CSDL quan hệ MySQL và Google Gemini AI làm động cơ trí tuệ nhân tạo."
+            "notes": "Hệ thống được xây dựng trên nền tảng Full-stack JavaScript hiện đại: React 18 và TypeScript ở Frontend cho trải nghiệm mượt mà, Node.js Express bảo mật ở Backend, cùng động cơ Google Gemini AI và CSDL quan hệ MySQL 8.0."
         },
 
         # ==========================================
@@ -251,7 +291,7 @@ def create_presentation():
                     ]
                 }
             ],
-            "notes": "Kiến trúc hệ thống được phân lớp nghiêm ngặt thành 3 tầng rõ ràng. Tầng ứng dụng bóc tách các Service độc lập, giúp mã nguồn đạt tính gắn kết cao, dễ bảo trì, mở rộng và kiểm thử đơn vị."
+            "notes": "Kiến trúc phần mềm được phân tách chặt chẽ thành 3 tầng: Giao diện Client SPA, Tầng nghiệp vụ xử lý phân quyền và lọc ràng buộc, kết nối với Tầng dữ liệu MySQL và dịch vụ đám mây Gemini AI qua RESTful API an toàn."
         },
 
         # ==========================================
@@ -270,7 +310,7 @@ def create_presentation():
             ],
             "img_path": FIG_UI_MODAL,
             "img_caption": "Kết quả thực tế sau khi xử lý Grounded RAG: Đầy đủ định lượng nguyên liệu và 8 chỉ số dinh dưỡng",
-            "notes": "Đây là trọng tâm kỹ thuật của đồ án: Luồng Grounded RAG 4 bước. Thay vì để AI tự do sáng tạo tên món, CSDL đóng vai trò mỏ neo định hướng danh sách món thật, AI chỉ tính toán dinh dưỡng và định lượng, sau đó dữ liệu được cập nhật ngược về CSDL."
+            "notes": "Đây là trái tim của hệ thống: CSDL MySQL sẽ lọc trước 6 đến 8 món thật khớp nguyên liệu, sau đó Gemini AI mới đóng vai trò đầu bếp tính toán định lượng gram, calo và mẹo chế biến rồi đồng bộ ngược lại vào CSDL."
         },
 
         # ==========================================
@@ -288,7 +328,7 @@ def create_presentation():
             ],
             "img_path": FIG_UI_DASHBOARD,
             "img_caption": "Gợi ý nguyên liệu tự động nhận diện từ khóa chính xác không bị dính chữ",
-            "notes": "Xử lý tiếng Việt là bài toán cực kỳ dễ sai lệch nếu chỉ so chuỗi đơn thuần. Ví dụ người dùng gõ 'cà chua', nếu không có bộ lọc loại trừ, thuật toán sẽ nhầm thành nguyên liệu 'cá'. Nhóm đã cài đặt ma trận từ điển đồng nghĩa và danh sách Negative Excludes để loại trừ triệt để lỗi này."
+            "notes": "Để giải quyết triệt để các lỗi dính chữ nguy hiểm trong tiếng Việt như 'cà chua' bị nhận nhầm thành 'cá', nhóm đã xây dựng thuật toán kiểm tra ranh giới từ nguyên vẹn kết hợp ma trận loại trừ Negative Excludes để đảm bảo độ chính xác tuyệt đối."
         },
 
         # ==========================================
@@ -306,7 +346,7 @@ def create_presentation():
             ],
             "img_path": FIG_UI_MODAL,
             "img_caption": "Món ăn đề xuất có độ tương đồng nguyên liệu cao nhất được xếp vị trí ưu tiên",
-            "notes": "Hệ thống áp dụng công thức chấm điểm đa tiêu chí: ưu tiên món khớp nhiều nguyên liệu nhất, tên món chứa từ khóa chính và đúng loại đạm. Các món phụ chỉ khớp 1 nguyên liệu sẽ bị điểm thấp và tự động bị đẩy xuống hoặc loại bỏ."
+            "notes": "Hệ thống áp dụng bộ lọc loại trừ cứng để bảo vệ nhóm chất đạm - ví dụ nếu người dùng không nhập thịt cá thì loại bỏ 100% món mặn, đồng thời chấm điểm đa tiêu chí để luôn đẩy món ăn phù hợp nhất lên vị trí Top 1."
         },
 
         # ==========================================
@@ -324,7 +364,7 @@ def create_presentation():
             ],
             "img_path": FIG_UI_ADMIN_RECIPES,
             "img_caption": "Giao diện quản lý kho 552 món ăn lưu trữ trong CSDL MySQL",
-            "notes": "Cơ sở dữ liệu được thiết kế chuẩn hóa 3NF với 9 bảng. Đặc biệt hệ thống có tính năng Auto-Seed: bất kỳ ai tải dự án về chỉ cần tạo CSDL rỗng, khi backend chạy sẽ tự động nạp toàn bộ 552 món và ảnh vào MySQL."
+            "notes": "CSDL được thiết kế chuẩn hóa 3NF gồm 9 bảng quan hệ chặt chẽ. Đặc biệt, hệ thống tích hợp cơ chế Auto-Seed tự động nạp toàn bộ 552 món ăn mẫu vào MySQL ngay khi khởi động mà không cần can thiệp thủ công."
         },
 
         # ==========================================
@@ -342,7 +382,7 @@ def create_presentation():
             ],
             "img_path": FIG_UI_ADMIN_SETTINGS,
             "img_caption": "Bảng điều khiển cho phép kiểm tra trạng thái API và cấu hình hình ảnh trực tiếp",
-            "notes": "Để giải quyết triệt để vấn đề hình ảnh không khớp với món ăn, nhóm xây dựng bộ lọc tự động kiểm tra slug của URL ảnh, và đồng thời cung cấp giao diện Admin cho phép thay thế link ảnh thủ công mọi lúc."
+            "notes": "Để thành phẩm luôn đạt chuẩn thẩm mỹ cao, thuật toán sẽ tự động phân tích slug URL ảnh nhằm loại trừ các ảnh mâm cơm hỗn hợp hoặc ảnh lệch món, đồng thời cung cấp giao diện Admin cho phép cập nhật link ảnh thủ công mọi lúc."
         },
 
         # ==========================================
@@ -359,7 +399,7 @@ def create_presentation():
             "img2_path": FIG_UI_MODAL,
             "img2_title": "Modal Chi Tiết Món Ăn 3 Tab",
             "img2_desc": "Tab 1: Công thức 4 bước nấu chuẩn; Tab 2: Định lượng nguyên liệu chi tiết (gram, thìa); Tab 3: Bảng 8 chỉ số dinh dưỡng & mẹo AI Chef.",
-            "notes": "Giao diện người dùng được thiết kế hiện đại, thân thiện. Điểm nhấn là Modal chi tiết 3 Tab vừa hiển thị công thức, vừa định lượng gram nguyên liệu và hiển thị biểu đồ dinh dưỡng khoa học."
+            "notes": "Giao diện người dùng được thiết kế hiện đại và tiện lợi: hỗ trợ chọn nguyên liệu nhanh bằng tag màu động, phân trang 3 món cuộn mượt mà, cùng Modal chi tiết 3 tab hiển thị đầy đủ công thức và biểu đồ dinh dưỡng."
         },
 
         # ==========================================
@@ -376,7 +416,7 @@ def create_presentation():
             "img2_path": FIG_UI_ADMIN_USERS,
             "img2_title": "Quản Lý Người Dùng & Phân Quyền An Toàn",
             "img2_desc": "Bảng dữ liệu phân trang, tìm kiếm email/tên, kích hoạt/khóa tài khoản kèm chốt an toàn không cho phép Admin tự khóa chính mình.",
-            "notes": "Phân hệ Admin Panel cung cấp đầy đủ công cụ quản trị dữ liệu, giám sát hoạt động của Gemini AI và cho phép quản lý vòng đời tài khoản người dùng an toàn."
+            "notes": "Phân hệ quản trị cung cấp bức tranh vận hành toàn diện với biểu đồ thống kê KPI thời gian thực, quản lý tài khoản người dùng an toàn và công cụ giám sát trực tiếp nhật ký truy vấn của Gemini AI."
         },
 
         # ==========================================
@@ -394,7 +434,7 @@ def create_presentation():
             ],
             "img_path": FIG_UI_FAVORITES,
             "img_caption": "Người dùng vẫn xem được gợi ý, công thức và lưu món ăn yêu thích bình thường ở chế độ dự phòng",
-            "notes": "Hệ thống được thiết kế theo tư duy chịu lỗi công nghiệp: nếu Google Gemini gặp sự cố mạng hoặc hết hạn mức, tầng Fallback nội bộ sẽ tự động phản hồi chỉ trong 0,21 giây từ CSDL MySQL, trải nghiệm người dùng không bao giờ bị gián đoạn."
+            "notes": "Hệ thống sở hữu cơ chế chịu lỗi công nghiệp: khi mất mạng hoặc Google AI bị nghẽn hạn mức, tầng Fallback sẽ tự động phản hồi từ CSDL MySQL nội bộ chỉ trong 0,21 giây, cam kết người dùng không bao giờ gặp lỗi gián đoạn."
         },
 
         # ==========================================
@@ -414,7 +454,7 @@ def create_presentation():
                 ["TC-05", "Tài khoản User thường truy cập /admin", "Bị chặn bởi AuthMiddleware và nhận mã lỗi HTTP 403 Forbidden", "ĐẠT (Pass 100%)"],
                 ["TC-06", "Nhập chuỗi rỗng / Ký tự đặc biệt XSS", "Bắt lỗi validation, thông báo lỗi tiếng Việt thân thiện", "ĐẠT (Pass 100%)"]
             ],
-            "notes": "Toàn bộ 6 kịch bản kiểm thử trọng yếu từ bảo mật, xử lý ngoại lệ đến tính toàn vẹn dữ liệu đều đạt tỷ lệ Pass 100%, khẳng định độ hoàn thiện cao của phần mềm."
+            "notes": "Nhóm đã thực hiện kiểm thử nghiêm ngặt trên 6 ca thử nghiệm cốt lõi từ bảo mật JWT, kịch bản ăn chay, xử lý chuỗi rỗng đến ngắt mạng đột ngột - toàn bộ đều đạt tỷ lệ Pass tuyệt đối 100%."
         },
 
         # ==========================================
@@ -439,7 +479,7 @@ def create_presentation():
                 ["Tỷ lệ gán hình ảnh chính xác", "94,6%", "98,2%", "Kho ảnh Cookpad khớp chuẩn thành phẩm"],
                 ["Mức độ hài lòng của người dùng", "4,8 / 5,0 ⭐", "4,2 / 5,0 ⭐", "Cả 2 chế độ đều được đánh giá cao"]
             ],
-            "notes": "Kết quả định lượng cho thấy sự kết hợp hoàn hảo giữa 2 chế độ: Chế độ AI vượt trội về tính sáng tạo (4,8 sao) và tỷ lệ bám sát nguyên liệu (97,8%), trong khi chế độ Fallback tối ưu về tốc độ (0,21 giây) và độ chuẩn xác hình ảnh (98,2%)."
+            "notes": "Đo đạc trên 150 kịch bản thực tế cho thấy chế độ Fallback phản hồi cực nhanh 0,21 giây, trong khi chế độ AI đạt tỷ lệ bám sát nguyên liệu 97,8% và nhận được điểm hài lòng rất cao 4,8 trên 5 sao từ người dùng."
         },
 
         # ==========================================
@@ -456,7 +496,7 @@ def create_presentation():
             ],
             "img_path": FIG_UI_SEARCH_HISTORY,
             "img_caption": "Lịch sử tìm kiếm lưu trữ chính xác các lần tra cứu thực tế của người dùng",
-            "notes": "Trên màn hình là hai kịch bản điển hình: Dù người dùng chỉ có trứng cà chua hay có thịt bò, hệ thống đều đưa ra các món ăn thân thuộc, chuẩn vị Việt Nam, đúng định lượng và hình ảnh chân thực 100%."
+            "notes": "Minh chứng rõ nhất là dù người dùng chỉ có nguyên liệu đơn giản như trứng và cà chua hay có thịt bò, hệ thống đều đưa ra đúng các món ăn thân thuộc, chuẩn vị và tự động lưu lại vào lịch sử tìm kiếm."
         },
 
         # ==========================================
@@ -482,7 +522,7 @@ def create_presentation():
                 "Lập thực đơn tuần thông minh (Weekly Meal Planner): Tự động phân bổ calo 7 ngày theo thể trạng (Keto, giảm cân, tiểu đường).",
                 "Phát triển ứng dụng di động đa nền tảng (React Native) và mạng xã hội chia sẻ công thức ẩm thực cá nhân."
             ],
-            "notes": "Đề tài đã hoàn thành xuất sắc các mục tiêu đề ra. Trong tương lai, nhóm sẽ mở rộng thêm tính năng nhận diện thực phẩm qua camera AI và lập thực đơn dinh dưỡng theo tuần cho gia đình."
+            "notes": "Đề tài đã hoàn thành trọn vẹn mục tiêu đề ra và triển khai thực tế trên môi trường đám mây; trong giai đoạn tiếp theo, nhóm sẽ tích hợp mô hình thị giác YOLOv8 để tự nhận diện thực phẩm qua camera tủ lạnh."
         },
 
         # ==========================================
@@ -495,27 +535,29 @@ def create_presentation():
             "advisor": "Trân trọng cảm ơn TS. Đỗ Phúc Hảo đã tận tình hướng dẫn khoa học trong suốt quá trình thực hiện đồ án.",
             "links": "🌐 Live Web App: https://do-an-tri-tue-nhan-tao-nu.vercel.app\n💻 GitHub: https://github.com/T-glonk/DoAnTriTueNhanTao.git",
             "qa": "KÍNH MỜI QUÝ THẦY CÔ TRONG HỘI ĐỒNG ĐẶT CÂU HỎI (Q&A)",
-            "notes": "Em xin chân thành cảm ơn quý Thầy Cô trong Hội đồng đã chú ý lắng nghe bài báo cáo của nhóm. Chúng em rất mong nhận được những lời nhận xét, góp ý quý báu của quý Thầy Cô để hoàn thiện đề tài hơn nữa. Nhóm chúng em xin sẵn sàng trả lời các câu hỏi của Hội đồng ạ!"
+            "notes": "Nhóm chúng em xin chân thành cảm ơn TS. Đỗ Phúc Hảo và quý Thầy Cô trong Hội đồng đã lắng nghe; chúng em rất mong nhận được những góp ý quý báu và xin sẵn sàng trả lời các câu hỏi của Thầy Cô ạ!"
         }
     ]
 
     for idx, data in enumerate(slides_data):
         slide = prs.slides.add_slide(blank_layout)
 
-        # 1. Nền slide phẳng thanh lịch
+        # 1. Nền slide
         bg = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, 0, 0, prs.slide_width, prs.slide_height)
         bg.fill.solid()
         bg.fill.fore_color.rgb = LIGHT_BG
         bg.line.fill.background()
 
-        # 2. Speaker notes
+        # 2. Speaker notes (Lời thoại 1-2 câu để thuyết trình)
         if "notes" in data:
             notes_slide = slide.notes_slide
             tf_notes = notes_slide.notes_text_frame
             tf_notes.text = data["notes"]
+            for p in tf_notes.paragraphs:
+                set_font(p, size=Pt(13), color=NAVY)
 
         # ==========================================
-        # RENDER TỪNG LOẠI SLIDE
+        # RENDER CÁC LOẠI SLIDE
         # ==========================================
         if data["type"] == "title":
             top_bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(13.333), Inches(0.2))
@@ -537,15 +579,11 @@ def create_presentation():
             tf.word_wrap = True
             p0 = tf.paragraphs[0]
             p0.text = "TRƯỜNG ĐẠI HỌC KIẾN TRÚC ĐÀ NẴNG — KHOA CÔNG NGHỆ THÔNG TIN"
-            p0.font.size = Pt(13)
-            p0.font.bold = True
-            p0.font.color.rgb = BRAND_BLUE
+            set_font(p0, size=Pt(13.5), bold=True, color=BRAND_BLUE)
 
             p_badge = tf.add_paragraph()
             p_badge.text = "BÁO CÁO ĐỒ ÁN MÔN HỌC: TRÍ TUỆ NHÂN TẠO (AIP202)"
-            p_badge.font.size = Pt(12)
-            p_badge.font.bold = True
-            p_badge.font.color.rgb = BRAND_ORANGE
+            set_font(p_badge, size=Pt(12), bold=True, color=BRAND_ORANGE)
 
             line = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(1.6), Inches(2.1), Inches(10.1), Inches(0.04))
             line.fill.solid()
@@ -557,17 +595,11 @@ def create_presentation():
             tf.word_wrap = True
             p = tf.paragraphs[0]
             p.text = data["title"]
-            p.font.size = Pt(27)
-            p.font.bold = True
-            p.font.color.rgb = BRAND_ORANGE
-            p.alignment = PP_ALIGN.CENTER
+            set_font(p, size=Pt(28), bold=True, color=BRAND_ORANGE, alignment=PP_ALIGN.CENTER)
 
             p_sub = tf.add_paragraph()
             p_sub.text = data["subtitle"]
-            p_sub.font.size = Pt(13.5)
-            p_sub.font.color.rgb = SLATE
-            p_sub.alignment = PP_ALIGN.CENTER
-            p_sub.space_before = Pt(8)
+            set_font(p_sub, size=Pt(14), color=SLATE, alignment=PP_ALIGN.CENTER, space_before=Pt(8))
 
             info_card = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.8), Inches(4.3), Inches(9.7), Inches(2.1))
             info_card.fill.solid()
@@ -581,25 +613,15 @@ def create_presentation():
 
             p1 = tf.paragraphs[0]
             p1.text = data["students"]
-            p1.font.size = Pt(14)
-            p1.font.bold = True
-            p1.font.color.rgb = NAVY
-            p1.alignment = PP_ALIGN.CENTER
+            set_font(p1, size=Pt(14.5), bold=True, color=NAVY, alignment=PP_ALIGN.CENTER)
 
             p2 = tf.add_paragraph()
             p2.text = data["advisor"]
-            p2.font.size = Pt(13.5)
-            p2.font.bold = True
-            p2.font.color.rgb = BRAND_BLUE
-            p2.alignment = PP_ALIGN.CENTER
-            p2.space_before = Pt(6)
+            set_font(p2, size=Pt(14), bold=True, color=BRAND_BLUE, alignment=PP_ALIGN.CENTER, space_before=Pt(6))
 
             p3 = tf.add_paragraph()
             p3.text = data["dept"]
-            p3.font.size = Pt(11.5)
-            p3.font.color.rgb = SLATE
-            p3.alignment = PP_ALIGN.CENTER
-            p3.space_before = Pt(6)
+            set_font(p3, size=Pt(12), color=SLATE, alignment=PP_ALIGN.CENTER, space_before=Pt(6))
 
         elif data["type"] == "closing":
             top_bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(13.333), Inches(0.2))
@@ -621,28 +643,18 @@ def create_presentation():
             tf.word_wrap = True
             p = tf.paragraphs[0]
             p.text = data["title"]
-            p.font.size = Pt(28)
-            p.font.bold = True
-            p.font.color.rgb = BRAND_ORANGE
-            p.alignment = PP_ALIGN.CENTER
+            set_font(p, size=Pt(28), bold=True, color=BRAND_ORANGE, alignment=PP_ALIGN.CENTER)
 
             p_sub = tf.add_paragraph()
             p_sub.text = data["subtitle"]
-            p_sub.font.size = Pt(15)
-            p_sub.font.bold = True
-            p_sub.font.color.rgb = BRAND_BLUE
-            p_sub.alignment = PP_ALIGN.CENTER
-            p_sub.space_before = Pt(6)
+            set_font(p_sub, size=Pt(15), bold=True, color=BRAND_BLUE, alignment=PP_ALIGN.CENTER, space_before=Pt(6))
 
             txBox2 = slide.shapes.add_textbox(Inches(2.0), Inches(3.4), Inches(9.333), Inches(0.8))
             tf = txBox2.text_frame
             tf.word_wrap = True
             p = tf.paragraphs[0]
             p.text = data["advisor"]
-            p.font.size = Pt(13.5)
-            p.font.italic = True
-            p.font.color.rgb = SLATE
-            p.alignment = PP_ALIGN.CENTER
+            set_font(p, size=Pt(14), italic=True, color=SLATE, alignment=PP_ALIGN.CENTER)
 
             qa_box = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(2.5), Inches(4.3), Inches(8.333), Inches(0.85))
             qa_box.fill.solid()
@@ -652,65 +664,50 @@ def create_presentation():
             tf = qa_box.text_frame
             p = tf.paragraphs[0]
             p.text = "💬 " + data["qa"]
-            p.font.size = Pt(16)
-            p.font.bold = True
-            p.font.color.rgb = BRAND_BLUE
-            p.alignment = PP_ALIGN.CENTER
+            set_font(p, size=Pt(16), bold=True, color=BRAND_BLUE, alignment=PP_ALIGN.CENTER)
 
             txBox3 = slide.shapes.add_textbox(Inches(2.0), Inches(5.35), Inches(9.333), Inches(1.1))
             tf = txBox3.text_frame
             tf.word_wrap = True
             p = tf.paragraphs[0]
             p.text = data["links"]
-            p.font.size = Pt(13)
-            p.font.color.rgb = SLATE
-            p.alignment = PP_ALIGN.CENTER
+            set_font(p, size=Pt(13.5), color=SLATE, alignment=PP_ALIGN.CENTER)
 
         else:
-            # TIÊU ĐỀ CHUNG CHO CÁC SLIDE NỘI DUNG (3-19)
             top_bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(13.333), Inches(0.08))
             top_bar.fill.solid()
             top_bar.fill.fore_color.rgb = BRAND_ORANGE
             top_bar.line.fill.background()
 
-            badge = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(0.32), Inches(3.0), Inches(0.35))
+            badge = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(0.32), Inches(3.2), Inches(0.36))
             badge.fill.solid()
             badge.fill.fore_color.rgb = RGBColor(254, 237, 232)
             badge.line.fill.background()
             tf = badge.text_frame
             p = tf.paragraphs[0]
             p.text = data.get("badge", "FOODAI")
-            p.font.size = Pt(11)
-            p.font.bold = True
-            p.font.color.rgb = BRAND_ORANGE
-            p.alignment = PP_ALIGN.CENTER
+            set_font(p, size=Pt(11.5), bold=True, color=BRAND_ORANGE, alignment=PP_ALIGN.CENTER)
 
             txHead = slide.shapes.add_textbox(Inches(0.8), Inches(0.7), Inches(11.0), Inches(0.8))
             tf = txHead.text_frame
             tf.word_wrap = True
             p = tf.paragraphs[0]
             p.text = data["title"]
-            p.font.size = Pt(21)
-            p.font.bold = True
-            p.font.color.rgb = NAVY
+            set_font(p, size=Pt(22), bold=True, color=NAVY)
 
             p_sub = tf.add_paragraph()
             p_sub.text = data.get("subtitle", "")
-            p_sub.font.size = Pt(11.5)
-            p_sub.font.color.rgb = SLATE
+            set_font(p_sub, size=Pt(12), color=SLATE)
 
             numBox = slide.shapes.add_textbox(Inches(11.8), Inches(0.35), Inches(0.9), Inches(0.4))
             tf = numBox.text_frame
             p = tf.paragraphs[0]
             p.text = f"{idx + 1} / 20"
-            p.font.size = Pt(12)
-            p.font.bold = True
-            p.font.color.rgb = RGBColor(148, 163, 184)
-            p.alignment = PP_ALIGN.RIGHT
+            set_font(p, size=Pt(12.5), bold=True, color=RGBColor(148, 163, 184), alignment=PP_ALIGN.RIGHT)
 
-            # ==========================================
-            # LAYOUT: AGENDA
-            # ==========================================
+            # ------------------------------------------
+            # AGENDA
+            # ------------------------------------------
             if data["type"] == "agenda":
                 y = 1.65
                 for item_title, item_desc in data["items"]:
@@ -727,35 +724,29 @@ def create_presentation():
                     tf = num_badge.text_frame
                     p = tf.paragraphs[0]
                     p.text = item_title.split('.')[0]
-                    p.font.size = Pt(14)
-                    p.font.bold = True
-                    p.font.color.rgb = WHITE
-                    p.alignment = PP_ALIGN.CENTER
+                    set_font(p, size=Pt(14), bold=True, color=WHITE, alignment=PP_ALIGN.CENTER)
 
                     tx = slide.shapes.add_textbox(Inches(1.8), Inches(y + 0.08), Inches(10.5), Inches(0.75))
                     tf = tx.text_frame
                     tf.word_wrap = True
                     p1 = tf.paragraphs[0]
                     p1.text = item_title
-                    p1.font.size = Pt(14)
-                    p1.font.bold = True
-                    p1.font.color.rgb = NAVY
+                    set_font(p1, size=Pt(14.5), bold=True, color=NAVY)
 
                     p2 = tf.add_paragraph()
                     p2.text = item_desc
-                    p2.font.size = Pt(11.5)
-                    p2.font.color.rgb = SLATE
+                    set_font(p2, size=Pt(12), color=SLATE)
 
                     y += 1.02
 
-            # ==========================================
-            # LAYOUT: COMPARISON COLUMNS (SO SÁNH 2 CỘT TƯƠNG PHẢN)
-            # ==========================================
+            # ------------------------------------------
+            # COMPARISON COLUMNS
+            # ------------------------------------------
             elif data["type"] == "comparison_columns":
                 w = Inches(5.7)
                 h = Inches(5.3)
 
-                # Cột 1: Vấn đề / Nguy cơ (Red/Amber)
+                # Cột 1: Vấn đề / Nguy cơ
                 card1 = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.6), w, h)
                 card1.fill.solid()
                 card1.fill.fore_color.rgb = WHITE
@@ -769,10 +760,7 @@ def create_presentation():
                 tf1 = top_bar1.text_frame
                 p = tf1.paragraphs[0]
                 p.text = data["col1_title"]
-                p.font.size = Pt(14)
-                p.font.bold = True
-                p.font.color.rgb = WHITE
-                p.alignment = PP_ALIGN.CENTER
+                set_font(p, size=Pt(14.5), bold=True, color=WHITE, alignment=PP_ALIGN.CENTER)
 
                 badge1 = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.1), Inches(2.38), w - Inches(0.6), Inches(0.38))
                 badge1.fill.solid()
@@ -782,10 +770,7 @@ def create_presentation():
                 tf_b1 = badge1.text_frame
                 p = tf_b1.paragraphs[0]
                 p.text = data["col1_badge"]
-                p.font.size = Pt(11)
-                p.font.bold = True
-                p.font.color.rgb = data["col1_color"]
-                p.alignment = PP_ALIGN.CENTER
+                set_font(p, size=Pt(11.5), bold=True, color=data["col1_color"], alignment=PP_ALIGN.CENTER)
 
                 cur_y1 = Inches(2.9)
                 for item_head, item_desc in data["col1_items"]:
@@ -800,19 +785,15 @@ def create_presentation():
                     tf.word_wrap = True
                     p1 = tf.paragraphs[0]
                     p1.text = "✗ " + item_head
-                    p1.font.size = Pt(12)
-                    p1.font.bold = True
-                    p1.font.color.rgb = data["col1_color"]
+                    set_font(p1, size=Pt(12.5), bold=True, color=data["col1_color"])
 
                     p2 = tf.add_paragraph()
                     p2.text = item_desc
-                    p2.font.size = Pt(10.5)
-                    p2.font.color.rgb = NAVY
-                    p2.space_before = Pt(3)
+                    set_font(p2, size=Pt(11), color=NAVY, space_before=Pt(3))
 
                     cur_y1 += Inches(1.28)
 
-                # Cột 2: Giải pháp FoodAI Grounded RAG (Green/Blue)
+                # Cột 2: Giải pháp FoodAI Grounded RAG
                 card2 = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(6.8), Inches(1.6), w, h)
                 card2.fill.solid()
                 card2.fill.fore_color.rgb = WHITE
@@ -826,10 +807,7 @@ def create_presentation():
                 tf2 = top_bar2.text_frame
                 p = tf2.paragraphs[0]
                 p.text = data["col2_title"]
-                p.font.size = Pt(14)
-                p.font.bold = True
-                p.font.color.rgb = WHITE
-                p.alignment = PP_ALIGN.CENTER
+                set_font(p, size=Pt(14.5), bold=True, color=WHITE, alignment=PP_ALIGN.CENTER)
 
                 badge2 = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(7.1), Inches(2.38), w - Inches(0.6), Inches(0.38))
                 badge2.fill.solid()
@@ -839,10 +817,7 @@ def create_presentation():
                 tf_b2 = badge2.text_frame
                 p = tf_b2.paragraphs[0]
                 p.text = data["col2_badge"]
-                p.font.size = Pt(11)
-                p.font.bold = True
-                p.font.color.rgb = data["col2_color"]
-                p.alignment = PP_ALIGN.CENTER
+                set_font(p, size=Pt(11.5), bold=True, color=data["col2_color"], alignment=PP_ALIGN.CENTER)
 
                 cur_y2 = Inches(2.9)
                 for item_head, item_desc in data["col2_items"]:
@@ -857,21 +832,17 @@ def create_presentation():
                     tf.word_wrap = True
                     p1 = tf.paragraphs[0]
                     p1.text = "✓ " + item_head
-                    p1.font.size = Pt(12)
-                    p1.font.bold = True
-                    p1.font.color.rgb = data["col2_color"]
+                    set_font(p1, size=Pt(12.5), bold=True, color=data["col2_color"])
 
                     p2 = tf.add_paragraph()
                     p2.text = item_desc
-                    p2.font.size = Pt(10.5)
-                    p2.font.color.rgb = NAVY
-                    p2.space_before = Pt(3)
+                    set_font(p2, size=Pt(11), color=NAVY, space_before=Pt(3))
 
                     cur_y2 += Inches(1.28)
 
-            # ==========================================
-            # LAYOUT: THREE TIERS (KIẾN TRÚC 3 TẦNG XẾP LỚP TRỰC QUAN)
-            # ==========================================
+            # ------------------------------------------
+            # THREE TIERS ARCHITECTURE
+            # ------------------------------------------
             elif data["type"] == "three_tiers":
                 w = Inches(11.733)
                 tier_h = Inches(1.5)
@@ -885,7 +856,6 @@ def create_presentation():
                     card.line.color.rgb = tier["color"]
                     card.line.width = Pt(1.5)
 
-                    # Top-left badge của tầng
                     bar = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), y, w, Inches(0.42))
                     bar.fill.solid()
                     bar.fill.fore_color.rgb = tier["color"]
@@ -893,11 +863,7 @@ def create_presentation():
                     tf = bar.text_frame
                     p = tf.paragraphs[0]
                     p.text = tier["name"]
-                    p.font.size = Pt(12)
-                    p.font.bold = True
-                    p.font.color.rgb = WHITE
-                    p.alignment = PP_ALIGN.LEFT
-                    p.space_before = Pt(1)
+                    set_font(p, size=Pt(12.5), bold=True, color=WHITE, alignment=PP_ALIGN.LEFT)
 
                     tx = slide.shapes.add_textbox(Inches(1.0), y + Inches(0.44), w - Inches(0.4), tier_h - Inches(0.48))
                     tf = tx.text_frame
@@ -905,18 +871,13 @@ def create_presentation():
 
                     p_tech = tf.paragraphs[0]
                     p_tech.text = "Công nghệ: " + tier["tech"]
-                    p_tech.font.size = Pt(11)
-                    p_tech.font.bold = True
-                    p_tech.font.color.rgb = BRAND_BLUE
+                    set_font(p_tech, size=Pt(11.5), bold=True, color=BRAND_BLUE)
 
                     for comp in tier["components"]:
                         p = tf.add_paragraph()
                         p.text = "• " + comp
-                        p.font.size = Pt(10.5)
-                        p.font.color.rgb = NAVY
-                        p.space_before = Pt(2)
+                        set_font(p, size=Pt(11), color=NAVY, space_before=Pt(2))
 
-                    # Dấu kết nối luồng giữa các tầng
                     if t_idx < 2:
                         arrow_bar = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(5.2), y + tier_h + Inches(0.04), Inches(2.9), Inches(0.26))
                         arrow_bar.fill.solid()
@@ -926,14 +887,11 @@ def create_presentation():
                         tf_a = arrow_bar.text_frame
                         p_a = tf_a.paragraphs[0]
                         p_a.text = "↕ RESTful API (JSON / Axios)" if t_idx == 0 else "↕ SQL Queries / Gemini SDK"
-                        p_a.font.size = Pt(9.5)
-                        p_a.font.bold = True
-                        p_a.font.color.rgb = SLATE
-                        p_a.alignment = PP_ALIGN.CENTER
+                        set_font(p_a, size=Pt(10), bold=True, color=SLATE, alignment=PP_ALIGN.CENTER)
 
-            # ==========================================
-            # LAYOUT: SPLIT TEXT & IMAGE (CHỮ TRÁI - ẢNH PHẢI)
-            # ==========================================
+            # ------------------------------------------
+            # SPLIT TEXT & IMAGE
+            # ------------------------------------------
             elif data["type"] == "split_text_image":
                 text_w = Inches(5.6)
                 img_w = Inches(5.9)
@@ -961,28 +919,22 @@ def create_presentation():
                     tf.word_wrap = True
                     p1 = tf.paragraphs[0]
                     p1.text = card_title
-                    p1.font.size = Pt(13.5)
-                    p1.font.bold = True
-                    p1.font.color.rgb = acc_colors[c_idx % len(acc_colors)]
+                    set_font(p1, size=Pt(14), bold=True, color=acc_colors[c_idx % len(acc_colors)])
 
                     p2 = tf.add_paragraph()
                     p2.text = card_desc
-                    p2.font.size = Pt(11)
-                    p2.font.color.rgb = NAVY
-                    p2.space_before = Pt(4)
+                    set_font(p2, size=Pt(11.5), color=NAVY, space_before=Pt(4))
 
                     cur_y += card_h + Inches(0.18)
 
-                # Cột phải: Hình ảnh chụp thực tế chất lượng cao có khung và chú thích
                 add_fitted_picture(slide, data["img_path"], Inches(6.6), Inches(1.6), img_w, content_h, bg_card=True, caption=data.get("img_caption"))
 
-            # ==========================================
-            # LAYOUT: TWO IMAGES (2 ẢNH SO SÁNH / GIAO DIỆN)
-            # ==========================================
+            # ------------------------------------------
+            # TWO IMAGES
+            # ------------------------------------------
             elif data["type"] == "two_images":
                 w = Inches(5.7)
 
-                # Khối ảnh 1 (Trái)
                 add_fitted_picture(slide, data["img1_path"], Inches(0.8), Inches(1.6), w, Inches(3.6), bg_card=True)
                 desc1 = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(5.35), w, Inches(1.55))
                 desc1.fill.solid()
@@ -995,17 +947,12 @@ def create_presentation():
                 tf1.word_wrap = True
                 p = tf1.paragraphs[0]
                 p.text = data["img1_title"]
-                p.font.size = Pt(13)
-                p.font.bold = True
-                p.font.color.rgb = BRAND_ORANGE
+                set_font(p, size=Pt(13.5), bold=True, color=BRAND_ORANGE)
 
                 p_sub = tf1.add_paragraph()
                 p_sub.text = data["img1_desc"]
-                p_sub.font.size = Pt(10.5)
-                p_sub.font.color.rgb = SLATE
-                p_sub.space_before = Pt(4)
+                set_font(p_sub, size=Pt(11), color=SLATE, space_before=Pt(4))
 
-                # Khối ảnh 2 (Phải)
                 add_fitted_picture(slide, data["img2_path"], Inches(6.8), Inches(1.6), w, Inches(3.6), bg_card=True)
                 desc2 = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(6.8), Inches(5.35), w, Inches(1.55))
                 desc2.fill.solid()
@@ -1018,19 +965,15 @@ def create_presentation():
                 tf2.word_wrap = True
                 p = tf2.paragraphs[0]
                 p.text = data["img2_title"]
-                p.font.size = Pt(13)
-                p.font.bold = True
-                p.font.color.rgb = BRAND_BLUE
+                set_font(p, size=Pt(13.5), bold=True, color=BRAND_BLUE)
 
                 p_sub = tf2.add_paragraph()
                 p_sub.text = data["img2_desc"]
-                p_sub.font.size = Pt(10.5)
-                p_sub.font.color.rgb = SLATE
-                p_sub.space_before = Pt(4)
+                set_font(p_sub, size=Pt(11), color=SLATE, space_before=Pt(4))
 
-            # ==========================================
-            # LAYOUT: FOUR CARDS (LƯỚI 2x2 ĐỒNG ĐỀU)
-            # ==========================================
+            # ------------------------------------------
+            # FOUR CARDS
+            # ------------------------------------------
             elif data["type"] == "four_cards":
                 w = Inches(5.7)
                 h = Inches(2.45)
@@ -1058,19 +1001,15 @@ def create_presentation():
                     tf.word_wrap = True
                     p_head = tf.paragraphs[0]
                     p_head.text = ctitle
-                    p_head.font.size = Pt(15)
-                    p_head.font.bold = True
-                    p_head.font.color.rgb = color
+                    set_font(p_head, size=Pt(15.5), bold=True, color=color)
 
                     p_body = tf.add_paragraph()
                     p_body.text = cdesc
-                    p_body.font.size = Pt(12)
-                    p_body.font.color.rgb = NAVY
-                    p_body.space_before = Pt(8)
+                    set_font(p_body, size=Pt(12.5), color=NAVY, space_before=Pt(8))
 
-            # ==========================================
-            # LAYOUT: THREE COLUMNS (3 CỘT CÔNG NGHỆ)
-            # ==========================================
+            # ------------------------------------------
+            # THREE COLUMNS
+            # ------------------------------------------
             elif data["type"] == "three_columns":
                 w = Inches(3.7)
                 h = Inches(5.3)
@@ -1090,10 +1029,7 @@ def create_presentation():
                     tf = bar.text_frame
                     p = tf.paragraphs[0]
                     p.text = col_title
-                    p.font.size = Pt(13.5)
-                    p.font.bold = True
-                    p.font.color.rgb = WHITE
-                    p.alignment = PP_ALIGN.CENTER
+                    set_font(p, size=Pt(14), bold=True, color=WHITE, alignment=PP_ALIGN.CENTER)
 
                     cur_item_y = Inches(2.25)
                     for item_head, item_detail in items:
@@ -1108,21 +1044,17 @@ def create_presentation():
                         tf.word_wrap = True
                         p1 = tf.paragraphs[0]
                         p1.text = item_head
-                        p1.font.size = Pt(12)
-                        p1.font.bold = True
-                        p1.font.color.rgb = col_color
+                        set_font(p1, size=Pt(12.5), bold=True, color=col_color)
 
                         p2 = tf.add_paragraph()
                         p2.text = item_detail
-                        p2.font.size = Pt(10.5)
-                        p2.font.color.rgb = NAVY
-                        p2.space_before = Pt(3)
+                        set_font(p2, size=Pt(11), color=NAVY, space_before=Pt(3))
 
                         cur_item_y += Inches(1.48)
 
-            # ==========================================
-            # LAYOUT: TWO COLUMNS (2 CỘT TỔNG KẾT)
-            # ==========================================
+            # ------------------------------------------
+            # TWO COLUMNS
+            # ------------------------------------------
             elif data["type"] == "two_columns":
                 w = Inches(5.7)
                 h = Inches(5.3)
@@ -1141,10 +1073,7 @@ def create_presentation():
                 tf = bar1.text_frame
                 p = tf.paragraphs[0]
                 p.text = data["col1_title"]
-                p.font.size = Pt(14)
-                p.font.bold = True
-                p.font.color.rgb = WHITE
-                p.alignment = PP_ALIGN.CENTER
+                set_font(p, size=Pt(14.5), bold=True, color=WHITE, alignment=PP_ALIGN.CENTER)
 
                 tx1 = slide.shapes.add_textbox(Inches(1.0), Inches(2.3), w - Inches(0.4), h - Inches(0.8))
                 tf1 = tx1.text_frame
@@ -1152,9 +1081,7 @@ def create_presentation():
                 for b_idx, bullet in enumerate(data["col1_bullets"]):
                     p = tf1.paragraphs[0] if b_idx == 0 else tf1.add_paragraph()
                     p.text = "✓ " + bullet
-                    p.font.size = Pt(12.5)
-                    p.font.color.rgb = NAVY
-                    p.space_before = Pt(10)
+                    set_font(p, size=Pt(13), color=NAVY, space_before=Pt(10))
 
                 # Cột 2
                 card2 = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(6.8), Inches(1.6), w, h)
@@ -1170,10 +1097,7 @@ def create_presentation():
                 tf = bar2.text_frame
                 p = tf.paragraphs[0]
                 p.text = data["col2_title"]
-                p.font.size = Pt(14)
-                p.font.bold = True
-                p.font.color.rgb = WHITE
-                p.alignment = PP_ALIGN.CENTER
+                set_font(p, size=Pt(14.5), bold=True, color=WHITE, alignment=PP_ALIGN.CENTER)
 
                 tx2 = slide.shapes.add_textbox(Inches(7.0), Inches(2.3), w - Inches(0.4), h - Inches(0.8))
                 tf2 = tx2.text_frame
@@ -1181,13 +1105,11 @@ def create_presentation():
                 for b_idx, bullet in enumerate(data["col2_bullets"]):
                     p = tf2.paragraphs[0] if b_idx == 0 else tf2.add_paragraph()
                     p.text = "★ " + bullet
-                    p.font.size = Pt(12.5)
-                    p.font.color.rgb = NAVY
-                    p.space_before = Pt(12)
+                    set_font(p, size=Pt(13), color=NAVY, space_before=Pt(12))
 
-            # ==========================================
-            # LAYOUT: TABLE (BẢNG KIỂM THỬ)
-            # ==========================================
+            # ------------------------------------------
+            # TABLE
+            # ------------------------------------------
             elif data["type"] == "table":
                 rows = len(data["rows"]) + 1
                 cols = len(data["headers"])
@@ -1205,10 +1127,7 @@ def create_presentation():
                     cell.fill.solid()
                     cell.fill.fore_color.rgb = BRAND_BLUE
                     for p in cell.text_frame.paragraphs:
-                        p.font.size = Pt(12)
-                        p.font.bold = True
-                        p.font.color.rgb = WHITE
-                        p.alignment = PP_ALIGN.CENTER
+                        set_font(p, size=Pt(12.5), bold=True, color=WHITE, alignment=PP_ALIGN.CENTER)
 
                 for r_idx, row_data in enumerate(data["rows"]):
                     for c_idx, val in enumerate(row_data):
@@ -1217,19 +1136,14 @@ def create_presentation():
                         cell.fill.solid()
                         cell.fill.fore_color.rgb = WHITE if r_idx % 2 == 0 else RGBColor(241, 245, 249)
                         for p in cell.text_frame.paragraphs:
-                            p.font.size = Pt(11)
-                            p.font.color.rgb = NAVY
-                            if c_idx == 0:
-                                p.font.bold = True
-                                p.alignment = PP_ALIGN.CENTER
-                            elif c_idx == 3:
-                                p.font.bold = True
-                                p.font.color.rgb = GREEN
-                                p.alignment = PP_ALIGN.CENTER
+                            align = PP_ALIGN.CENTER if c_idx in [0, 3] else PP_ALIGN.LEFT
+                            font_color = GREEN if c_idx == 3 else NAVY
+                            bold = True if c_idx in [0, 3] else False
+                            set_font(p, size=Pt(11.5), bold=bold, color=font_color, alignment=align)
 
-            # ==========================================
-            # LAYOUT: KPI METRICS + TABLE (ĐÁNH GIÁ ĐỊNH LƯỢNG)
-            # ==========================================
+            # ------------------------------------------
+            # KPI METRICS + TABLE
+            # ------------------------------------------
             elif data["type"] == "kpi_metrics_table":
                 kpi_w = Inches(3.7)
                 kpi_h = Inches(1.3)
@@ -1252,23 +1166,15 @@ def create_presentation():
                     tf.word_wrap = True
                     p_val = tf.paragraphs[0]
                     p_val.text = k_val
-                    p_val.font.size = Pt(20)
-                    p_val.font.bold = True
-                    p_val.font.color.rgb = k_col
-                    p_val.alignment = PP_ALIGN.CENTER
+                    set_font(p_val, size=Pt(21), bold=True, color=k_col, alignment=PP_ALIGN.CENTER)
 
                     p_tit = tf.add_paragraph()
                     p_tit.text = k_title
-                    p_tit.font.size = Pt(11)
-                    p_tit.font.bold = True
-                    p_tit.font.color.rgb = NAVY
-                    p_tit.alignment = PP_ALIGN.CENTER
+                    set_font(p_tit, size=Pt(11.5), bold=True, color=NAVY, alignment=PP_ALIGN.CENTER)
 
                     p_d = tf.add_paragraph()
                     p_d.text = k_desc
-                    p_d.font.size = Pt(9.5)
-                    p_d.font.color.rgb = SLATE
-                    p_d.alignment = PP_ALIGN.CENTER
+                    set_font(p_d, size=Pt(10), color=SLATE, alignment=PP_ALIGN.CENTER)
 
                 rows = len(data["rows"]) + 1
                 cols = len(data["headers"])
@@ -1286,10 +1192,7 @@ def create_presentation():
                     cell.fill.solid()
                     cell.fill.fore_color.rgb = BRAND_BLUE
                     for p in cell.text_frame.paragraphs:
-                        p.font.size = Pt(11.5)
-                        p.font.bold = True
-                        p.font.color.rgb = WHITE
-                        p.alignment = PP_ALIGN.CENTER
+                        set_font(p, size=Pt(12), bold=True, color=WHITE, alignment=PP_ALIGN.CENTER)
 
                 for r_idx, row_data in enumerate(data["rows"]):
                     for c_idx, val in enumerate(row_data):
@@ -1298,17 +1201,17 @@ def create_presentation():
                         cell.fill.solid()
                         cell.fill.fore_color.rgb = WHITE if r_idx % 2 == 0 else RGBColor(241, 245, 249)
                         for p in cell.text_frame.paragraphs:
-                            p.font.size = Pt(10.5)
-                            p.font.color.rgb = NAVY
-                            if c_idx in [1, 2]:
-                                p.font.bold = True
-                                p.alignment = PP_ALIGN.CENTER
-                                if "⭐" in val or "0,21" in val or "98," in val or "100%" in val:
-                                    p.font.color.rgb = GREEN
+                            align = PP_ALIGN.CENTER if c_idx in [1, 2] else PP_ALIGN.LEFT
+                            font_color = GREEN if ("⭐" in val or "0,21" in val or "98," in val or "100%" in val) else NAVY
+                            bold = True if c_idx in [1, 2] else False
+                            set_font(p, size=Pt(11), bold=bold, color=font_color, alignment=align)
+
+    # Ép triệt để font Times New Roman trên mọi element
+    apply_font_to_presentation(prs, FONT_FAMILY)
 
     output_path = "FoodAI_Slide_Thuyet_Trinh_20_Slides.pptx"
     prs.save(output_path)
-    print(f"✅ Đã tạo thành công file PowerPoint 20 slides chất lượng cao (Không có sơ đồ tuần tự): {output_path}")
+    print(f"✅ Đã tạo thành công file PowerPoint 20 slides với font {FONT_FAMILY}: {output_path}")
 
 if __name__ == "__main__":
     create_presentation()
