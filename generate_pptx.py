@@ -138,7 +138,7 @@ def create_presentation():
             "students": "Sinh viên thực hiện: Phạm Tấn Hào (2351220282) — Trần Quốc Trung (2351220096)",
             "advisor": "Giảng viên hướng dẫn: TS. Đỗ Phúc Hảo",
             "dept": "Trường Đại học Kiến trúc Đà Nẵng — Khoa Công nghệ Thông tin — Lớp: 23CT2 (Năm học: 2025 – 2026)",
-            "notes": "Kính thưa quý Thầy Cô trong Hội đồng, hôm nay nhóm chúng em xin được báo cáo đề tài 'Hệ thống AI gợi ý món ăn theo nguyên liệu - FoodAI' dưới sự hướng dẫn của TS. Đỗ Phúc Hảo. Đề tài tập trung giải quyết bài toán gợi ý món ăn thực tế từ nguyên liệu sẵn có bằng cách kết hợp Google Gemini AI và kiến trúc Grounded RAG."
+            "notes": "[Thời lượng: 20s | Mốc: 00:00 - 00:20] Kính thưa quý Thầy Cô trong Hội đồng, hôm nay nhóm chúng em xin được báo cáo đề tài 'Hệ thống AI gợi ý món ăn theo nguyên liệu - FoodAI' dưới sự hướng dẫn của TS. Đỗ Phúc Hảo, giải quyết bài toán gợi ý món ăn thực tế bằng Google Gemini AI và kiến trúc Grounded RAG."
         },
 
         # ==========================================
@@ -156,7 +156,7 @@ def create_presentation():
                 ("4. Cài Đặt Thực Nghiệm & Đánh Giá Định Lượng", "Giao diện Client/Admin, kết quả kiểm thử chức năng và đo đạc hiệu năng thực tế."),
                 ("5. Kết Luận & Hướng Phát Triển Tương Lai", "Tổng kết đóng góp, bài học rút ra và kế hoạch mở rộng thị giác máy tính YOLOv8.")
             ],
-            "notes": "Báo cáo của nhóm gồm 5 phần chính, đi từ bài toán thực tế, cơ sở công nghệ, giải thuật cốt lõi chống ảo giác cho AI, cho đến kết quả thực nghiệm hệ thống và hướng phát triển tương lai."
+            "notes": "[Thời lượng: 25s | Mốc: 00:20 - 00:45] Báo cáo của nhóm gồm 5 phần chính, đi từ bài toán thực tế, cơ sở công nghệ, giải thuật cốt lõi chống ảo giác cho AI, đến kết quả thực nghiệm hệ thống và hướng phát triển tương lai."
         },
 
         # ==========================================
@@ -174,7 +174,7 @@ def create_presentation():
             ],
             "img_path": FIG_UI_DASHBOARD,
             "img_caption": "Giao diện gợi ý thông minh của FoodAI - Giải pháp nấu ăn theo nguyên liệu có sẵn",
-            "notes": "Xuất phát từ thực tế người nội trợ mỗi ngày đều bối rối với câu hỏi 'Hôm nay ăn gì' khi tủ lạnh còn nguyên liệu rải rác, dẫn đến lãng phí thực phẩm rất lớn. Các ứng dụng hiện nay đều bắt buộc phải biết trước tên món mới tìm được, hoàn toàn chưa hỗ trợ nấu ăn linh hoạt theo những gì đang có sẵn."
+            "notes": "[Thời lượng: 45s | Mốc: 00:45 - 01:30] Xuất phát từ nỗi băn khoăn 'hôm nay ăn gì' khi tủ lạnh còn nguyên liệu rải rác dẫn đến lãng phí thực phẩm rất lớn. Các ứng dụng hiện nay đều bắt buộc phải biết trước tên món mới tìm được, hoàn toàn chưa hỗ trợ nấu ăn linh hoạt theo nguyên liệu sẵn có."
         },
 
         # ==========================================
@@ -203,7 +203,7 @@ def create_presentation():
                 ("Phân vai AI Chef & Chuyên gia dinh dưỡng", "Gemini AI chỉ tập trung tính toán định lượng gram, thời gian nấu và 8 chỉ số dinh dưỡng (calo, đạm, béo, xơ, vitamin...)."),
                 ("Tỷ lệ bám sát nguyên liệu 97,8%", "Món ăn đề xuất thân thuộc, chuẩn vị Việt Nam và có thể chế biến ngay lập tức.")
             ],
-            "notes": "Nếu chỉ dùng AI thuần túy, mô hình rất dễ bị 'ảo giác' tự bịa thêm các nguyên liệu đắt tiền như thịt bò hay tôm hùm dù người dùng chỉ có trứng và cà chua. Đột phá của đề tài là ứng dụng Grounded RAG, khóa chặt AI vào kho món ăn Việt Nam có thật làm mỏ neo, triệt tiêu hoàn toàn hiện tượng bịa đặt này."
+            "notes": "[Thời lượng: 50s | Mốc: 01:30 - 02:20] Nếu chỉ dùng AI thuần túy, mô hình rất dễ bị ảo giác tự bịa thêm thịt bò hay tôm hùm dù người dùng chỉ có trứng và cà chua. Đột phá của đề tài là ứng dụng Grounded RAG, khóa chặt AI vào kho món ăn Việt Nam có thật làm mỏ neo, triệt tiêu hoàn toàn hiện tượng bịa đặt này."
         },
 
         # ==========================================
@@ -220,7 +220,7 @@ def create_presentation():
                 ("Xử Lý Ngôn Ngữ Tự Nhiên (NLP)", "Xây dựng thuật toán NLP tiếng Việt khử triệt để hiện tượng dính chữ (cà chua != cá, mắm tôm != tôm, bơ tỏi != bò).", GREEN),
                 ("Kiến Trúc Web & Fallback Chịu Lỗi", "Hoàn thiện Web SPA full-stack, phân quyền JWT và cơ chế dự phòng tự động phản hồi tức thì < 300ms khi mất kết nối AI.", PURPLE)
             ],
-            "notes": "Mục tiêu cốt lõi của nhóm là xây dựng kho 552 món ăn Việt Nam chuẩn hóa, tích hợp Gemini AI phân tích chính xác 8 chỉ số dinh dưỡng, và hoàn thiện một ứng dụng Web có cơ chế dự phòng hoạt động bền bỉ."
+            "notes": "[Thời lượng: 40s | Mốc: 02:20 - 03:00] Nhóm đặt ra 4 mục tiêu cụ thể: chuẩn hóa kho 552 món ăn Việt Nam, tích hợp Gemini AI tính toán 8 chỉ số dinh dưỡng, xử lý dính chữ tiếng Việt và xây dựng cơ chế Fallback đảm bảo hệ thống luôn sẵn sàng 100%."
         },
 
         # ==========================================
@@ -248,7 +248,7 @@ def create_presentation():
                     ("Cookpad CDN Image", "Kho ảnh món ăn thực tế sắc nét, độ phân giải cao 1200x630.")
                 ])
             ],
-            "notes": "Hệ thống được xây dựng trên nền tảng Full-stack JavaScript hiện đại: React 18 và TypeScript ở Frontend cho trải nghiệm mượt mà, Node.js Express bảo mật ở Backend, cùng động cơ Google Gemini AI và CSDL quan hệ MySQL 8.0."
+            "notes": "[Thời lượng: 40s | Mốc: 03:00 - 03:40] Về công nghệ, hệ thống ứng dụng Full-stack JavaScript hiện đại: React 18 và Tailwind CSS ở Frontend, Node.js Express bảo mật ở Backend, kết hợp CSDL quan hệ MySQL 8.0 và động cơ Google Gemini AI Flash."
         },
 
         # ==========================================
@@ -291,7 +291,7 @@ def create_presentation():
                     ]
                 }
             ],
-            "notes": "Kiến trúc phần mềm được phân tách chặt chẽ thành 3 tầng: Giao diện Client SPA, Tầng nghiệp vụ xử lý phân quyền và lọc ràng buộc, kết nối với Tầng dữ liệu MySQL và dịch vụ đám mây Gemini AI qua RESTful API an toàn."
+            "notes": "[Thời lượng: 45s | Mốc: 03:40 - 04:25] Kiến trúc phần mềm được bóc tách thành 3 tầng độc lập: Tầng Giao diện Client SPA, Tầng Nghiệp vụ xử lý phân quyền và lọc ràng buộc, kết nối với Tầng Dữ liệu MySQL và Google Gemini AI Cloud qua RESTful API an toàn."
         },
 
         # ==========================================
@@ -310,7 +310,7 @@ def create_presentation():
             ],
             "img_path": FIG_UI_MODAL,
             "img_caption": "Kết quả thực tế sau khi xử lý Grounded RAG: Đầy đủ định lượng nguyên liệu và 8 chỉ số dinh dưỡng",
-            "notes": "Đây là trái tim của hệ thống: CSDL MySQL sẽ lọc trước 6 đến 8 món thật khớp nguyên liệu, sau đó Gemini AI mới đóng vai trò đầu bếp tính toán định lượng gram, calo và mẹo chế biến rồi đồng bộ ngược lại vào CSDL."
+            "notes": "[Thời lượng: 60s | Mốc: 04:25 - 05:25] Đây là quy trình cốt lõi của đề tài: CSDL MySQL truy vấn trước 6 đến 8 món thật làm mỏ neo, sau đó Gemini AI mới đóng vai trò đầu bếp tính toán định lượng gram, calo và mẹo chế biến rồi đồng bộ ngược lại vào CSDL."
         },
 
         # ==========================================
@@ -328,7 +328,7 @@ def create_presentation():
             ],
             "img_path": FIG_UI_DASHBOARD,
             "img_caption": "Gợi ý nguyên liệu tự động nhận diện từ khóa chính xác không bị dính chữ",
-            "notes": "Để giải quyết triệt để các lỗi dính chữ nguy hiểm trong tiếng Việt như 'cà chua' bị nhận nhầm thành 'cá', nhóm đã xây dựng thuật toán kiểm tra ranh giới từ nguyên vẹn kết hợp ma trận loại trừ Negative Excludes để đảm bảo độ chính xác tuyệt đối."
+            "notes": "[Thời lượng: 50s | Mốc: 05:25 - 06:15] Để khử triệt để các lỗi dính chữ nguy hiểm trong tiếng Việt như 'cà chua' bị nhầm thành 'cá', nhóm đã xây dựng thuật toán kiểm tra ranh giới từ nguyên vẹn kết hợp ma trận loại trừ Negative Excludes để đạt độ chính xác tuyệt đối."
         },
 
         # ==========================================
@@ -346,7 +346,7 @@ def create_presentation():
             ],
             "img_path": FIG_UI_MODAL,
             "img_caption": "Món ăn đề xuất có độ tương đồng nguyên liệu cao nhất được xếp vị trí ưu tiên",
-            "notes": "Hệ thống áp dụng bộ lọc loại trừ cứng để bảo vệ nhóm chất đạm - ví dụ nếu người dùng không nhập thịt cá thì loại bỏ 100% món mặn, đồng thời chấm điểm đa tiêu chí để luôn đẩy món ăn phù hợp nhất lên vị trí Top 1."
+            "notes": "[Thời lượng: 50s | Mốc: 06:15 - 07:05] Hệ thống áp dụng bộ lọc loại trừ cứng để bảo vệ nhóm chất đạm - ví dụ nếu người dùng không nhập thịt cá thì loại bỏ 100% món mặn, đồng thời chấm điểm đa tiêu chí để luôn đẩy món ăn phù hợp nhất lên vị trí Top 1."
         },
 
         # ==========================================
@@ -364,7 +364,7 @@ def create_presentation():
             ],
             "img_path": FIG_UI_ADMIN_RECIPES,
             "img_caption": "Giao diện quản lý kho 552 món ăn lưu trữ trong CSDL MySQL",
-            "notes": "CSDL được thiết kế chuẩn hóa 3NF gồm 9 bảng quan hệ chặt chẽ. Đặc biệt, hệ thống tích hợp cơ chế Auto-Seed tự động nạp toàn bộ 552 món ăn mẫu vào MySQL ngay khi khởi động mà không cần can thiệp thủ công."
+            "notes": "[Thời lượng: 45s | Mốc: 07:05 - 07:50] CSDL được thiết kế chuẩn hóa 3NF gồm 9 bảng quan hệ chặt chẽ. Đặc biệt, hệ thống tích hợp cơ chế Auto-Seed tự động nạp toàn bộ 552 món ăn mẫu vào MySQL ngay khi khởi động mà không cần can thiệp thủ công."
         },
 
         # ==========================================
@@ -382,7 +382,7 @@ def create_presentation():
             ],
             "img_path": FIG_UI_ADMIN_SETTINGS,
             "img_caption": "Bảng điều khiển cho phép kiểm tra trạng thái API và cấu hình hình ảnh trực tiếp",
-            "notes": "Để thành phẩm luôn đạt chuẩn thẩm mỹ cao, thuật toán sẽ tự động phân tích slug URL ảnh nhằm loại trừ các ảnh mâm cơm hỗn hợp hoặc ảnh lệch món, đồng thời cung cấp giao diện Admin cho phép cập nhật link ảnh thủ công mọi lúc."
+            "notes": "[Thời lượng: 40s | Mốc: 07:50 - 08:30] Để thành phẩm đạt chuẩn thẩm mỹ cao, thuật toán tự động giải mã slug URL ảnh nhằm loại trừ ảnh mâm cơm hỗn hợp hoặc ảnh lệch món, đồng thời cung cấp giao diện Admin cho phép cập nhật link ảnh thủ công mọi lúc."
         },
 
         # ==========================================
@@ -399,7 +399,7 @@ def create_presentation():
             "img2_path": FIG_UI_MODAL,
             "img2_title": "Modal Chi Tiết Món Ăn 3 Tab",
             "img2_desc": "Tab 1: Công thức 4 bước nấu chuẩn; Tab 2: Định lượng nguyên liệu chi tiết (gram, thìa); Tab 3: Bảng 8 chỉ số dinh dưỡng & mẹo AI Chef.",
-            "notes": "Giao diện người dùng được thiết kế hiện đại và tiện lợi: hỗ trợ chọn nguyên liệu nhanh bằng tag màu động, phân trang 3 món cuộn mượt mà, cùng Modal chi tiết 3 tab hiển thị đầy đủ công thức và biểu đồ dinh dưỡng."
+            "notes": "[Thời lượng: 55s | Mốc: 08:30 - 09:25] Giao diện người dùng được tối ưu trải nghiệm một chạm: hỗ trợ chọn nguyên liệu nhanh bằng tag màu động, phân trang 3 món cuộn mượt mà, cùng Modal chi tiết 3 tab hiển thị đầy đủ công thức nấu và bảng dinh dưỡng."
         },
 
         # ==========================================
@@ -416,7 +416,7 @@ def create_presentation():
             "img2_path": FIG_UI_ADMIN_USERS,
             "img2_title": "Quản Lý Người Dùng & Phân Quyền An Toàn",
             "img2_desc": "Bảng dữ liệu phân trang, tìm kiếm email/tên, kích hoạt/khóa tài khoản kèm chốt an toàn không cho phép Admin tự khóa chính mình.",
-            "notes": "Phân hệ quản trị cung cấp bức tranh vận hành toàn diện với biểu đồ thống kê KPI thời gian thực, quản lý tài khoản người dùng an toàn và công cụ giám sát trực tiếp nhật ký truy vấn của Gemini AI."
+            "notes": "[Thời lượng: 45s | Mốc: 09:25 - 10:10] Phân hệ quản trị cung cấp bức tranh vận hành toàn diện với biểu đồ thống kê KPI thời gian thực, quản lý tài khoản người dùng an toàn và công cụ giám sát trực tiếp nhật ký truy vấn của Gemini AI."
         },
 
         # ==========================================
@@ -434,7 +434,7 @@ def create_presentation():
             ],
             "img_path": FIG_UI_FAVORITES,
             "img_caption": "Người dùng vẫn xem được gợi ý, công thức và lưu món ăn yêu thích bình thường ở chế độ dự phòng",
-            "notes": "Hệ thống sở hữu cơ chế chịu lỗi công nghiệp: khi mất mạng hoặc Google AI bị nghẽn hạn mức, tầng Fallback sẽ tự động phản hồi từ CSDL MySQL nội bộ chỉ trong 0,21 giây, cam kết người dùng không bao giờ gặp lỗi gián đoạn."
+            "notes": "[Thời lượng: 50s | Mốc: 10:10 - 11:00] Hệ thống sở hữu cơ chế chịu lỗi công nghiệp: khi mất mạng hoặc Google AI quá tải, tầng Fallback sẽ tự động phản hồi từ CSDL MySQL nội bộ chỉ trong 0,21 giây, cam kết không bao giờ gặp lỗi gián đoạn."
         },
 
         # ==========================================
@@ -454,7 +454,7 @@ def create_presentation():
                 ["TC-05", "Tài khoản User thường truy cập /admin", "Bị chặn bởi AuthMiddleware và nhận mã lỗi HTTP 403 Forbidden", "ĐẠT (Pass 100%)"],
                 ["TC-06", "Nhập chuỗi rỗng / Ký tự đặc biệt XSS", "Bắt lỗi validation, thông báo lỗi tiếng Việt thân thiện", "ĐẠT (Pass 100%)"]
             ],
-            "notes": "Nhóm đã thực hiện kiểm thử nghiêm ngặt trên 6 ca thử nghiệm cốt lõi từ bảo mật JWT, kịch bản ăn chay, xử lý chuỗi rỗng đến ngắt mạng đột ngột - toàn bộ đều đạt tỷ lệ Pass tuyệt đối 100%."
+            "notes": "[Thời lượng: 45s | Mốc: 11:00 - 11:45] Nhóm đã thực hiện kiểm thử nghiêm ngặt trên 6 ca thử nghiệm cốt lõi từ bảo mật JWT, kịch bản ăn chay, xử lý chuỗi rỗng đến ngắt mạng đột ngột - toàn bộ đều đạt tỷ lệ Pass tuyệt đối 100%."
         },
 
         # ==========================================
@@ -479,7 +479,7 @@ def create_presentation():
                 ["Tỷ lệ gán hình ảnh chính xác", "94,6%", "98,2%", "Kho ảnh Cookpad khớp chuẩn thành phẩm"],
                 ["Mức độ hài lòng của người dùng", "4,8 / 5,0 ⭐", "4,2 / 5,0 ⭐", "Cả 2 chế độ đều được đánh giá cao"]
             ],
-            "notes": "Đo đạc trên 150 kịch bản thực tế cho thấy chế độ Fallback phản hồi cực nhanh 0,21 giây, trong khi chế độ AI đạt tỷ lệ bám sát nguyên liệu 97,8% và nhận được điểm hài lòng rất cao 4,8 trên 5 sao từ người dùng."
+            "notes": "[Thời lượng: 60s | Mốc: 11:45 - 12:45] Khảo sát trên 150 kịch bản thực tế cho thấy chế độ Fallback phản hồi cực nhanh 0,21 giây, trong khi chế độ AI đạt tỷ lệ bám sát nguyên liệu 97,8% và nhận được điểm đánh giá hài lòng rất cao 4,8 trên 5 sao."
         },
 
         # ==========================================
@@ -496,7 +496,7 @@ def create_presentation():
             ],
             "img_path": FIG_UI_SEARCH_HISTORY,
             "img_caption": "Lịch sử tìm kiếm lưu trữ chính xác các lần tra cứu thực tế của người dùng",
-            "notes": "Minh chứng rõ nhất là dù người dùng chỉ có nguyên liệu đơn giản như trứng và cà chua hay có thịt bò, hệ thống đều đưa ra đúng các món ăn thân thuộc, chuẩn vị và tự động lưu lại vào lịch sử tìm kiếm."
+            "notes": "[Thời lượng: 45s | Mốc: 12:45 - 13:30] Minh chứng rõ nhất là dù người dùng chỉ có trứng cà chua hay có thịt bò, hệ thống đều đưa ra đúng các món ăn thân thuộc, chuẩn vị và tự động lưu lại vào lịch sử tìm kiếm."
         },
 
         # ==========================================
@@ -522,7 +522,7 @@ def create_presentation():
                 "Lập thực đơn tuần thông minh (Weekly Meal Planner): Tự động phân bổ calo 7 ngày theo thể trạng (Keto, giảm cân, tiểu đường).",
                 "Phát triển ứng dụng di động đa nền tảng (React Native) và mạng xã hội chia sẻ công thức ẩm thực cá nhân."
             ],
-            "notes": "Đề tài đã hoàn thành trọn vẹn mục tiêu đề ra và triển khai thực tế trên môi trường đám mây; trong giai đoạn tiếp theo, nhóm sẽ tích hợp mô hình thị giác YOLOv8 để tự nhận diện thực phẩm qua camera tủ lạnh."
+            "notes": "[Thời lượng: 40s | Mốc: 13:30 - 14:10] Đề tài đã hoàn thành trọn vẹn mục tiêu đề ra và triển khai thực tế trên môi trường đám mây; trong tương lai, nhóm sẽ tích hợp mô hình thị giác YOLOv8 để tự nhận diện thực phẩm qua camera tủ lạnh."
         },
 
         # ==========================================
@@ -535,7 +535,7 @@ def create_presentation():
             "advisor": "Trân trọng cảm ơn TS. Đỗ Phúc Hảo đã tận tình hướng dẫn khoa học trong suốt quá trình thực hiện đồ án.",
             "links": "🌐 Live Web App: https://do-an-tri-tue-nhan-tao-nu.vercel.app\n💻 GitHub: https://github.com/T-glonk/DoAnTriTueNhanTao.git",
             "qa": "KÍNH MỜI QUÝ THẦY CÔ TRONG HỘI ĐỒNG ĐẶT CÂU HỎI (Q&A)",
-            "notes": "Nhóm chúng em xin chân thành cảm ơn TS. Đỗ Phúc Hảo và quý Thầy Cô trong Hội đồng đã lắng nghe; chúng em rất mong nhận được những góp ý quý báu và xin sẵn sàng trả lời các câu hỏi của Thầy Cô ạ!"
+            "notes": "[Thời lượng: 20s | Mốc: 14:10 - 14:30] Nhóm chúng em xin chân thành cảm ơn TS. Đỗ Phúc Hảo và quý Thầy Cô trong Hội đồng đã chú ý lắng nghe; chúng em rất mong nhận được những góp ý quý báu và xin sẵn sàng trả lời các câu hỏi của Thầy Cô ạ!"
         }
     ]
 
